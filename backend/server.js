@@ -3,6 +3,16 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
+if (!process.env.PRINTIFY_API_KEY) {
+  console.warn('WARNING: PRINTIFY_API_KEY is not set. Printify API calls will fail.');
+  console.warn('Please set PRINTIFY_API_KEY in your .env file or environment variables.');
+}
+
+if (!process.env.PRINTIFY_SHOP_ID) {
+  console.warn('WARNING: PRINTIFY_SHOP_ID is not set. Printify API calls will fail.');
+  console.warn('Please set PRINTIFY_SHOP_ID in your .env file or environment variables.');
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
