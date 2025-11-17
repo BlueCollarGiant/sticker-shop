@@ -1,35 +1,250 @@
-.home-container {
+/* ========================================
+   NIGHT READER - Home Page Styles
+   ======================================== */
+
+/* ========================================
+   HERO SECTION
+   ======================================== */
+
+.hero {
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  padding: 3rem 1rem;
+  background: linear-gradient(135deg, var(--obsidian) 0%, var(--midnight-blue) 50%, var(--moonlit-blue) 100%);
+  padding: var(--spacing-2xl) var(--spacing-sm);
+  overflow: hidden;
 }
 
-.home-container h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #333;
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(107, 76, 154, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(212, 165, 116, 0.1) 0%, transparent 50%);
+  pointer-events: none;
 }
 
-.home-container p {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 2rem;
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.cta {
-  margin-top: 2rem;
+.hero-title {
+  font-family: var(--font-header);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  color: var(--parchment);
+  margin-bottom: var(--spacing-md);
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.btn-primary {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background-color: #4CAF50;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 1.1rem;
-  transition: background-color 0.3s;
+.hero-subtitle {
+  font-family: var(--font-accent);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-style: italic;
+  color: var(--steel-grey);
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.6;
 }
 
-.btn-primary:hover {
-  background-color: #45a049;
+.hero-cta {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-tagline {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--slate-charcoal);
+}
+
+.hero-tagline p {
+  font-family: var(--font-accent);
+  font-size: var(--body-large);
+  font-style: italic;
+  color: var(--quicksilver);
+  margin: 0;
+}
+
+/* ========================================
+   CATEGORIES SECTION
+   ======================================== */
+
+.categories {
+  background-color: var(--midnight-blue);
+}
+
+.section-title {
+  font-family: var(--font-header);
+  font-size: var(--h2);
+  color: var(--parchment);
+  letter-spacing: 0.05em;
+}
+
+.category-card {
+  background-color: var(--slate-charcoal);
+  border: 1px solid var(--steel-grey);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl) var(--spacing-md);
+  text-align: center;
+  transition: all var(--transition-normal);
+}
+
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--candlelight-gold);
+}
+
+.category-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+  filter: grayscale(20%);
+}
+
+.category-card h3 {
+  font-family: var(--font-header);
+  font-size: var(--h4);
+  color: var(--parchment);
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 0.05em;
+}
+
+.category-card p {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--steel-grey);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--body-small);
+}
+
+/* ========================================
+   PHILOSOPHY SECTION
+   ======================================== */
+
+.philosophy {
+  background: linear-gradient(180deg, var(--midnight-blue) 0%, var(--shadow) 100%);
+  border-top: 1px solid var(--slate-charcoal);
+  border-bottom: 1px solid var(--slate-charcoal);
+}
+
+.philosophy-content {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.philosophy-quote {
+  font-family: var(--font-accent);
+  font-size: var(--h4);
+  font-style: italic;
+  color: var(--candlelight-gold);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+  border-left: 4px solid var(--candlelight-gold);
+  padding-left: var(--spacing-md);
+  text-align: left;
+}
+
+.philosophy-text {
+  font-family: var(--font-body);
+  font-size: var(--body-large);
+  color: var(--moonstone);
+  line-height: 1.8;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ========================================
+   SHOWCASE SECTION
+   ======================================== */
+
+.showcase {
+  background-color: var(--midnight-blue);
+}
+
+.product-preview {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.product-preview-image {
+  font-size: 3.5rem;
+  margin-bottom: var(--spacing-md);
+  filter: grayscale(30%);
+  transition: all var(--transition-normal);
+}
+
+.product-preview:hover .product-preview-image {
+  transform: scale(1.1);
+  filter: grayscale(0%);
+}
+
+.product-preview h4 {
+  font-family: var(--font-header);
+  font-size: var(--h5);
+  color: var(--parchment);
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 0.05em;
+}
+
+.product-preview p {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--steel-grey);
+  font-size: var(--body-small);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 60vh;
+    padding: var(--spacing-xl) var(--spacing-sm);
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-cta .btn {
+    width: 100%;
+  }
+
+  .philosophy-quote {
+    font-size: var(--body-large);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .category-icon,
+  .product-preview-image {
+    font-size: 2.5rem;
+  }
 }

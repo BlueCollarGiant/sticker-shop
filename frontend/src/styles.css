@@ -1,1 +1,335 @@
-/* You can add global styles to this file, and also import other style files */
+/* ========================================
+   NIGHT READER - Global Styles
+   A premium brand for readers and lifters
+   ======================================== */
+
+/* ========================================
+   CSS CUSTOM PROPERTIES - Night Reader Brand
+   ======================================== */
+
+:root {
+  /* ===== PALETTE A: Dark Academia ===== */
+  --espresso-black: #1A1410;
+  --parchment: #E8DCC4;
+  --ink-black: #0D0D0D;
+  --oxblood: #5C1A1A;
+  --candlelight-gold: #D4A574;
+  --worn-leather: #4A3933;
+  --aged-cream: #F5EFE7;
+  --wax-seal-red: #8B2F2F;
+
+  /* ===== PALETTE B: Nighttime Minimalist ===== */
+  --midnight-blue: #0A1628;
+  --slate-charcoal: #2C3540;
+  --pure-black: #000000;
+  --steel-grey: #6B7C8C;
+  --moonstone: #D4D8DD;
+  --shadow: #1C1F26;
+  --fog: #E5E8EB;
+  --quicksilver: #A8B2BD;
+  --frost-blue: #4A7C8C;
+
+  /* ===== PALETTE C: Mythic Fantasy ===== */
+  --obsidian: #0F0F14;
+  --midnight-purple: #2B1B3D;
+  --moonlit-blue: #3D5A73;
+  --ancient-gold: #C9A961;
+  --raven: #1A1A22;
+  --storm-grey: #545965;
+  --silver-mist: #D9D9D9;
+  --dragons-breath: #6B4C9A;
+  --starlight: #E6D5B8;
+
+  /* ===== TYPOGRAPHY ===== */
+  --font-header: 'Cinzel', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-accent: 'Cormorant Garamond', serif;
+
+  /* ===== FONT SIZES (Desktop) ===== */
+  --h1: 56px;
+  --h2: 42px;
+  --h3: 32px;
+  --h4: 24px;
+  --h5: 20px;
+  --body-large: 18px;
+  --body: 16px;
+  --body-small: 14px;
+  --caption: 12px;
+
+  /* ===== SPACING ===== */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+
+  /* ===== SHADOWS ===== */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
+  --glow-gold: 0 0 20px rgba(212,165,116,0.3);
+
+  /* ===== BORDER RADIUS ===== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* ===== TRANSITIONS ===== */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ========================================
+   RESET & BASE STYLES
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--body);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--moonstone);
+  background-color: var(--midnight-blue);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-header);
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  color: var(--parchment);
+  margin-bottom: var(--spacing-sm);
+}
+
+h1 {
+  font-size: var(--h1);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: var(--h2);
+  font-weight: 400;
+}
+
+h3 {
+  font-size: var(--h3);
+  font-weight: 600;
+  font-family: var(--font-body);
+}
+
+h4 {
+  font-size: var(--h4);
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+h5 {
+  font-size: var(--h5);
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+p {
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.8;
+}
+
+a {
+  color: var(--candlelight-gold);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--ancient-gold);
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+
+.btn {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  font-family: var(--font-body);
+  font-size: var(--body);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-height: 44px;
+}
+
+.btn-primary {
+  background-color: var(--candlelight-gold);
+  color: var(--espresso-black);
+}
+
+.btn-primary:hover {
+  background-color: var(--ancient-gold);
+  box-shadow: var(--glow-gold);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--quicksilver);
+  border: 2px solid var(--quicksilver);
+}
+
+.btn-secondary:hover {
+  background-color: var(--quicksilver);
+  color: var(--midnight-blue);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--steel-grey);
+  border: none;
+  text-decoration: underline;
+}
+
+.btn-ghost:hover {
+  color: var(--moonstone);
+}
+
+/* ========================================
+   LAYOUT UTILITIES
+   ======================================== */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-sm);
+}
+
+.container-wide {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-sm);
+}
+
+.section {
+  padding: var(--spacing-2xl) 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+/* ========================================
+   GRID SYSTEM
+   ======================================== */
+
+.grid {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ========================================
+   CARDS
+   ======================================== */
+
+.card {
+  background-color: var(--slate-charcoal);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --h1: 36px;
+    --h2: 28px;
+    --h3: 24px;
+    --h4: 20px;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --h1: 28px;
+    --h2: 24px;
+    --h3: 20px;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+:focus-visible {
+  outline: 2px solid var(--candlelight-gold);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
