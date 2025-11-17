@@ -1,1 +1,179 @@
-<p>products works!</p>
+<!-- Shop Hero Banner -->
+<section class="shop-hero">
+  <div class="hero-content">
+    <nav class="breadcrumb">
+      <a routerLink="/" class="breadcrumb-item">Home</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-item active">Shop</span>
+    </nav>
+    <h1>The Collection</h1>
+    <p class="hero-subtitle">Symbols of the examined life</p>
+  </div>
+</section>
+
+<!-- Shop Container -->
+<div class="shop-container container">
+  <!-- Filter Sidebar -->
+  <aside class="filter-sidebar">
+    <div class="filter-section">
+      <h3 class="filter-title">Category</h3>
+      <div class="filter-options">
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCategorySelected(ProductCategory.STICKERS)"
+            (change)="toggleCategoryFilter(ProductCategory.STICKERS)">
+          <span>Stickers</span>
+        </label>
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCategorySelected(ProductCategory.APPAREL)"
+            (change)="toggleCategoryFilter(ProductCategory.APPAREL)">
+          <span>Apparel</span>
+        </label>
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCategorySelected(ProductCategory.MUGS)"
+            (change)="toggleCategoryFilter(ProductCategory.MUGS)">
+          <span>Mugs</span>
+        </label>
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCategorySelected(ProductCategory.POSTERS)"
+            (change)="toggleCategoryFilter(ProductCategory.POSTERS)">
+          <span>Posters</span>
+        </label>
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCategorySelected(ProductCategory.BOOKMARKS)"
+            (change)="toggleCategoryFilter(ProductCategory.BOOKMARKS)">
+          <span>Bookmarks</span>
+        </label>
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCategorySelected(ProductCategory.PHONE_CASES)"
+            (change)="toggleCategoryFilter(ProductCategory.PHONE_CASES)">
+          <span>Phone Cases</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-section">
+      <h3 class="filter-title">Collection</h3>
+      <div class="filter-options">
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCollectionSelected(ProductCollection.DARK_ACADEMIA)"
+            (change)="toggleCollectionFilter(ProductCollection.DARK_ACADEMIA)">
+          <span>Dark Academia</span>
+        </label>
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCollectionSelected(ProductCollection.MIDNIGHT_MINIMALIST)"
+            (change)="toggleCollectionFilter(ProductCollection.MIDNIGHT_MINIMALIST)">
+          <span>Midnight Minimalist</span>
+        </label>
+        <label class="filter-checkbox">
+          <input
+            type="checkbox"
+            [checked]="isCollectionSelected(ProductCollection.MYTHIC_FANTASY)"
+            (change)="toggleCollectionFilter(ProductCollection.MYTHIC_FANTASY)">
+          <span>Mythic Fantasy</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <button class="btn-clear" (click)="clearFilters()">Clear All</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="shop-main">
+    <!-- Sorting Bar -->
+    <div class="sorting-bar">
+      <div class="product-count">
+        Showing {{ products().length }} of {{ allProducts().length }} products
+      </div>
+      <div class="sort-controls">
+        <label for="sort-select">Sort by:</label>
+        <select
+          id="sort-select"
+          class="sort-select"
+          [value]="filters().sortBy"
+          (change)="updateSort($any($event.target).value)">
+          <option [value]="SortOption.NEWEST">Newest</option>
+          <option [value]="SortOption.POPULAR">Most Popular</option>
+          <option [value]="SortOption.PRICE_LOW_HIGH">Price: Low to High</option>
+          <option [value]="SortOption.PRICE_HIGH_LOW">Price: High to Low</option>
+          <option [value]="SortOption.NAME_A_Z">Name: A-Z</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="product-grid" *ngIf="products().length > 0; else emptyState">
+      <div class="product-card" *ngFor="let product of products()">
+        <!-- Product Image -->
+        <div class="product-image-wrapper">
+          <img [src]="product.images[0].url" [alt]="product.images[0].alt" />
+
+          <!-- Badges -->
+          <div class="product-badges">
+            <span *ngIf="product.isNew" class="badge badge-new">NEW</span>
+            <span *ngIf="product.isBestseller" class="badge badge-bestseller">BESTSELLER</span>
+            <span *ngIf="product.isLimitedEdition" class="badge badge-limited">LIMITED</span>
+            <span *ngIf="product.salePrice" class="badge badge-sale">SALE</span>
+          </div>
+
+          <!-- Hover Overlay -->
+          <div class="product-overlay">
+            <a [routerLink]="['/product', product.id]" class="btn-quick-view">Quick View</a>
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+          <p class="product-collection">{{ formatCollection(product.collection) }}</p>
+          <h3 class="product-title">{{ product.title }}</h3>
+
+          <!-- Rating -->
+          <div class="product-rating">
+            <div class="stars">
+              <span *ngFor="let i of [1,2,3,4,5]" class="star" [class.filled]="i <= product.rating">★</span>
+            </div>
+            <span class="review-count">({{ product.reviewCount }})</span>
+          </div>
+
+          <!-- Price -->
+          <div class="product-price" [class.on-sale]="product.salePrice">
+            <span class="current-price">\${{ product.price.toFixed(2) }}</span>
+            <span *ngIf="product.salePrice" class="original-price">\${{ product.salePrice.toFixed(2) }}</span>
+          </div>
+
+          <!-- Add to Cart Button -->
+          <button class="btn-add-cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <div class="empty-state-icon">🌙</div>
+        <h2 class="empty-state-title">Nothing found in the quiet hours...</h2>
+        <p class="empty-state-message">No products match your filters. Try adjusting your search.</p>
+        <button class="btn btn-primary" (click)="clearFilters()">Clear Filters</button>
+      </div>
+    </ng-template>
+  </main>
+</div>
