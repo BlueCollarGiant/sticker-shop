@@ -1,1 +1,108 @@
-<p>cart works!</p>
+<!-- Cart Page Header -->
+<section class="cart-page-header">
+  <div class="container">
+    <nav class="breadcrumb">
+      <a routerLink="/" class="breadcrumb-item">Home</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-item active">Cart</span>
+    </nav>
+    <h1 class="cart-page-title">Your Cart</h1>
+    <p class="cart-page-subtitle">Symbols of the examined life</p>
+  </div>
+</section>
+
+<!-- Cart Content -->
+<div class="cart-page" *ngIf="cartService.cartItems().length > 0; else emptyCart">
+  <div class="container">
+    <div class="cart-layout">
+      <!-- Cart Items Section -->
+      <section class="cart-items-section">
+        <div class="cart-items-header">
+          <h2>Cart Items ({{ cartService.cartTotals().itemCount }})</h2>
+          <button class="btn-clear-cart" (click)="clearCart()">
+            Clear Cart
+          </button>
+        </div>
+
+        <div class="cart-items-list">
+          <app-cart-item
+            *ngFor="let item of cartService.cartItems()"
+            [item]="item"
+            [mode]="'detailed'"
+            (quantityChange)="onQuantityChange($event)"
+            (remove)="onRemoveItem($event.toString())">
+          </app-cart-item>
+        </div>
+      </section>
+
+      <!-- Order Summary Sidebar -->
+      <aside class="order-summary">
+        <h2 class="order-summary-title">Order Summary</h2>
+
+        <div class="order-summary-details">
+          <div class="summary-line">
+            <span class="summary-label">Subtotal:</span>
+            <span class="summary-value">${{ cartService.cartTotals().subtotal.toFixed(2) }}</span>
+          </div>
+
+          <div class="summary-line">
+            <span class="summary-label">Shipping:</span>
+            <span class="summary-value">
+              <span *ngIf="cartService.cartTotals().shipping === 0" class="free-shipping">FREE</span>
+              <span *ngIf="cartService.cartTotals().shipping > 0">
+                ${{ cartService.cartTotals().shipping.toFixed(2) }}
+              </span>
+            </span>
+          </div>
+
+          <!-- Free Shipping Progress -->
+          <div *ngIf="cartService.cartTotals().subtotal > 0 && cartService.cartTotals().subtotal < 50" class="free-shipping-notice">
+            Add ${{ (50 - cartService.cartTotals().subtotal).toFixed(2) }} more for free shipping!
+          </div>
+
+          <div class="summary-line">
+            <span class="summary-label">Tax (est.):</span>
+            <span class="summary-value">${{ cartService.cartTotals().tax.toFixed(2) }}</span>
+          </div>
+
+          <div class="summary-line total">
+            <span class="summary-label">Total:</span>
+            <span class="summary-value">${{ cartService.cartTotals().total.toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <div class="summary-actions">
+          <button class="btn-checkout" (click)="goToCheckout()">
+            Proceed to Checkout
+          </button>
+          <button class="btn-continue" (click)="continueShopping()">
+            Continue Shopping
+          </button>
+        </div>
+
+        <div class="secure-checkout-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+          </svg>
+          <span>Secure Checkout</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- Empty Cart State -->
+<ng-template #emptyCart>
+  <div class="empty-cart-page">
+    <div class="container">
+      <div class="empty-cart-content">
+        <div class="empty-cart-icon">🌙</div>
+        <h2 class="empty-cart-title">Your cart is empty... for now</h2>
+        <p class="empty-cart-quote">"In the quiet hours, we become."</p>
+        <a routerLink="/products" class="btn btn-primary">
+          Explore the Collection
+        </a>
+      </div>
+    </div>
+  </div>
+</ng-template>

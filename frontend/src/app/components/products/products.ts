@@ -1,8 +1,9 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MOCK_PRODUCTS } from '../../services/shop/mock-products';
 import { Product, ProductCategory, ProductCollection, SortOption, FilterState, ProductBadge } from '../../models/product.model';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-products',
@@ -12,6 +13,7 @@ import { Product, ProductCategory, ProductCollection, SortOption, FilterState, P
 })
 export class Products {
   allProducts = signal<Product[]>(MOCK_PRODUCTS);
+  cartService = inject(CartService);
 
   filters = signal<FilterState>({
     categories: [],
@@ -116,5 +118,9 @@ export class Products {
     return collection.split('-').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');
+  }
+
+  addToCart(product: Product): void {
+    this.cartService.addToCart(product);
   }
 }

@@ -1,0 +1,73 @@
+<div class="cart-item" [class.compact]="mode === 'compact'">
+  <!-- Product Image -->
+  <img [src]="item.productImage" [alt]="item.productTitle" class="cart-item-image" />
+
+  <!-- Product Info -->
+  <div class="cart-item-info">
+    <h3 class="cart-item-title">{{ item.productTitle }}</h3>
+    <p class="cart-item-collection">{{ formatCollection(item.collection) }}</p>
+
+    <p *ngIf="item.variant" class="cart-item-variant">
+      {{ item.variant.name }}
+    </p>
+
+    <div class="cart-item-price">
+      <span class="current-price">${{ item.price.toFixed(2) }}</span>
+      <span *ngIf="item.originalPrice" class="original-price">
+        ${{ item.originalPrice.toFixed(2) }}
+      </span>
+    </div>
+
+    <!-- Quantity controls in compact mode -->
+    <div *ngIf="mode === 'compact'" class="cart-item-controls compact-controls">
+      <div class="quantity-controls">
+        <button
+          class="quantity-btn"
+          (click)="decrementQuantity()"
+          [disabled]="item.quantity <= 1"
+          aria-label="Decrease quantity">
+          −
+        </button>
+        <span class="quantity-value">{{ item.quantity }}</span>
+        <button
+          class="quantity-btn"
+          (click)="incrementQuantity()"
+          aria-label="Increase quantity">
+          +
+        </button>
+      </div>
+      <button class="remove-btn" (click)="removeItem()">×</button>
+    </div>
+  </div>
+
+  <!-- Controls (detailed mode) -->
+  <div *ngIf="mode === 'detailed'" class="cart-item-controls">
+    <div class="quantity-controls">
+      <button
+        class="quantity-btn"
+        (click)="decrementQuantity()"
+        [disabled]="item.quantity <= 1"
+        aria-label="Decrease quantity">
+        −
+      </button>
+      <span class="quantity-value">{{ item.quantity }}</span>
+      <button
+        class="quantity-btn"
+        (click)="incrementQuantity()"
+        aria-label="Increase quantity">
+        +
+      </button>
+    </div>
+
+    <div class="item-total">
+      ${{ getItemTotal().toFixed(2) }}
+    </div>
+
+    <button
+      class="remove-btn"
+      [class.confirm]="showRemoveConfirm"
+      (click)="removeItem()">
+      {{ showRemoveConfirm ? 'Sure?' : 'Remove' }}
+    </button>
+  </div>
+</div>

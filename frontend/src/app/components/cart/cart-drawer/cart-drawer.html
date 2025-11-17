@@ -1,0 +1,81 @@
+<!-- Backdrop -->
+<div
+  class="cart-drawer-backdrop"
+  [class.visible]="cartService.isDrawerOpen()"
+  (click)="onBackdropClick($event)">
+</div>
+
+<!-- Drawer -->
+<aside class="cart-drawer" [class.open]="cartService.isDrawerOpen()">
+  <!-- Header -->
+  <header class="cart-drawer-header">
+    <h2 class="cart-drawer-title">
+      CART ({{ cartService.cartTotals().itemCount }})
+    </h2>
+    <button
+      class="cart-drawer-close"
+      (click)="closeDrawer()"
+      aria-label="Close cart">
+      ×
+    </button>
+  </header>
+
+  <!-- Body (Cart Items) -->
+  <div class="cart-drawer-body">
+    <div *ngIf="cartService.cartItems().length > 0; else emptyCart">
+      <app-cart-item
+        *ngFor="let item of cartService.cartItems()"
+        [item]="item"
+        [mode]="'compact'"
+        (quantityChange)="onQuantityChange($event)"
+        (remove)="onRemoveItem($event.toString())">
+      </app-cart-item>
+    </div>
+
+    <!-- Empty State -->
+    <ng-template #emptyCart>
+      <div class="empty-cart-drawer">
+        <div class="empty-icon">🌙</div>
+        <p class="empty-message">Your cart is empty... for now</p>
+        <p class="empty-quote">"In the quiet hours, we become."</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Footer (Summary & Actions) -->
+  <footer class="cart-drawer-footer">
+    <div class="cart-drawer-summary">
+      <div class="summary-row">
+        <span class="summary-label">Subtotal:</span>
+        <span class="summary-value">${{ cartService.cartTotals().subtotal.toFixed(2) }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Shipping:</span>
+        <span class="summary-value">
+          <span *ngIf="cartService.cartTotals().shipping === 0" class="free-shipping">FREE</span>
+          <span *ngIf="cartService.cartTotals().shipping > 0">
+            ${{ cartService.cartTotals().shipping.toFixed(2) }}
+          </span>
+          <span *ngIf="cartService.cartTotals().shipping > 0" class="shipping-note">
+            Calculated at checkout
+          </span>
+        </span>
+      </div>
+    </div>
+
+    <div class="cart-drawer-actions">
+      <button
+        class="btn-checkout"
+        (click)="goToCheckout()"
+        [disabled]="cartService.cartItems().length === 0">
+        Proceed to Checkout
+      </button>
+      <button class="btn-view-cart" (click)="goToCart()">
+        View Full Cart
+      </button>
+      <button class="btn-continue" (click)="continueShopping()">
+        Continue Shopping
+      </button>
+    </div>
+  </footer>
+</aside>
