@@ -1,0 +1,63 @@
+<div class="signup-page">
+  <div class="signup-container">
+    <header class="signup-header">
+      <div class="logo-icon">🌙</div>
+      <h1 class="logo-text">NIGHT READER</h1>
+    </header>
+
+    <div class="signup-form-container">
+      <h2 class="signup-title">Join the Library of Night Readers</h2>
+
+      <div *ngIf="showSuccess()" class="success-message">
+        <p>Welcome to the Library! 🌙</p>
+        <p>Redirecting to your dashboard...</p>
+      </div>
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form" *ngIf="!showSuccess()">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" formControlName="firstName" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" formControlName="lastName" class="form-input" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" formControlName="email" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" formControlName="password" class="form-input" />
+          <div class="password-strength">
+            Strength: <span [class]="'strength-' + passwordStrength()">{{ passwordStrength() }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" formControlName="confirmPassword" class="form-input" />
+        </div>
+
+        <div class="form-check">
+          <input id="subscribe" type="checkbox" formControlName="subscribe" class="form-checkbox" />
+          <label for="subscribe" class="form-check-label">Subscribe to Night Reader updates</label>
+        </div>
+
+        <div *ngIf="errorMessage()" class="error-alert">{{ errorMessage() }}</div>
+
+        <button type="submit" class="btn-signup" [disabled]="isLoading()">
+          {{ isLoading() ? 'CREATING ACCOUNT...' : 'CREATE MY ACCOUNT' }}
+        </button>
+
+        <div class="login-section">
+          <p>Already a member? <a routerLink="/account/login">Login</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

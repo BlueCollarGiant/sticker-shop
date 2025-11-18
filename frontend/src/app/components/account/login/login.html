@@ -1,0 +1,95 @@
+<div class="login-page">
+  <div class="login-container">
+    <!-- Header -->
+    <header class="login-header">
+      <div class="logo-icon">🌙</div>
+      <h1 class="logo-text">NIGHT READER</h1>
+      <p class="logo-tagline">Where Books Meet Iron</p>
+    </header>
+
+    <!-- Login Form -->
+    <div class="login-form-container">
+      <h2 class="login-title">Enter the Library</h2>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="form-input"
+            [class.error]="emailControl.invalid && emailControl.touched"
+            placeholder="your@email.com"
+          />
+          <div *ngIf="emailControl.invalid && emailControl.touched" class="error-message">
+            <span *ngIf="emailControl.errors?.['required']">Email is required</span>
+            <span *ngIf="emailControl.errors?.['email']">Please enter a valid email</span>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="form-input"
+            [class.error]="passwordControl.invalid && passwordControl.touched"
+            placeholder="Enter your password"
+          />
+          <div *ngIf="passwordControl.invalid && passwordControl.touched" class="error-message">
+            <span *ngIf="passwordControl.errors?.['required']">Password is required</span>
+            <span *ngIf="passwordControl.errors?.['minlength']">Password must be at least 8 characters</span>
+          </div>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="form-check">
+          <input
+            id="rememberMe"
+            type="checkbox"
+            formControlName="rememberMe"
+            class="form-checkbox"
+          />
+          <label for="rememberMe" class="form-check-label">Remember me</label>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage()" class="error-alert">
+          {{ errorMessage() }}
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn-login"
+          [disabled]="isLoading()"
+          [class.loading]="isLoading()">
+          <span *ngIf="!isLoading()">LOGIN TO ACCOUNT</span>
+          <span *ngIf="isLoading()">LOGGING IN...</span>
+        </button>
+
+        <!-- Forgot Password -->
+        <div class="forgot-password">
+          <a routerLink="/account/forgot-password" class="forgot-link">Forgot password?</a>
+        </div>
+      </form>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">OR</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- Signup Link -->
+      <div class="signup-section">
+        <p class="signup-text">Not a member?</p>
+        <a routerLink="/account/signup" class="signup-link">Join the Library</a>
+      </div>
+    </div>
+  </div>
+</div>

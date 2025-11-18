@@ -1,0 +1,57 @@
+<div class="dashboard-page">
+  <div class="dashboard-container">
+    <h1 class="dashboard-title">Welcome back, Night Reader.</h1>
+
+    <div class="dashboard-grid">
+      <!-- Profile Card -->
+      <div class="profile-card">
+        <div class="profile-avatar">{{ getInitials() }}</div>
+        <h2 class="profile-name">{{ user()?.firstName }} {{ user()?.lastName }}</h2>
+        <p class="profile-email">{{ user()?.email }}</p>
+        <p class="profile-joined">Member since {{ user()?.joinedAt | date:'MMM yyyy' }}</p>
+        <div class="reader-level">
+          <span class="level-icon">{{ readerLevelIcon() }}</span>
+          <span class="level-name">Reader Level: {{ readerLevel() }}</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-grid">
+          <a routerLink="/dashboard/orders" class="action-card">
+            <div class="action-icon">📦</div>
+            <div class="action-title">View Orders</div>
+            <div class="action-count">{{ user()?.orderCount }} total</div>
+          </a>
+          <a routerLink="/cart" class="action-card">
+            <div class="action-icon">🛒</div>
+            <div class="action-title">Shopping Cart</div>
+          </a>
+          <a routerLink="/account/settings" class="action-card">
+            <div class="action-icon">⚙️</div>
+            <div class="action-title">Account Settings</div>
+          </a>
+          <button (click)="logout()" class="action-card logout-card">
+            <div class="action-icon">🚪</div>
+            <div class="action-title">Logout</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="recent-activity">
+        <h3>Recent Activity</h3>
+        <div class="activity-list">
+          <div *ngFor="let activity of recentActivity()" class="activity-item">
+            <div class="activity-message">{{ activity.message }}</div>
+            <div class="activity-time">{{ activity.timestamp | date:'short' }}</div>
+          </div>
+          <div *ngIf="recentActivity().length === 0" class="empty-activity">
+            No recent activity
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

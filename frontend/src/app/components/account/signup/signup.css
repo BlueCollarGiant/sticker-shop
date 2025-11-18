@@ -1,0 +1,50 @@
+@import '../login/login.css';
+
+.signup-page {
+  composes: login-page;
+}
+
+.signup-container {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.password-strength {
+  font-size: 12px;
+  margin-top: 4px;
+  color: var(--steel-grey);
+}
+
+.strength-weak { color: var(--wax-seal-red); }
+.strength-medium { color: var(--candlelight-gold); }
+.strength-strong { color: #4CAF50; }
+
+.success-message {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--parchment);
+}
+
+.success-message p:first-child {
+  font-size: 24px;
+  margin-bottom: var(--spacing-md);
+}
+
+.btn-signup {
+  composes: btn-login;
+}
+
+@media (max-width: 767px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
