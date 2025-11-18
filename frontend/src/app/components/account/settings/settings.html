@@ -1,0 +1,356 @@
+<div class="settings-page">
+  @if (loading()) {
+    <div class="loading">Loading...</div>
+  } @else if (user()) {
+    <div class="settings-container">
+      <header class="page-header">
+        <h1 class="page-title">Account Settings</h1>
+        <p class="page-subtitle">Manage your Night Reader account</p>
+      </header>
+
+      <!-- PROFILE INFORMATION -->
+      <section class="settings-section">
+        <div class="section-divider">
+          <h2 class="section-title">Profile Information</h2>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()">
+          <div class="form-row-two-column">
+            <div class="form-group">
+              <label class="form-label" for="firstName">First Name</label>
+              <input
+                id="firstName"
+                type="text"
+                class="form-input"
+                formControlName="firstName"
+                [class.error]="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched"
+              />
+              @if (profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched) {
+                <span class="error-message">{{ getErrorMessage(profileForm, 'firstName') }}</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="lastName">Last Name</label>
+              <input
+                id="lastName"
+                type="text"
+                class="form-input"
+                formControlName="lastName"
+                [class.error]="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched"
+              />
+              @if (profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched) {
+                <span class="error-message">{{ getErrorMessage(profileForm, 'lastName') }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input
+              id="email"
+              type="email"
+              class="form-input"
+              formControlName="email"
+              [class.error]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+            />
+            @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+              <span class="error-message">{{ getErrorMessage(profileForm, 'email') }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone Number (optional)</label>
+            <input
+              id="phone"
+              type="tel"
+              class="form-input"
+              formControlName="phone"
+              placeholder="+1 (555) 123-4567"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="!profileDirty() || profileForm.invalid || profileSubmitting()">
+            @if (profileSubmitting()) {
+              Saving...
+            } @else {
+              Save Profile Changes
+            }
+          </button>
+        </form>
+      </section>
+
+      <!-- CHANGE PASSWORD -->
+      <section class="settings-section">
+        <div class="section-divider">
+          <h2 class="section-title">Change Password</h2>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()">
+          <div class="form-group">
+            <label class="form-label" for="currentPassword">Current Password</label>
+            <div class="password-input-wrapper">
+              <input
+                id="currentPassword"
+                [type]="showCurrentPassword() ? 'text' : 'password'"
+                class="form-input"
+                formControlName="currentPassword"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('current')"
+                aria-label="Toggle password visibility">
+                {{ showCurrentPassword() ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newPassword">New Password</label>
+            <div class="password-input-wrapper">
+              <input
+                id="newPassword"
+                [type]="showNewPassword() ? 'text' : 'password'"
+                class="form-input"
+                formControlName="newPassword"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('new')"
+                aria-label="Toggle password visibility">
+                {{ showNewPassword() ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
+
+            @if (passwordForm.get('newPassword')?.value) {
+              <div class="password-strength-meter">
+                <div class="strength-bar-container">
+                  <div class="strength-bar" [class]="'strength-' + passwordStrength()"></div>
+                </div>
+                <span class="strength-label" [class]="'strength-' + passwordStrength()">
+                  {{ passwordStrength() }} strength
+                </span>
+              </div>
+
+              <div class="password-criteria">
+                <div class="criteria-item" [class.met]="passwordCriteria().minLength">
+                  <span class="criteria-icon">{{ passwordCriteria().minLength ? '✓' : '○' }}</span>
+                  At least 8 characters
+                </div>
+                <div class="criteria-item" [class.met]="passwordCriteria().hasUppercase">
+                  <span class="criteria-icon">{{ passwordCriteria().hasUppercase ? '✓' : '○' }}</span>
+                  One uppercase letter
+                </div>
+                <div class="criteria-item" [class.met]="passwordCriteria().hasLowercase">
+                  <span class="criteria-icon">{{ passwordCriteria().hasLowercase ? '✓' : '○' }}</span>
+                  One lowercase letter
+                </div>
+                <div class="criteria-item" [class.met]="passwordCriteria().hasNumber">
+                  <span class="criteria-icon">{{ passwordCriteria().hasNumber ? '✓' : '○' }}</span>
+                  One number
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">Confirm New Password</label>
+            <div class="password-input-wrapper">
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword() ? 'text' : 'password'"
+                class="form-input"
+                formControlName="confirmPassword"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('confirm')"
+                aria-label="Toggle password visibility">
+                {{ showConfirmPassword() ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
+
+            @if (passwordForm.get('confirmPassword')?.value && passwordsMatch()) {
+              <span class="success-message">✓ Passwords match</span>
+            }
+            @if (passwordForm.get('confirmPassword')?.value && !passwordsMatch() && passwordForm.get('confirmPassword')?.touched) {
+              <span class="error-message">✗ Passwords don't match</span>
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="passwordForm.invalid || passwordSubmitting()">
+            @if (passwordSubmitting()) {
+              Updating...
+            } @else {
+              Update Password
+            }
+          </button>
+        </form>
+      </section>
+
+      <!-- NOTIFICATION PREFERENCES -->
+      <section class="settings-section">
+        <div class="section-divider">
+          <h2 class="section-title">Notification Preferences</h2>
+        </div>
+
+        <form [formGroup]="notificationsForm" (ngSubmit)="onNotificationsSubmit()">
+          <div class="notification-group">
+            <h3 class="notification-group-title">Transactional Emails</h3>
+
+            <label class="notification-item">
+              <input type="checkbox" formControlName="orderUpdates" class="custom-checkbox" />
+              <div class="notification-content">
+                <span class="notification-label">Order confirmations</span>
+                <span class="notification-help">Receipts when you complete a purchase</span>
+              </div>
+              <span class="lock-icon">🔒</span>
+            </label>
+
+            <label class="notification-item">
+              <input type="checkbox" formControlName="shippingNotifications" class="custom-checkbox" />
+              <div class="notification-content">
+                <span class="notification-label">Shipping updates</span>
+                <span class="notification-help">Tracking and delivery notifications</span>
+              </div>
+              <span class="lock-icon">🔒</span>
+            </label>
+          </div>
+
+          <div class="notification-group">
+            <h3 class="notification-group-title">Marketing & Community</h3>
+
+            <label class="notification-item">
+              <input type="checkbox" formControlName="newProducts" class="custom-checkbox" />
+              <div class="notification-content">
+                <span class="notification-label">New product launches</span>
+                <span class="notification-help">Be first to know about new releases</span>
+              </div>
+            </label>
+
+            <label class="notification-item">
+              <input type="checkbox" formControlName="memberOffers" class="custom-checkbox" />
+              <div class="notification-content">
+                <span class="notification-label">Member-only offers</span>
+                <span class="notification-help">Exclusive discounts for Night Reader members</span>
+              </div>
+            </label>
+
+            <label class="notification-item">
+              <input type="checkbox" formControlName="marketing" class="custom-checkbox" />
+              <div class="notification-content">
+                <span class="notification-label">Marketing emails</span>
+                <span class="notification-help">Promotions and special campaigns</span>
+              </div>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="!notificationsDirty() || notificationsSubmitting()">
+            @if (notificationsSubmitting()) {
+              Saving...
+            } @else {
+              Save Notification Preferences
+            }
+          </button>
+        </form>
+      </section>
+
+      <!-- DANGER ZONE -->
+      <section class="danger-zone">
+        <div class="section-divider">
+          <h2 class="section-title danger">Danger Zone</h2>
+        </div>
+
+        <div class="danger-zone-content">
+          <h3>⚠️ Delete Your Account</h3>
+          <p class="danger-warning">This action is permanent and cannot be undone.</p>
+          <p>All your data will be permanently deleted:</p>
+          <ul class="danger-list">
+            <li>Profile and account settings</li>
+            <li>Complete order history</li>
+            <li>Saved addresses and payment methods</li>
+            <li>Wishlist and saved items</li>
+          </ul>
+
+          <button type="button" class="btn-danger" (click)="openDeleteModal()">
+            Delete My Account
+          </button>
+        </div>
+      </section>
+    </div>
+  }
+</div>
+
+<!-- Delete Confirmation Modal -->
+@if (deleteModalOpen()) {
+  <div class="modal-overlay" (click)="closeDeleteModal()">
+    <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">⚠️ Delete Your Account?</h2>
+
+      <div class="modal-body">
+        <p>This will permanently delete:</p>
+        <ul class="delete-list">
+          <li>Your profile and all personal data</li>
+          <li>All order history and invoices</li>
+          <li>Saved payment methods and addresses</li>
+          <li>Wishlist items and preferences</li>
+        </ul>
+
+        <p class="warning-text">This action cannot be undone. Your data cannot be recovered after deletion.</p>
+
+        <div class="form-group">
+          <label class="form-label">Type DELETE to confirm:</label>
+          <input
+            type="text"
+            class="form-input"
+            [(ngModel)]="deleteConfirmationText"
+            [class.error]="deleteConfirmationText() && !deleteConfirmationValid()"
+            placeholder="DELETE"
+          />
+          @if (deleteConfirmationText() && !deleteConfirmationValid()) {
+            <span class="error-message">Must type exactly "DELETE" (case-sensitive)</span>
+          }
+        </div>
+
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            class="custom-checkbox"
+            [(ngModel)]="deleteUnderstand"
+            [disabled]="!deleteConfirmationValid()"
+          />
+          I understand this action is permanent
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="closeDeleteModal()" [disabled]="deleteSubmitting()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn-danger"
+          (click)="confirmDelete()"
+          [disabled]="!deleteButtonEnabled()">
+          @if (deleteSubmitting()) {
+            Deleting...
+          } @else {
+            Permanently Delete Account
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

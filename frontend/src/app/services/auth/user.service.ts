@@ -1,5 +1,5 @@
 import { Injectable, signal, inject } from '@angular/core';
-import { User, NotificationPreferences, ActivityItem, ActivityType } from '../../models/user.model';
+import { User, NotificationPreferences, ActivityItem, ActivityType, PasswordChangeData, DeleteAccountData } from '../../models/user.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -89,6 +89,35 @@ export class UserService {
       'Sage': '🌕'
     };
     return icons[level] || '🌑';
+  }
+
+  async changePassword(data: PasswordChangeData): Promise<void> {
+    // Mock password change - replace with real API call
+    await this.delay(500);
+
+    // Simulate validation
+    if (data.currentPassword !== 'Password123') {
+      throw new Error('Current password is incorrect');
+    }
+
+    if (data.newPassword !== data.confirmPassword) {
+      throw new Error('Passwords do not match');
+    }
+
+    // In real implementation, this would call API
+    console.log('Password changed successfully');
+  }
+
+  async deleteAccount(data: DeleteAccountData): Promise<void> {
+    // Mock account deletion - replace with real API call
+    await this.delay(500);
+
+    if (data.confirmationText !== 'DELETE') {
+      throw new Error('Confirmation text must be exactly "DELETE"');
+    }
+
+    // In real implementation, this would call API and logout
+    console.log('Account deleted');
   }
 
   private delay(ms: number): Promise<void> {

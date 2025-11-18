@@ -70,3 +70,14 @@ export enum ActivityType {
   ADDRESS_ADDED = 'address_added',
   PASSWORD_CHANGED = 'password_changed'
 }
+
+export interface PasswordChangeData {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface DeleteAccountData {
+  password: string;
+  confirmationText: string;
+}
