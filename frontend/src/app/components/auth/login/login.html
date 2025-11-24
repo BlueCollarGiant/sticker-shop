@@ -1,0 +1,96 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Night Reader Shop</h1>
+      <p>Sign in to your account</p>
+    </div>
+
+    <!-- Error message -->
+    @if (errorMessage()) {
+      <div class="error-message">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <!-- Login form -->
+    <form (ngSubmit)="onLogin()" class="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          [value]="email()"
+          (input)="email.set($any($event.target).value)"
+          placeholder="demo@nightreader.com"
+          [disabled]="isLoading()"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          [value]="password()"
+          (input)="password.set($any($event.target).value)"
+          placeholder="Enter password"
+          [disabled]="isLoading()"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="isLoading()"
+      >
+        @if (isLoading()) {
+          <span>Logging in...</span>
+        } @else {
+          <span>Login</span>
+        }
+      </button>
+    </form>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span>OR</span>
+    </div>
+
+    <!-- Demo login buttons -->
+    <div class="demo-login">
+      <p class="demo-label">Quick Demo Access:</p>
+
+      <button
+        type="button"
+        class="btn btn-demo btn-user"
+        (click)="onDemoLoginUser()"
+        [disabled]="isLoading()"
+      >
+        <span class="icon">👤</span>
+        <span>Demo as User</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-demo btn-admin"
+        (click)="onDemoLoginAdmin()"
+        [disabled]="isLoading()"
+      >
+        <span class="icon">🔑</span>
+        <span>Demo as Admin</span>
+      </button>
+
+      <p class="demo-hint">
+        No registration required. Instant access to explore the shop.
+      </p>
+    </div>
+
+    <!-- Register link -->
+    <div class="register-link">
+      Don't have an account?
+      <a routerLink="/register">Create Account</a>
+    </div>
+  </div>
+</div>

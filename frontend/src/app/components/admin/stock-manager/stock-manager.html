@@ -1,0 +1,50 @@
+<div class="stock-manager">
+  @if (!isEditing()) {
+    <button
+      class="stock-display"
+      [class.success-flash]="successFlash()"
+      (click)="startEdit()"
+      type="button"
+    >
+      {{ product.stock }}
+      @if (successFlash()) {
+        <span class="check-icon">✓</span>
+      }
+    </button>
+  } @else {
+    <div class="stock-editor">
+      <input
+        type="number"
+        class="stock-input"
+        [(ngModel)]="stockValue"
+        [disabled]="isSaving()"
+        min="0"
+        (keydown.enter)="save()"
+        (keydown.escape)="cancel()"
+      />
+      <button
+        class="btn-save"
+        (click)="save()"
+        [disabled]="isSaving()"
+        type="button"
+      >
+        @if (isSaving()) {
+          <span>...</span>
+        } @else {
+          <span>✓</span>
+        }
+      </button>
+      <button
+        class="btn-cancel"
+        (click)="cancel()"
+        [disabled]="isSaving()"
+        type="button"
+      >
+        ×
+      </button>
+    </div>
+    @if (errorMessage()) {
+      <div class="error-hint">{{ errorMessage() }}</div>
+    }
+  }
+</div>

@@ -1,0 +1,226 @@
+<div class="admin-panel">
+  <header class="admin-header">
+    <div class="header-content">
+      <h1 class="admin-title">Admin Dashboard</h1>
+      <p class="admin-subtitle">Manage your shop inventory</p>
+    </div>
+  </header>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading products...</p>
+    </div>
+  }
+
+  @if (errorMessage() && !isLoading()) {
+    <div class="error-container">
+      <p class="error-message">{{ errorMessage() }}</p>
+      <button class="btn-retry" (click)="loadProducts()" type="button">
+        Retry
+      </button>
+    </div>
+  }
+
+  @if (!isLoading() && !errorMessage()) {
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats().total }}</div>
+          <div class="stat-label">Total Products</div>
+        </div>
+      </div>
+
+      <div class="stat-card warning">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats().lowStock }}</div>
+          <div class="stat-label">Low Stock</div>
+        </div>
+      </div>
+
+      <div class="stat-card success">
+        <div class="stat-icon">✨</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats().newProducts }}</div>
+          <div class="stat-label">New Items</div>
+        </div>
+      </div>
+
+      <div class="stat-card info">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ stats().bestsellers }}</div>
+          <div class="stat-label">Bestsellers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search and Actions Bar -->
+    <div class="actions-bar">
+      <div class="search-box">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search products by title, category, or tags..."
+          [(ngModel)]="searchQuery"
+        />
+        <span class="search-icon">🔍</span>
+      </div>
+      <button class="btn-primary" (click)="openEditor()" type="button">
+        <span class="btn-icon">+</span>
+        Add Product
+      </button>
+    </div>
+
+    <!-- Products Table -->
+    <div class="products-table-container">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Badges</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of filteredProducts(); track product.id) {
+            <tr class="product-row">
+              <!-- Product Info -->
+              <td class="product-cell">
+                <div class="product-info">
+                  <img
+                    [src]="product.images[0]"
+                    [alt]="product.title"
+                    class="product-thumb"
+                  />
+                  <div class="product-text">
+                    <div class="product-title">{{ product.title }}</div>
+                    @if (product.subtitle) {
+                      <div class="product-subtitle">{{ product.subtitle }}</div>
+                    }
+                  </div>
+                </div>
+              </td>
+
+              <!-- Category -->
+              <td class="category-cell">
+                <span class="category-badge">{{ product.category }}</span>
+              </td>
+
+              <!-- Price -->
+              <td class="price-cell">
+                <div class="price-info">
+                  <span class="price">${{ product.price }}</span>
+                  @if (product.salePrice) {
+                    <span class="sale-price">${{ product.salePrice }}</span>
+                  }
+                </div>
+              </td>
+
+              <!-- Stock Manager -->
+              <td class="stock-cell">
+                <app-stock-manager
+                  [product]="product"
+                  (stockUpdated)="onStockUpdated($event)"
+                ></app-stock-manager>
+              </td>
+
+              <!-- Badge Toggles -->
+              <td class="badges-cell">
+                <app-badge-toggle
+                  [product]="product"
+                  (badgeToggled)="onBadgeToggled(product.id, $event)"
+                ></app-badge-toggle>
+              </td>
+
+              <!-- Actions -->
+              <td class="actions-cell">
+                <div class="action-buttons">
+                  <button
+                    class="btn-action btn-edit"
+                    (click)="openEditor(product)"
+                    type="button"
+                    title="Edit product"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    class="btn-action btn-delete"
+                    (click)="showDeleteConfirm.set(true); productToDelete.set(product)"
+                    type="button"
+                    title="Delete product"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-state">
+                <div class="empty-content">
+                  <div class="empty-icon">📦</div>
+                  <p>No products found</p>
+                  @if (searchQuery()) {
+                    <button
+                      class="btn-secondary"
+                      (click)="searchQuery.set('')"
+                      type="button"
+                    >
+                      Clear Search
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Product Editor Modal -->
+  @if (showEditor()) {
+    <app-product-editor
+      [product]="selectedProduct()"
+      (save)="handleEditorSave($event)"
+      (cancel)="showEditor.set(false); selectedProduct.set(null)"
+    ></app-product-editor>
+  }
+
+  <!-- Delete Confirmation Modal -->
+  @if (showDeleteConfirm()) {
+    <div class="modal-overlay" (click)="showDeleteConfirm.set(false)">
+      <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Delete Product?</h3>
+        <p class="modal-text">
+          Are you sure you want to delete
+          <strong>{{ productToDelete()?.title }}</strong>? This action cannot be
+          undone.
+        </p>
+        <div class="modal-actions">
+          <button
+            class="btn-secondary"
+            (click)="showDeleteConfirm.set(false)"
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn-danger"
+            (click)="deleteProduct(productToDelete()!)"
+            type="button"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

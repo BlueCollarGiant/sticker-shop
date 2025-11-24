@@ -1,0 +1,43 @@
+<div class="badge-toggles">
+  <button
+    class="badge-toggle"
+    [class.active]="hasBadge('new')"
+    (click)="toggle('new')"
+    type="button"
+    title="Toggle NEW badge"
+  >
+    <span class="badge-label">NEW</span>
+    <span class="toggle-switch"></span>
+  </button>
+
+  <button
+    class="badge-toggle"
+    [class.active]="hasBadge('bestseller')"
+    (click)="toggle('bestseller')"
+    type="button"
+    title="Toggle BESTSELLER badge"
+  >
+    <span class="badge-label">BEST</span>
+    <span class="toggle-switch"></span>
+  </button>
+
+  <button
+    class="badge-toggle"
+    [class.active]="hasBadge('limited')"
+    (click)="toggle('limited')"
+    type="button"
+    title="Toggle LIMITED badge"
+  >
+    <span class="badge-label">LTD</span>
+    <span class="toggle-switch"></span>
+  </button>
+
+  <div
+    class="badge-toggle readonly"
+    [class.active]="hasBadge('sale')"
+    title="SALE badge (auto from salePrice)"
+  >
+    <span class="badge-label">SALE</span>
+    <span class="toggle-switch"></span>
+  </div>
+</div>

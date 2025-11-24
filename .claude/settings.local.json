@@ -9,7 +9,8 @@
       "Bash(findstr:*)",
       "Bash(taskkill:*)",
       "Bash(curl:*)",
-      "Bash(timeout /t 10 /nobreak)"
+      "Bash(timeout /t 10 /nobreak)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

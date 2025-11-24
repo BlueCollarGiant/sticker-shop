@@ -1,0 +1,345 @@
+<div class="modal-overlay" (click)="onCancel()">
+  <div class="modal-content editor-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        {{ product ? 'Edit Product' : 'Create New Product' }}
+      </h2>
+      <button class="btn-close" (click)="onCancel()" type="button">×</button>
+    </div>
+
+    <div class="modal-body">
+      <form class="editor-form">
+        <!-- Basic Info Section -->
+        <section class="form-section">
+          <h3 class="section-title">Basic Information</h3>
+
+          <div class="form-group">
+            <label class="form-label">Title *</label>
+            <input
+              type="text"
+              class="form-input"
+              [(ngModel)]="title"
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Enter product title"
+              [disabled]="isSaving()"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subtitle</label>
+            <input
+              type="text"
+              class="form-input"
+              [(ngModel)]="subtitle"
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Enter subtitle (optional)"
+              [disabled]="isSaving()"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea
+              class="form-textarea"
+              [(ngModel)]="description"
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Enter product description"
+              rows="4"
+              [disabled]="isSaving()"
+            ></textarea>
+          </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="form-section">
+          <h3 class="section-title">Pricing</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Regular Price * ($)</label>
+              <input
+                type="number"
+                class="form-input"
+                [(ngModel)]="price"
+                [ngModelOptions]="{standalone: true}"
+                min="0"
+                step="0.01"
+                [disabled]="isSaving()"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Sale Price ($)</label>
+              <input
+                type="number"
+                class="form-input"
+                [(ngModel)]="salePrice"
+                [ngModelOptions]="{standalone: true}"
+                min="0"
+                step="0.01"
+                placeholder="Optional"
+                [disabled]="isSaving()"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Stock</label>
+              <input
+                type="number"
+                class="form-input"
+                [(ngModel)]="stock"
+                [ngModelOptions]="{standalone: true}"
+                min="0"
+                [disabled]="isSaving()"
+              />
+            </div>
+          </div>
+        </section>
+
+        <!-- Categorization Section -->
+        <section class="form-section">
+          <h3 class="section-title">Categorization</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select
+                class="form-select"
+                [(ngModel)]="category"
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="isSaving()"
+              >
+                @for (cat of categories; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Collection</label>
+              <select
+                class="form-select"
+                [(ngModel)]="collection"
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="isSaving()"
+              >
+                @for (col of collections; track col) {
+                  <option [value]="col">{{ col }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tags</label>
+            <div class="tag-input-group">
+              <input
+                type="text"
+                class="form-input"
+                [(ngModel)]="tagInput"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Enter tag and press Add"
+                (keydown.enter)="$event.preventDefault(); addTag()"
+                [disabled]="isSaving()"
+              />
+              <button
+                class="btn-add"
+                (click)="addTag()"
+                type="button"
+                [disabled]="isSaving()"
+              >
+                Add
+              </button>
+            </div>
+            @if (tags().length > 0) {
+              <div class="tag-list">
+                @for (tag of tags(); track tag) {
+                  <span class="tag-chip">
+                    {{ tag }}
+                    <button
+                      class="tag-remove"
+                      (click)="removeTag(tag)"
+                      type="button"
+                      [disabled]="isSaving()"
+                    >
+                      ×
+                    </button>
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Images Section -->
+        <section class="form-section">
+          <h3 class="section-title">Images *</h3>
+
+          <div class="form-group">
+            <label class="form-label">Image URL</label>
+            <div class="tag-input-group">
+              <input
+                type="text"
+                class="form-input"
+                [(ngModel)]="imageInput"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="Enter image URL"
+                (keydown.enter)="$event.preventDefault(); addImage()"
+                [disabled]="isSaving()"
+              />
+              <button
+                class="btn-add"
+                (click)="addImage()"
+                type="button"
+                [disabled]="isSaving()"
+              >
+                Add
+              </button>
+            </div>
+            @if (images().length > 0) {
+              <div class="image-list">
+                @for (image of images(); track image; let idx = $index) {
+                  <div class="image-item">
+                    <img [src]="image" [alt]="'Image ' + (idx + 1)" class="image-preview" />
+                    <button
+                      class="image-remove"
+                      (click)="removeImage(image)"
+                      type="button"
+                      [disabled]="isSaving()"
+                    >
+                      ×
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Variants Section -->
+        <section class="form-section">
+          <h3 class="section-title">Variants</h3>
+
+          <button
+            class="btn-secondary"
+            (click)="addVariant()"
+            type="button"
+            [disabled]="isSaving()"
+          >
+            + Add Variant
+          </button>
+
+          @if (variants().length > 0) {
+            <div class="variants-list">
+              @for (variant of variants(); track $index; let idx = $index) {
+                <div class="variant-item">
+                  <div class="variant-fields">
+                    <input
+                      type="text"
+                      class="form-input-small"
+                      [value]="variant.size"
+                      (input)="updateVariant(idx, 'size', $any($event.target).value)"
+                      placeholder="Size"
+                      [disabled]="isSaving()"
+                    />
+                    <input
+                      type="text"
+                      class="form-input-small"
+                      [value]="variant.color"
+                      (input)="updateVariant(idx, 'color', $any($event.target).value)"
+                      placeholder="Color"
+                      [disabled]="isSaving()"
+                    />
+                    <input
+                      type="number"
+                      class="form-input-small"
+                      [value]="variant.stock"
+                      (input)="updateVariant(idx, 'stock', +$any($event.target).value)"
+                      placeholder="Stock"
+                      min="0"
+                      [disabled]="isSaving()"
+                    />
+                  </div>
+                  <button
+                    class="btn-remove"
+                    (click)="removeVariant(idx)"
+                    type="button"
+                    [disabled]="isSaving()"
+                  >
+                    ×
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </section>
+
+        <!-- Flags Section -->
+        <section class="form-section">
+          <h3 class="section-title">Product Flags</h3>
+
+          <div class="flags-group">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [(ngModel)]="isNew"
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="isSaving()"
+              />
+              <span>New Product</span>
+            </label>
+
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [(ngModel)]="isBestseller"
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="isSaving()"
+              />
+              <span>Bestseller</span>
+            </label>
+
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [(ngModel)]="isLimitedEdition"
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="isSaving()"
+              />
+              <span>Limited Edition</span>
+            </label>
+          </div>
+        </section>
+
+        @if (errorMessage()) {
+          <div class="error-banner">
+            {{ errorMessage() }}
+          </div>
+        }
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn-cancel-modal"
+        (click)="onCancel()"
+        type="button"
+        [disabled]="isSaving()"
+      >
+        Cancel
+      </button>
+      <button
+        class="btn-save-modal"
+        (click)="onSave()"
+        type="button"
+        [disabled]="isSaving()"
+      >
+        @if (isSaving()) {
+          <span>Saving...</span>
+        } @else {
+          <span>{{ product ? 'Update' : 'Create' }} Product</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>

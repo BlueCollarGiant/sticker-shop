@@ -1,7 +1,11 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from '../services/auth.service';
 
+/**
+ * Guard that protects routes requiring authentication
+ * Redirects to /login if user is not authenticated
+ */
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -10,8 +14,10 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Redirect to login with return URL
-  return router.createUrlTree(['/account/login'], {
+  // Store the attempted URL for redirecting after login
+  router.navigate(['/login'], {
     queryParams: { returnUrl: state.url }
   });
+
+  return false;
 };

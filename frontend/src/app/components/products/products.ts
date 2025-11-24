@@ -1,9 +1,9 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MOCK_PRODUCTS } from '../../services/shop/mock-products';
 import { Product, ProductCategory, ProductCollection, SortOption, FilterState, ProductBadge } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
+import { ProductsService } from '../../services/products';
 
 @Component({
   selector: 'app-products',
@@ -11,9 +11,13 @@ import { CartService } from '../../services/cart.service';
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
-export class Products {
-  allProducts = signal<Product[]>(MOCK_PRODUCTS);
+export class Products implements OnInit {
+  allProducts = signal<Product[]>([]);
+  isLoading = signal(true);
+  errorMessage = signal<string | null>(null);
+
   cartService = inject(CartService);
+  productsService = inject(ProductsService);
 
   filters = signal<FilterState>({
     categories: [],
@@ -27,6 +31,39 @@ export class Products {
   ProductCollection = ProductCollection;
   SortOption = SortOption;
   ProductBadge = ProductBadge;
+
+  ngOnInit(): void {
+    this.loadProducts();
+  }
+
+  /**
+   * Load products from API
+   */
+  loadProducts(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.productsService.getProducts().subscribe({
+      next: (response: any) => {
+        // Handle both formats: direct array or { data: [...] }
+        const products = Array.isArray(response) ? response : response.data;
+
+        // Convert createdAt strings to Date objects for sorting
+        const productsWithDates = products.map((p: any) => ({
+          ...p,
+          createdAt: new Date(p.createdAt)
+        }));
+
+        this.allProducts.set(productsWithDates);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading products:', error);
+        this.errorMessage.set('Failed to load products. Please try again later.');
+        this.isLoading.set(false);
+      }
+    });
+  }
 
   // Computed filtered and sorted products
   products = computed(() => {

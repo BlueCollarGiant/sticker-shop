@@ -1,24 +1,30 @@
 import { Address } from './cart.model';
 
+// Demo mode user interface (simplified for demo)
 export interface User {
   id: string;
-  firstName: string;
-  lastName: string;
   email: string;
+  name: string;
+  role: 'user' | 'admin';
+  createdAt: string;
+
+  // Extended user fields (for future full implementation)
+  firstName?: string;
+  lastName?: string;
   phone?: string;
   avatar?: string;
-  addresses: Address[];
-  preferences: NotificationPreferences;
-  readerLevel: ReaderLevel;
-  orderCount: number;
-  totalSpent: number;
-  joinedAt: Date;
-  emailVerified: boolean;
-  lastLoginAt: Date;
+  addresses?: Address[];
+  preferences?: NotificationPreferences;
+  readerLevel?: ReaderLevel;
+  orderCount?: number;
+  totalSpent?: number;
+  joinedAt?: Date;
+  emailVerified?: boolean;
+  lastLoginAt?: Date;
 }
 
 export interface AuthResponse {
-  success: boolean;
+  success?: boolean;
   token: string;
   refreshToken?: string;
   user: User;

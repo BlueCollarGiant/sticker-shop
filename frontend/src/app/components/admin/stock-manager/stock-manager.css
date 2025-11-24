@@ -1,0 +1,119 @@
+.stock-manager {
+  position: relative;
+}
+
+.stock-display {
+  padding: 0.5rem 1rem;
+  background: #1c1f26;
+  border: 1px solid #2c3540;
+  border-radius: 6px;
+  color: #e8dcc4;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stock-display:hover {
+  border-color: #c9a961;
+  background: rgba(201, 169, 97, 0.05);
+}
+
+.stock-display.success-flash {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  animation: flash 0.6s ease;
+}
+
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.check-icon {
+  color: #4ade80;
+  font-size: 1rem;
+}
+
+.stock-editor {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.stock-input {
+  width: 70px;
+  padding: 0.5rem;
+  background: #1c1f26;
+  border: 1px solid #c9a961;
+  border-radius: 6px;
+  color: #e8dcc4;
+  font-weight: 600;
+  text-align: center;
+}
+
+.stock-input:focus {
+  outline: none;
+  border-color: #d4b56e;
+  box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.1);
+}
+
+.stock-input:disabled {
+  opacity: 0.5;
+}
+
+.btn-save,
+.btn-cancel {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-save {
+  background: #4ade80;
+  color: #0a1628;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: #22c55e;
+}
+
+.btn-cancel {
+  background: #2c3540;
+  color: #78716c;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: #f87171;
+  color: #fff;
+}
+
+.btn-save:disabled,
+.btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error-hint {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #f87171;
+  white-space: nowrap;
+}

@@ -1,1 +1,151 @@
-<p>product-detail works!</p>
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading()">
+  <div class="spinner"></div>
+  <p>Loading product...</p>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="errorMessage() && !isLoading()">
+  <div class="error-icon">⚠️</div>
+  <h2>{{ errorMessage() }}</h2>
+  <button class="btn btn-primary" (click)="goBack()">Back to Products</button>
+</div>
+
+<!-- Product Detail -->
+<div class="product-detail-container" *ngIf="product() && !isLoading()">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a routerLink="/">Home</a>
+    <span>/</span>
+    <a routerLink="/products">Products</a>
+    <span>/</span>
+    <span class="active">{{ product()!.title }}</span>
+  </nav>
+
+  <div class="product-detail-content">
+    <!-- Left Column: Image Gallery -->
+    <div class="image-gallery">
+      <!-- Main Image -->
+      <div class="main-image">
+        <img
+          *ngIf="selectedImage()"
+          [src]="selectedImage()!.url"
+          [alt]="selectedImage()!.alt"
+        />
+      </div>
+
+      <!-- Thumbnail Row -->
+      <div class="thumbnail-row" *ngIf="product()!.images.length > 1">
+        <div
+          *ngFor="let image of product()!.images; let i = index"
+          class="thumbnail"
+          [class.active]="selectedImageIndex() === i"
+          (click)="selectImage(i)"
+        >
+          <img [src]="image.url" [alt]="image.alt" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Product Info -->
+    <div class="product-info">
+      <!-- Collection -->
+      <p class="collection">{{ formatCollection(product()!.collection) }}</p>
+
+      <!-- Title & Subtitle -->
+      <h1 class="title">{{ product()!.title }}</h1>
+      <p class="subtitle" *ngIf="product()!.subtitle">{{ product()!.subtitle }}</p>
+
+      <!-- Badges -->
+      <div class="badges">
+        <span *ngIf="product()!.isNew" class="badge badge-new">NEW</span>
+        <span *ngIf="product()!.isBestseller" class="badge badge-bestseller">BESTSELLER</span>
+        <span *ngIf="product()!.isLimitedEdition" class="badge badge-limited">LIMITED EDITION</span>
+        <span *ngIf="product()!.salePrice" class="badge badge-sale">SALE</span>
+      </div>
+
+      <!-- Rating -->
+      <div class="rating">
+        <span class="stars">★★★★★</span>
+        <span class="rating-value">{{ product()!.rating }}</span>
+        <span class="review-count">({{ product()!.reviewCount }} reviews)</span>
+      </div>
+
+      <!-- Price -->
+      <div class="price-section">
+        <span class="price">${{ currentPrice().toFixed(2) }}</span>
+        <span class="original-price" *ngIf="product()!.salePrice">
+          ${{ product()!.price.toFixed(2) }}
+        </span>
+      </div>
+
+      <!-- Variant Selector: Sizes -->
+      <div class="variant-selector" *ngIf="product()!.variants && product()!.variants.length > 0">
+        <h3 class="variant-label">Select Size:</h3>
+        <div class="variant-options">
+          <button
+            *ngFor="let variant of product()!.variants"
+            class="variant-chip"
+            [class.selected]="isVariantSelected(variant)"
+            [class.out-of-stock]="variant.stock === 0"
+            [disabled]="variant.stock === 0"
+            (click)="selectVariant(variant)"
+          >
+            {{ variant.size || variant.color || 'Standard' }}
+            <span class="variant-stock" *ngIf="variant.stock === 0">(Out)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stock Status -->
+      <div class="stock-status" [class]="stockStatus().class">
+        <span class="stock-indicator"></span>
+        {{ stockStatus().status }}
+      </div>
+
+      <!-- Add to Cart -->
+      <button
+        class="btn btn-add-to-cart"
+        [disabled]="!stockStatus().available"
+        (click)="addToCart()"
+      >
+        <span *ngIf="stockStatus().available">Add to Cart</span>
+        <span *ngIf="!stockStatus().available">Out of Stock</span>
+      </button>
+
+      <!-- Description -->
+      <div class="description-section">
+        <h3>Description</h3>
+        <p>{{ product()!.description }}</p>
+      </div>
+
+      <!-- Tags -->
+      <div class="tags-section" *ngIf="product()!.tags && product()!.tags.length > 0">
+        <h3>Tags</h3>
+        <div class="tags">
+          <span *ngFor="let tag of product()!.tags" class="tag">{{ tag }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  <section class="related-products" *ngIf="relatedProducts().length > 0">
+    <h2>You Might Also Like</h2>
+    <div class="related-grid">
+      <a
+        *ngFor="let related of relatedProducts()"
+        [routerLink]="['/products', related.id]"
+        class="related-card"
+      >
+        <div class="related-image">
+          <img [src]="related.images[0].url" [alt]="related.title" />
+        </div>
+        <div class="related-info">
+          <h4>{{ related.title }}</h4>
+          <p class="related-price">${{ related.price.toFixed(2) }}</p>
+        </div>
+      </a>
+    </div>
+  </section>
+</div>

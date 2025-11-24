@@ -120,8 +120,22 @@
       </div>
     </div>
 
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading()">
+      <div class="spinner"></div>
+      <p>Loading products...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="errorMessage() && !isLoading()">
+      <div class="error-icon">⚠️</div>
+      <h2 class="error-title">Failed to load products</h2>
+      <p class="error-message">{{ errorMessage() }}</p>
+      <button class="btn btn-primary" (click)="loadProducts()">Try Again</button>
+    </div>
+
     <!-- Product Grid -->
-    <div class="product-grid" *ngIf="products().length > 0; else emptyState">
+    <div class="product-grid" *ngIf="!isLoading() && !errorMessage() && products().length > 0; else emptyState">
       <div class="product-card" *ngFor="let product of products()">
         <!-- Product Image -->
         <div class="product-image-wrapper">
@@ -137,7 +151,7 @@
 
           <!-- Hover Overlay -->
           <div class="product-overlay">
-            <a [routerLink]="['/product', product.id]" class="btn-quick-view">Quick View</a>
+            <a [routerLink]="['/products', product.id]" class="btn-quick-view">Quick View</a>
           </div>
         </div>
 
@@ -168,7 +182,7 @@
 
     <!-- Empty State -->
     <ng-template #emptyState>
-      <div class="empty-state">
+      <div class="empty-state" *ngIf="!isLoading() && !errorMessage()">
         <div class="empty-state-icon">🌙</div>
         <h2 class="empty-state-title">Nothing found in the quiet hours...</h2>
         <p class="empty-state-message">No products match your filters. Try adjusting your search.</p>
