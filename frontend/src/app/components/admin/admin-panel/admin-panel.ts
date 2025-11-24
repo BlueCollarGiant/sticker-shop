@@ -1,10 +1,10 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AdminService } from '../../../services/admin.service';
 import { AuthService } from '../../../services/auth.service';
-import { Product, ProductCategory, ProductCollection } from '../../../models/product.model';
+import { Product, ProductCategory, ProductCollection, ProductBadge, ProductImage } from '../../../models/product.model';
 import { StockManagerComponent } from '../stock-manager/stock-manager';
 import { BadgeToggleComponent } from '../badge-toggle/badge-toggle';
 import { ProductEditorComponent } from '../product-editor/product-editor';
@@ -12,7 +12,7 @@ import { ProductEditorComponent } from '../product-editor/product-editor';
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, StockManagerComponent, BadgeToggleComponent, ProductEditorComponent],
+  imports: [CommonModule, FormsModule, StockManagerComponent, BadgeToggleComponent, ProductEditorComponent],
   templateUrl: './admin-panel.html',
   styleUrl: './admin-panel.css'
 })
@@ -89,10 +89,10 @@ export class AdminPanelComponent implements OnInit {
     });
   }
 
-  onStockUpdated(event: { product: Product; newStock: number }): void {
+  onStockUpdated(productId: string, newStock: number): void {
     // Optimistic update
     this.products.update(prods =>
-      prods.map(p => p.id === event.product.id ? { ...p, stock: event.newStock } : p)
+      prods.map(p => p.id === productId ? { ...p, stock: newStock } : p)
     );
   }
 
@@ -103,10 +103,11 @@ export class AdminPanelComponent implements OnInit {
         if (p.id !== productId) return p;
 
         const badges = p.badges || [];
-        const hasBadge = badges.includes(badge);
+        const badgeEnum = badge as ProductBadge;
+        const hasBadge = badges.some(b => b === badgeEnum);
         const newBadges = hasBadge
-          ? badges.filter(b => b !== badge)
-          : [...badges, badge];
+          ? badges.filter(b => b !== badgeEnum)
+          : [...badges, badgeEnum];
 
         // Update corresponding flag
         const updates: any = { badges: newBadges };
@@ -136,6 +137,10 @@ export class AdminPanelComponent implements OnInit {
   openEditor(product?: Product): void {
     this.selectedProduct.set(product || null);
     this.showEditor.set(true);
+  }
+
+  getImageUrl(image: ProductImage | string): string {
+    return typeof image === 'string' ? image : image.url;
   }
 
   deleteProduct(product: Product): void {

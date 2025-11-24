@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../../services/admin.service';
-import { Product } from '../../../models/product.model';
+import { Product, ProductBadge } from '../../../models/product.model';
 
 @Component({
   selector: 'app-badge-toggle',
@@ -17,7 +17,7 @@ export class BadgeToggleComponent {
   private adminService = inject(AdminService);
 
   hasBadge(badge: string): boolean {
-    return this.product.badges?.includes(badge) || false;
+    return this.product.badges?.some(b => b === badge as ProductBadge) || false;
   }
 
   toggle(badge: string): void {

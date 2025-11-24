@@ -5,12 +5,12 @@ export interface Product {
   description: string;
   price: number;
   salePrice?: number;
-  category: ProductCategory;
-  collection: ProductCollection;
-  images: ProductImage[];
+  category: ProductCategory | string;
+  collection: ProductCollection | string;
+  images: ProductImage[] | string[];
   variants: ProductVariant[];
   tags: string[];
-  badges?: ProductBadge[];
+  badges?: ProductBadge[] | string[];
   rating: number;
   reviewCount: number;
   isNew: boolean;

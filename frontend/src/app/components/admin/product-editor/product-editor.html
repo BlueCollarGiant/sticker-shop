@@ -198,12 +198,12 @@
             </div>
             @if (images().length > 0) {
               <div class="image-list">
-                @for (image of images(); track image; let idx = $index) {
+                @for (image of images(); track image.id; let idx = $index) {
                   <div class="image-item">
-                    <img [src]="image" [alt]="'Image ' + (idx + 1)" class="image-preview" />
+                    <img [src]="image.url" [alt]="image.alt" class="image-preview" />
                     <button
                       class="image-remove"
-                      (click)="removeImage(image)"
+                      (click)="removeImage(image.url)"
                       type="button"
                       [disabled]="isSaving()"
                     >

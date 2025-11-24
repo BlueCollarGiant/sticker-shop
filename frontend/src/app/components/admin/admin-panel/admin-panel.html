@@ -95,7 +95,7 @@
               <td class="product-cell">
                 <div class="product-info">
                   <img
-                    [src]="product.images[0]"
+                    [src]="getImageUrl(product.images[0])"
                     [alt]="product.title"
                     class="product-thumb"
                   />
@@ -127,7 +127,7 @@
               <td class="stock-cell">
                 <app-stock-manager
                   [product]="product"
-                  (stockUpdated)="onStockUpdated($event)"
+                  (stockUpdated)="onStockUpdated(product.id, $event)"
                 ></app-stock-manager>
               </td>
 

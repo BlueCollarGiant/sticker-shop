@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, signal, effect, inject, OnInit 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../services/admin.service';
-import { Product, ProductCategory, ProductCollection, ProductVariant } from '../../../models/product.model';
+import { Product, ProductCategory, ProductCollection, ProductVariant, ProductImage, ProductBadge } from '../../../models/product.model';
 
 @Component({
   selector: 'app-product-editor',
@@ -24,11 +24,11 @@ export class ProductEditorComponent implements OnInit {
   description = signal('');
   price = signal(0);
   salePrice = signal<number | null>(null);
-  category = signal<ProductCategory>('stickers');
-  collection = signal<ProductCollection>('general');
+  category = signal<ProductCategory>(ProductCategory.STICKERS);
+  collection = signal<ProductCollection>(ProductCollection.DARK_ACADEMIA);
   tags = signal<string[]>([]);
   tagInput = signal('');
-  images = signal<string[]>([]);
+  images = signal<ProductImage[]>([]);
   imageInput = signal('');
   variants = signal<ProductVariant[]>([]);
   stock = signal(0);
@@ -40,8 +40,8 @@ export class ProductEditorComponent implements OnInit {
   errorMessage = signal<string | null>(null);
 
   // Available options
-  categories: ProductCategory[] = ['stickers', 'bookmarks', 'prints', 'accessories'];
-  collections: ProductCollection[] = ['general', 'fantasy', 'horror', 'sci-fi', 'gothic'];
+  categories = Object.values(ProductCategory);
+  collections = Object.values(ProductCollection);
 
   ngOnInit(): void {
     if (this.product) {
@@ -55,10 +55,25 @@ export class ProductEditorComponent implements OnInit {
     this.description.set(product.description);
     this.price.set(product.price);
     this.salePrice.set(product.salePrice || null);
-    this.category.set(product.category);
-    this.collection.set(product.collection);
+    this.category.set(product.category as ProductCategory);
+    this.collection.set(product.collection as ProductCollection);
     this.tags.set([...product.tags]);
-    this.images.set([...product.images]);
+
+    // Convert string[] images to ProductImage[]
+    const images = product.images.map((img, index) => {
+      if (typeof img === 'string') {
+        return {
+          id: `img-${index}`,
+          url: img,
+          alt: product.title,
+          isPrimary: index === 0,
+          order: index
+        };
+      }
+      return img;
+    });
+    this.images.set(images);
+
     this.variants.set([...product.variants]);
     this.stock.set(product.stock);
     this.isNew.set(product.isNew || false);
@@ -80,21 +95,32 @@ export class ProductEditorComponent implements OnInit {
 
   addImage(): void {
     const url = this.imageInput().trim();
-    if (url && !this.images().includes(url)) {
-      this.images.update(images => [...images, url]);
+    if (url && !this.images().some(img => img.url === url)) {
+      const newImage: ProductImage = {
+        id: `img-${Date.now()}`,
+        url,
+        alt: this.title() || 'Product image',
+        isPrimary: this.images().length === 0,
+        order: this.images().length
+      };
+      this.images.update(images => [...images, newImage]);
       this.imageInput.set('');
     }
   }
 
-  removeImage(url: string): void {
-    this.images.update(images => images.filter(i => i !== url));
+  removeImage(imageUrl: string): void {
+    this.images.update(images => images.filter(i => i.url !== imageUrl));
   }
 
   addVariant(): void {
-    this.variants.update(variants => [
-      ...variants,
-      { size: 'Small', color: '', stock: 0 }
-    ]);
+    const newVariant: ProductVariant = {
+      id: `var-${Date.now()}`,
+      size: 'Small',
+      color: '',
+      stock: 0,
+      sku: `SKU-${Date.now()}`
+    };
+    this.variants.update(variants => [...variants, newVariant]);
   }
 
   removeVariant(index: number): void {
@@ -125,11 +151,11 @@ export class ProductEditorComponent implements OnInit {
     this.isSaving.set(true);
     this.errorMessage.set(null);
 
-    const badges: string[] = [];
-    if (this.isNew()) badges.push('new');
-    if (this.isBestseller()) badges.push('bestseller');
-    if (this.isLimitedEdition()) badges.push('limited');
-    if (this.salePrice() && this.salePrice()! < this.price()) badges.push('sale');
+    const badges: ProductBadge[] = [];
+    if (this.isNew()) badges.push(ProductBadge.NEW);
+    if (this.isBestseller()) badges.push(ProductBadge.BESTSELLER);
+    if (this.isLimitedEdition()) badges.push(ProductBadge.LIMITED);
+    if (this.salePrice() && this.salePrice()! < this.price()) badges.push(ProductBadge.SALE);
 
     const productData: Partial<Product> = {
       title: this.title().trim(),
@@ -146,13 +172,15 @@ export class ProductEditorComponent implements OnInit {
       badges,
       isNew: this.isNew(),
       isBestseller: this.isBestseller(),
-      isLimitedEdition: this.isLimitedEdition()
+      isLimitedEdition: this.isLimitedEdition(),
+      rating: this.product?.rating || 0,
+      reviewCount: this.product?.reviewCount || 0
     };
 
     if (this.product) {
       // Update existing
       this.adminService.updateProduct(this.product.id, productData).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.save.emit(response.data);
         },
         error: (error) => {
@@ -164,7 +192,7 @@ export class ProductEditorComponent implements OnInit {
     } else {
       // Create new
       this.adminService.createProduct(productData as Omit<Product, 'id' | 'createdAt'>).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.save.emit(response.data);
         },
         error: (error) => {

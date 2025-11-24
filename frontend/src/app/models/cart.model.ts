@@ -5,8 +5,8 @@ export interface CartItem {
   productId: string;             // Reference to Product
   productTitle: string;
   productImage: string;          // Primary image URL
-  collection: ProductCollection;
-  category: ProductCategory;
+  collection: ProductCollection | string;
+  category: ProductCategory | string;
   price: number;                 // Current price (sale or regular)
   originalPrice?: number;        // If on sale
   quantity: number;

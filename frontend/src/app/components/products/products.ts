@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Product, ProductCategory, ProductCollection, SortOption, FilterState, ProductBadge } from '../../models/product.model';
+import { Product, ProductCategory, ProductCollection, SortOption, FilterState, ProductBadge, ProductImage } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
 import { ProductsService } from '../../services/products';
 
@@ -72,12 +72,12 @@ export class Products implements OnInit {
 
     // Filter by categories
     if (currentFilters.categories.length > 0) {
-      filtered = filtered.filter(p => currentFilters.categories.includes(p.category));
+      filtered = filtered.filter(p => currentFilters.categories.includes(p.category as ProductCategory));
     }
 
     // Filter by collections
     if (currentFilters.collections.length > 0) {
-      filtered = filtered.filter(p => currentFilters.collections.includes(p.collection));
+      filtered = filtered.filter(p => currentFilters.collections.includes(p.collection as ProductCollection));
     }
 
     // Filter by price
@@ -147,12 +147,21 @@ export class Products implements OnInit {
     return this.filters().collections.includes(collection);
   }
 
+  getImageUrl(image: ProductImage | string): string {
+    return typeof image === 'string' ? image : image.url;
+  }
+
+  getImageAlt(image: ProductImage | string, title: string): string {
+    return typeof image === 'string' ? title : image.alt;
+  }
+
   getBadgeClass(badge: ProductBadge): string {
     return `badge-${badge}`;
   }
 
-  formatCollection(collection: ProductCollection): string {
-    return collection.split('-').map(word =>
+  formatCollection(collection: ProductCollection | string): string {
+    const collectionStr = typeof collection === 'string' ? collection : collection;
+    return collectionStr.split('-').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');
   }

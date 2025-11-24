@@ -139,7 +139,7 @@
       <div class="product-card" *ngFor="let product of products()">
         <!-- Product Image -->
         <div class="product-image-wrapper">
-          <img [src]="product.images[0].url" [alt]="product.images[0].alt" />
+          <img [src]="getImageUrl(product.images[0])" [alt]="getImageAlt(product.images[0], product.title)" />
 
           <!-- Badges -->
           <div class="product-badges">

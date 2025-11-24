@@ -29,20 +29,20 @@
       <div class="main-image">
         <img
           *ngIf="selectedImage()"
-          [src]="selectedImage()!.url"
-          [alt]="selectedImage()!.alt"
+          [src]="getImageUrl(selectedImage()!)"
+          [alt]="getImageAlt(selectedImage()!, product()!.title)"
         />
       </div>
 
       <!-- Thumbnail Row -->
-      <div class="thumbnail-row" *ngIf="product()!.images.length > 1">
+      <div class="thumbnail-row" *ngIf="productImages().length > 1">
         <div
-          *ngFor="let image of product()!.images; let i = index"
+          *ngFor="let image of productImages(); let i = index"
           class="thumbnail"
           [class.active]="selectedImageIndex() === i"
           (click)="selectImage(i)"
         >
-          <img [src]="image.url" [alt]="image.alt" />
+          <img [src]="getImageUrl(image)" [alt]="getImageAlt(image, product()!.title)" />
         </div>
       </div>
     </div>
@@ -139,7 +139,7 @@
         class="related-card"
       >
         <div class="related-image">
-          <img [src]="related.images[0].url" [alt]="related.title" />
+          <img [src]="getImageUrl(related.images[0])" [alt]="getImageAlt(related.images[0], related.title)" />
         </div>
         <div class="related-info">
           <h4>{{ related.title }}</h4>

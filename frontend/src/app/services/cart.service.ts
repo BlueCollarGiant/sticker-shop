@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
 import { CartItem, CartTotals, CartItemVariant, StoredCart } from '../models/cart.model';
-import { Product, ProductVariant } from '../models/product.model';
+import { Product, ProductVariant, ProductImage } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,13 +53,16 @@ export class CartService {
       this.updateQuantity(cartItemId, existingItem.quantity + quantity);
     } else {
       // Add new item
+      const firstImage = product.images[0];
+      const imageUrl = typeof firstImage === 'string' ? firstImage : firstImage.url;
+
       const newItem: CartItem = {
         id: cartItemId,
         productId: product.id,
         productTitle: product.title,
-        productImage: product.images[0].url,
-        collection: product.collection,
-        category: product.category,
+        productImage: imageUrl,
+        collection: typeof product.collection === 'string' ? product.collection : product.collection,
+        category: typeof product.category === 'string' ? product.category : product.category,
         price: product.salePrice || product.price,
         originalPrice: product.salePrice ? product.price : undefined,
         quantity,

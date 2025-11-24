@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductsService } from '../../services/products';
 import { CartService } from '../../services/cart.service';
-import { Product, ProductVariant } from '../../models/product.model';
+import { Product, ProductVariant, ProductImage } from '../../models/product.model';
 
 @Component({
   selector: 'app-product-detail',
@@ -31,6 +31,12 @@ export class ProductDetail implements OnInit {
     const p = this.product();
     if (!p || !p.images || p.images.length === 0) return null;
     return p.images[this.selectedImageIndex()];
+  });
+
+  productImages = computed(() => {
+    const p = this.product();
+    if (!p || !p.images) return [];
+    return p.images as (ProductImage | string)[];
   });
 
   currentPrice = computed(() => {
@@ -160,5 +166,13 @@ export class ProductDetail implements OnInit {
 
   getBadgeClass(badge: string): string {
     return `badge-${badge}`;
+  }
+
+  getImageUrl(image: ProductImage | string): string {
+    return typeof image === 'string' ? image : image.url;
+  }
+
+  getImageAlt(image: ProductImage | string, fallback: string): string {
+    return typeof image === 'string' ? fallback : image.alt;
   }
 }
