@@ -8,6 +8,7 @@ import { LoginComponent as DemoLoginComponent } from './components/auth/login/lo
 import { LoginComponent } from './components/account/login/login';
 import { SignupComponent } from './components/account/signup/signup';
 import { DashboardComponent } from './components/account/dashboard/dashboard';
+import { OrdersComponent } from './components/account/orders/orders';
 import { AccountSettingsComponent } from './components/account/settings/settings';
 import { AdminPanelComponent } from './components/admin/admin-panel/admin-panel';
 import { authGuard } from './guards/auth.guard';
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'account/login', component: LoginComponent },
   { path: 'account/signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: 'dashboard/orders', component: OrdersComponent, canActivate: [authGuard] },
   { path: 'settings', component: AccountSettingsComponent, canActivate: [authGuard] },
 
   // Admin routes

@@ -1,0 +1,61 @@
+<div class="orders-page">
+  <div class="orders-container">
+    <div class="orders-header">
+      <h1 class="orders-title">My Orders</h1>
+      <a routerLink="/dashboard" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-state">
+        <p>Loading orders...</p>
+      </div>
+    } @else if (orders().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h2>No orders yet</h2>
+        <p>When you place an order, it will appear here.</p>
+        <a routerLink="/products" class="btn-primary">Start Shopping</a>
+      </div>
+    } @else {
+      <div class="orders-list">
+        @for (order of orders(); track order.id) {
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-info">
+                <h3 class="order-number">Order #{{ order.orderNumber }}</h3>
+                <p class="order-date">{{ order.date | date:'MMM d, yyyy' }}</p>
+              </div>
+              <div class="order-status">
+                <span [class]="'status-badge ' + getStatusBadgeClass(order.status)">
+                  {{ getStatusText(order.status) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="order-items">
+              @for (item of order.items; track item.id) {
+                <div class="order-item">
+                  <img [src]="item.image" [alt]="item.name" class="item-image">
+                  <div class="item-details">
+                    <p class="item-name">{{ item.name }}</p>
+                    <p class="item-quantity">Qty: {{ item.quantity }}</p>
+                  </div>
+                  <div class="item-price">
+                    ${{ item.price.toFixed(2) }}
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="order-footer">
+              <div class="order-total">
+                <span class="total-label">Total:</span>
+                <span class="total-amount">${{ order.total.toFixed(2) }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

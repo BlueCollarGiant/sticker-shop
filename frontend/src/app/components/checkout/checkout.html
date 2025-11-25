@@ -1,1 +1,61 @@
-<p>checkout works!</p>
+<div class="checkout-page">
+  <div class="checkout-container">
+    <h1 class="checkout-title">Checkout</h1>
+
+    @if (cartItems.length === 0) {
+      <div class="empty-cart">
+        <p>Your cart is empty</p>
+        <a routerLink="/products" class="btn-secondary">Continue Shopping</a>
+      </div>
+    } @else {
+      <div class="checkout-content">
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <h2>Order Summary</h2>
+          <div class="summary-items">
+            @for (item of cartItems; track item.id) {
+              <div class="summary-item">
+                <img [src]="item.productImage" [alt]="item.productTitle" class="item-image">
+                <div class="item-info">
+                  <p class="item-name">{{ item.productTitle }}</p>
+                  <p class="item-qty">Qty: {{ item.quantity }}</p>
+                </div>
+                <p class="item-price">${{ (item.price * item.quantity).toFixed(2) }}</p>
+              </div>
+            }
+          </div>
+
+          <div class="summary-totals">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span>${{ cartTotals.subtotal.toFixed(2) }}</span>
+            </div>
+            <div class="total-row">
+              <span>Tax:</span>
+              <span>${{ cartTotals.tax.toFixed(2) }}</span>
+            </div>
+            <div class="total-row total-final">
+              <span>Total:</span>
+              <span>${{ cartTotals.total.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout Actions -->
+        <div class="checkout-actions">
+          <button
+            class="btn-complete-order"
+            (click)="completeOrder()"
+            [disabled]="processing()">
+            @if (processing()) {
+              <span>Processing...</span>
+            } @else {
+              <span>Complete Order (Demo)</span>
+            }
+          </button>
+          <p class="demo-note">Demo Mode: This will simulate a purchase and create an order</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>
