@@ -45,31 +45,14 @@ class AuthService {
   }
 
   login(email, password) {
-    // Find user by email
+    // In DEMO mode, authenticate against demo users
+    // In PRODUCTION mode, this would query the database
     const user = Object.values(this.demoUsers).find(u => u.email === email);
 
     if (!user || user.password !== password) {
       throw new Error('Invalid credentials');
     }
 
-    const token = this.generateToken(user);
-
-    // Return user without password
-    const { password: _, ...userWithoutPassword } = user;
-    userWithoutPassword.createdAt = new Date().toISOString();
-
-    return {
-      token,
-      user: userWithoutPassword
-    };
-  }
-
-  demoLogin(role) {
-    if (role !== 'user' && role !== 'admin') {
-      throw new Error('Invalid role. Must be "user" or "admin"');
-    }
-
-    const user = this.demoUsers[role];
     const token = this.generateToken(user);
 
     // Return user without password

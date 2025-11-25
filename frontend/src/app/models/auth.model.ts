@@ -10,10 +10,6 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface DemoLoginRequest {
-  role: 'user' | 'admin';
-}
-
 export interface RegisterRequest {
   email: string;
   password: string;

@@ -1,11 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { CartTotals } from '../../models/cart.model';
 
 @Component({
   selector: 'app-cart-summary',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './cart-summary.html',
   styleUrl: './cart-summary.css',
 })

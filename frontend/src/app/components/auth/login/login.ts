@@ -44,9 +44,13 @@ export class LoginComponent {
 
     this.authService.login(emailValue, passwordValue).subscribe({
       next: () => {
-        // Get return URL from query params or default to home
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-        this.router.navigate([returnUrl]);
+        // Check for return URL, otherwise go to dashboard
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+        if (returnUrl) {
+          this.router.navigate([returnUrl]);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (error) => {
         this.errorMessage.set(error.error?.message || 'Login failed. Please try again.');
@@ -81,8 +85,13 @@ export class LoginComponent {
 
     this.authService.demoLogin(role).subscribe({
       next: () => {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-        this.router.navigate([returnUrl]);
+        // Check for return URL, otherwise go to dashboard
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+        if (returnUrl) {
+          this.router.navigate([returnUrl]);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (error) => {
         this.errorMessage.set(error.error?.message || 'Demo login failed');

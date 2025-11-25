@@ -25,28 +25,6 @@ router.post('/login', (req, res) => {
   }
 });
 
-// POST /api/auth/demo-login
-router.post('/demo-login', (req, res) => {
-  try {
-    const { role } = req.body;
-
-    if (!role) {
-      return res.status(400).json({
-        error: 'Bad Request',
-        message: 'Role is required (user or admin)'
-      });
-    }
-
-    const result = authService.demoLogin(role);
-    res.json(result);
-  } catch (error) {
-    res.status(400).json({
-      error: 'Demo Login Failed',
-      message: error.message
-    });
-  }
-});
-
 // POST /api/auth/register
 router.post('/register', (req, res) => {
   try {

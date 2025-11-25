@@ -2,7 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { CartService } from './services/cart.service';
-import { AuthService } from './services/auth/auth.service';
+import { AuthService } from './services/auth.service';
 import { CartDrawerComponent } from './components/cart/cart-drawer/cart-drawer';
 
 @Component({

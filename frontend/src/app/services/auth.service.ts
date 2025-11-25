@@ -2,7 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { AuthResponse, LoginRequest, DemoLoginRequest, RegisterRequest } from '../models/auth.model';
+import { AuthResponse, LoginRequest, RegisterRequest } from '../models/auth.model';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -32,6 +32,7 @@ export class AuthService {
 
   /**
    * Standard email/password login
+   * In demo mode, use: demo@nightreader.com / demo123 or admin@nightreader.com / admin123
    */
   login(email: string, password: string): Observable<AuthResponse> {
     const request: LoginRequest = { email, password };
@@ -43,13 +44,16 @@ export class AuthService {
 
   /**
    * Quick demo login with pre-configured accounts
+   * This is a convenience method that calls login() with demo credentials
    */
   demoLogin(role: 'user' | 'admin'): Observable<AuthResponse> {
-    const request: DemoLoginRequest = { role };
+    const credentials = {
+      user: { email: 'demo@nightreader.com', password: 'demo123' },
+      admin: { email: 'admin@nightreader.com', password: 'admin123' }
+    };
 
-    return this.http.post<AuthResponse>(`${this.API_URL}/demo-login`, request).pipe(
-      tap(response => this.handleAuthSuccess(response))
-    );
+    const { email, password } = credentials[role];
+    return this.login(email, password);
   }
 
   /**

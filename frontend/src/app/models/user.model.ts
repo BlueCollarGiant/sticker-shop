@@ -65,6 +65,7 @@ export interface ActivityItem {
   type: ActivityType;
   message: string;
   timestamp: Date;
+  icon?: string;
   metadata?: Record<string, any>;
 }
 

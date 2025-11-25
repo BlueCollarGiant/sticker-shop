@@ -85,6 +85,40 @@
         <span class="divider-line"></span>
       </div>
 
+      <!-- Demo Login Buttons -->
+      <div class="demo-login-section">
+        <p class="demo-label">Quick Demo Access:</p>
+
+        <button
+          type="button"
+          class="btn-demo btn-demo-user"
+          (click)="onDemoLoginUser()"
+          [disabled]="isLoading()">
+          <span class="demo-icon">👤</span>
+          <span>Demo as User</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn-demo btn-demo-admin"
+          (click)="onDemoLoginAdmin()"
+          [disabled]="isLoading()">
+          <span class="demo-icon">🔑</span>
+          <span>Demo as Admin</span>
+        </button>
+
+        <p class="demo-hint">
+          No registration required. Instant access to explore the shop.
+        </p>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">OR</span>
+        <span class="divider-line"></span>
+      </div>
+
       <!-- Signup Link -->
       <div class="signup-section">
         <p class="signup-text">Not a member?</p>

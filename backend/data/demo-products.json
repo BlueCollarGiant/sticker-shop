@@ -17,8 +17,14 @@
       }
     ],
     "variants": [],
-    "tags": ["reading", "moon", "literary"],
-    "badges": ["bestseller"],
+    "tags": [
+      "reading",
+      "moon",
+      "literary"
+    ],
+    "badges": [
+      "bestseller"
+    ],
     "rating": 4.8,
     "reviewCount": 28,
     "isNew": false,
@@ -46,13 +52,39 @@
       }
     ],
     "variants": [
-      { "id": "v1", "size": "S", "stock": 20, "sku": "DI-TS-S" },
-      { "id": "v2", "size": "M", "stock": 35, "sku": "DI-TS-M" },
-      { "id": "v3", "size": "L", "stock": 40, "sku": "DI-TS-L" },
-      { "id": "v4", "size": "XL", "stock": 25, "sku": "DI-TS-XL" }
+      {
+        "id": "v1",
+        "size": "S",
+        "stock": 20,
+        "sku": "DI-TS-S"
+      },
+      {
+        "id": "v2",
+        "size": "M",
+        "stock": 35,
+        "sku": "DI-TS-M"
+      },
+      {
+        "id": "v3",
+        "size": "L",
+        "stock": 40,
+        "sku": "DI-TS-L"
+      },
+      {
+        "id": "v4",
+        "size": "XL",
+        "stock": 25,
+        "sku": "DI-TS-XL"
+      }
     ],
-    "tags": ["training", "minimalist", "discipline"],
-    "badges": ["sale"],
+    "tags": [
+      "training",
+      "minimalist",
+      "discipline"
+    ],
+    "badges": [
+      "sale"
+    ],
     "rating": 4.9,
     "reviewCount": 42,
     "isNew": false,
@@ -79,8 +111,14 @@
       }
     ],
     "variants": [],
-    "tags": ["fantasy", "warrior", "mythology"],
-    "badges": ["new"],
+    "tags": [
+      "fantasy",
+      "warrior",
+      "mythology"
+    ],
+    "badges": [
+      "new"
+    ],
     "rating": 4.7,
     "reviewCount": 15,
     "isNew": true,
@@ -107,8 +145,14 @@
       }
     ],
     "variants": [],
-    "tags": ["coffee", "quote", "morning"],
-    "badges": ["bestseller"],
+    "tags": [
+      "coffee",
+      "quote",
+      "morning"
+    ],
+    "badges": [
+      "bestseller"
+    ],
     "rating": 4.9,
     "reviewCount": 67,
     "isNew": false,
@@ -135,14 +179,48 @@
       }
     ],
     "variants": [
-      { "id": "v5", "size": "S", "color": "Midnight Black", "colorHex": "#0A1628", "stock": 15, "sku": "NR-HD-S-BLK" },
-      { "id": "v6", "size": "M", "color": "Midnight Black", "colorHex": "#0A1628", "stock": 25, "sku": "NR-HD-M-BLK" },
-      { "id": "v7", "size": "L", "color": "Midnight Black", "colorHex": "#0A1628", "stock": 30, "sku": "NR-HD-L-BLK" },
-      { "id": "v8", "size": "XL", "color": "Midnight Black", "colorHex": "#0A1628", "stock": 20, "sku": "NR-HD-XL-BLK" }
+      {
+        "id": "v5",
+        "size": "S",
+        "color": "Midnight Black",
+        "colorHex": "#0A1628",
+        "stock": 15,
+        "sku": "NR-HD-S-BLK"
+      },
+      {
+        "id": "v6",
+        "size": "M",
+        "color": "Midnight Black",
+        "colorHex": "#0A1628",
+        "stock": 25,
+        "sku": "NR-HD-M-BLK"
+      },
+      {
+        "id": "v7",
+        "size": "L",
+        "color": "Midnight Black",
+        "colorHex": "#0A1628",
+        "stock": 30,
+        "sku": "NR-HD-L-BLK"
+      },
+      {
+        "id": "v8",
+        "size": "XL",
+        "color": "Midnight Black",
+        "colorHex": "#0A1628",
+        "stock": 20,
+        "sku": "NR-HD-XL-BLK"
+      }
     ],
-    "tags": ["hoodie", "premium", "embroidered"],
-    "badges": ["bestseller"],
-    "rating": 5.0,
+    "tags": [
+      "hoodie",
+      "premium",
+      "embroidered"
+    ],
+    "badges": [
+      "bestseller"
+    ],
+    "rating": 5,
     "reviewCount": 89,
     "isNew": false,
     "isBestseller": true,
@@ -168,8 +246,14 @@
       }
     ],
     "variants": [],
-    "tags": ["bookmark", "metal", "runes"],
-    "badges": ["limited"],
+    "tags": [
+      "bookmark",
+      "metal",
+      "runes"
+    ],
+    "badges": [
+      "limited"
+    ],
     "rating": 4.6,
     "reviewCount": 23,
     "isNew": false,
@@ -196,8 +280,14 @@
       }
     ],
     "variants": [],
-    "tags": ["poster", "motivation", "wall-art"],
-    "badges": ["new"],
+    "tags": [
+      "poster",
+      "motivation",
+      "wall-art"
+    ],
+    "badges": [
+      "new"
+    ],
     "rating": 4.8,
     "reviewCount": 31,
     "isNew": true,
@@ -224,11 +314,30 @@
       }
     ],
     "variants": [
-      { "id": "v9", "size": "iPhone 14", "stock": 30, "sku": "MP-PC-IP14" },
-      { "id": "v10", "size": "iPhone 15", "stock": 40, "sku": "MP-PC-IP15" },
-      { "id": "v11", "size": "Samsung S23", "stock": 25, "sku": "MP-PC-S23" }
+      {
+        "id": "v9",
+        "size": "iPhone 14",
+        "stock": 30,
+        "sku": "MP-PC-IP14"
+      },
+      {
+        "id": "v10",
+        "size": "iPhone 15",
+        "stock": 40,
+        "sku": "MP-PC-IP15"
+      },
+      {
+        "id": "v11",
+        "size": "Samsung S23",
+        "stock": 25,
+        "sku": "MP-PC-S23"
+      }
     ],
-    "tags": ["phone-case", "moon", "protection"],
+    "tags": [
+      "phone-case",
+      "moon",
+      "protection"
+    ],
     "badges": [],
     "rating": 4.7,
     "reviewCount": 44,

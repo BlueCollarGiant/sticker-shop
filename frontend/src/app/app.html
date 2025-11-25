@@ -15,6 +15,11 @@
           <a routerLink="/account/login" class="nav-link">Login</a>
         }
       </li>
+      @if (authService.isAdmin()) {
+        <li>
+          <a routerLink="/admin" class="nav-link">Admin Panel</a>
+        </li>
+      }
       <li>
         <button class="cart-icon-btn" (click)="toggleCart()" aria-label="Open cart">
           <svg class="cart-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">

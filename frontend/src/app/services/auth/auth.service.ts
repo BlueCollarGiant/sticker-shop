@@ -29,7 +29,10 @@ export class AuthService {
       id: 'user_123',
       firstName: 'John',
       lastName: 'Doe',
+      name: 'John Doe',
       email: credentials.email,
+      role: 'user',
+      createdAt: new Date().toISOString(),
       addresses: [],
       preferences: {
         orderUpdates: true,
@@ -67,8 +70,11 @@ export class AuthService {
       id: 'user_' + Date.now(),
       firstName: data.firstName,
       lastName: data.lastName,
+      name: `${data.firstName} ${data.lastName}`.trim(),
       email: data.email,
       phone: data.phone,
+      role: 'user',
+      createdAt: new Date().toISOString(),
       addresses: [],
       preferences: {
         orderUpdates: true,

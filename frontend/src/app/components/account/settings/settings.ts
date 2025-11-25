@@ -2,8 +2,7 @@ import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserService } from '../../../services/auth/user.service';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthService } from '../../../services/auth.service';
 import { ToastService } from '../../../services/toast.service';
 import { User, NotificationPreferences, PasswordChangeData, DeleteAccountData } from '../../../models/user.model';
 
@@ -15,12 +14,12 @@ import { User, NotificationPreferences, PasswordChangeData, DeleteAccountData } 
   styleUrl: './settings.css'
 })
 export class AccountSettingsComponent implements OnInit {
-  private userService = inject(UserService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
   private router = inject(Router);
 
-  user = signal<User | null>(null);
+  // Use auth service's user signal directly
+  user = this.authService.user;
   loading = signal(true);
 
   // Profile Form
@@ -74,27 +73,29 @@ export class AccountSettingsComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
-    try {
-      const user = await this.userService.getCurrentUser();
-      this.user.set(user);
-      this.initializeForms(user);
-    } catch (err: any) {
-      this.toastService.error('Failed to load user data');
-      this.router.navigate(['/dashboard']);
-    } finally {
-      this.loading.set(false);
+    const currentUser = this.user();
+
+    if (!currentUser) {
+      this.toastService.error('User not authenticated');
+      this.router.navigate(['/account/login']);
+      return;
     }
+
+    this.initializeForms(currentUser);
+    this.loading.set(false);
   }
 
   private initializeForms(user: User): void {
+    const preferences = user.preferences ?? this.getDefaultPreferences();
+
     // Profile Form
     this.profileForm = new FormGroup({
-      firstName: new FormControl(user.firstName, [
+      firstName: new FormControl(user.firstName ?? '', [
         Validators.required,
         Validators.minLength(2),
         Validators.maxLength(50)
       ]),
-      lastName: new FormControl(user.lastName, [
+      lastName: new FormControl(user.lastName ?? '', [
         Validators.required,
         Validators.minLength(2),
         Validators.maxLength(50)
@@ -121,11 +122,11 @@ export class AccountSettingsComponent implements OnInit {
 
     // Notifications Form
     this.notificationsForm = new FormGroup({
-      orderUpdates: new FormControl({ value: user.preferences.orderUpdates, disabled: true }),
-      shippingNotifications: new FormControl({ value: user.preferences.shippingNotifications, disabled: true }),
-      newProducts: new FormControl(user.preferences.newProducts),
-      marketing: new FormControl(user.preferences.marketing),
-      memberOffers: new FormControl(user.preferences.memberOffers)
+      orderUpdates: new FormControl({ value: preferences.orderUpdates, disabled: true }),
+      shippingNotifications: new FormControl({ value: preferences.shippingNotifications, disabled: true }),
+      newProducts: new FormControl(preferences.newProducts),
+      marketing: new FormControl(preferences.marketing),
+      memberOffers: new FormControl(preferences.memberOffers)
     });
   }
 
@@ -168,11 +169,14 @@ export class AccountSettingsComponent implements OnInit {
     this.profileSubmitting.set(true);
 
     try {
-      const formValue = this.profileForm.value;
-      const updated = await this.userService.updateProfile(formValue);
-      this.user.set(updated);
+      // TODO: Implement real API call when backend endpoint is ready
+      // const formValue = this.profileForm.value;
+      // await this.userService.updateProfile(formValue);
+
+      // Demo mode: simulate success
+      await this.delay(500);
       this.profileForm.markAsPristine();
-      this.toastService.success('Profile updated successfully!');
+      this.toastService.success('Profile updated successfully! (Demo Mode)');
     } catch (err: any) {
       this.toastService.error(err.message || 'Failed to update profile');
     } finally {
@@ -189,10 +193,14 @@ export class AccountSettingsComponent implements OnInit {
     this.passwordSubmitting.set(true);
 
     try {
-      const formValue = this.passwordForm.value as PasswordChangeData;
-      await this.userService.changePassword(formValue);
+      // TODO: Implement real API call when backend endpoint is ready
+      // const formValue = this.passwordForm.value as PasswordChangeData;
+      // await this.userService.changePassword(formValue);
+
+      // Demo mode: simulate success
+      await this.delay(500);
       this.passwordForm.reset();
-      this.toastService.success('Password updated successfully!');
+      this.toastService.success('Password updated successfully! (Demo Mode)');
     } catch (err: any) {
       this.toastService.error(err.message || 'Failed to update password');
     } finally {
@@ -206,19 +214,15 @@ export class AccountSettingsComponent implements OnInit {
     this.notificationsSubmitting.set(true);
 
     try {
-      const formValue = this.notificationsForm.value;
-      const preferences: NotificationPreferences = {
-        orderUpdates: true,
-        shippingNotifications: true,
-        newProducts: formValue.newProducts,
-        marketing: formValue.marketing,
-        memberOffers: formValue.memberOffers
-      };
+      // TODO: Implement real API call when backend endpoint is ready
+      // const formValue = this.notificationsForm.value;
+      // const preferences: NotificationPreferences = { ... };
+      // await this.userService.updatePreferences(preferences);
 
-      const updated = await this.userService.updatePreferences(preferences);
-      this.user.set(updated);
+      // Demo mode: simulate success
+      await this.delay(500);
       this.notificationsForm.markAsPristine();
-      this.toastService.success('Notification preferences saved!');
+      this.toastService.success('Notification preferences saved! (Demo Mode)');
     } catch (err: any) {
       this.toastService.error(err.message || 'Failed to save preferences');
     } finally {
@@ -244,12 +248,12 @@ export class AccountSettingsComponent implements OnInit {
     this.deleteSubmitting.set(true);
 
     try {
-      await this.userService.deleteAccount({
-        password: '', // In real implementation, require password
-        confirmationText: this.deleteConfirmationText()
-      });
+      // TODO: Implement real API call when backend endpoint is ready
+      // await this.userService.deleteAccount({ password: '', confirmationText: this.deleteConfirmationText() });
 
-      this.toastService.success('Your account has been deleted');
+      // Demo mode: simulate success
+      await this.delay(1000);
+      this.toastService.success('Your account has been deleted (Demo Mode)');
 
       setTimeout(() => {
         this.authService.logout();
@@ -270,6 +274,16 @@ export class AccountSettingsComponent implements OnInit {
     }
   }
 
+  private getDefaultPreferences(): NotificationPreferences {
+    return {
+      orderUpdates: true,
+      shippingNotifications: true,
+      newProducts: true,
+      marketing: false,
+      memberOffers: false
+    };
+  }
+
   getErrorMessage(form: FormGroup, fieldName: string): string {
     const field = form.get(fieldName);
     if (!field || !field.errors || !field.touched) return '';
@@ -282,4 +296,9 @@ export class AccountSettingsComponent implements OnInit {
 
     return 'Invalid input';
   }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 }
+

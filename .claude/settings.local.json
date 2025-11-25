@@ -10,7 +10,10 @@
       "Bash(taskkill:*)",
       "Bash(curl:*)",
       "Bash(timeout /t 10 /nobreak)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(cmd /c \"taskkill /PID 25876 /F\")",
+      "Bash(cmd /c:*)",
+      "Bash(timeout /t 2 /nobreak)"
     ],
     "deny": [],
     "ask": []

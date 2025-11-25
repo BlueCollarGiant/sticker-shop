@@ -2,7 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -32,24 +32,57 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    const { email, password, rememberMe } = this.loginForm.value;
+    const { email, password } = this.loginForm.value;
 
-    try {
-      const response = await this.authService.login({
-        email: email!,
-        password: password!,
-        rememberMe: rememberMe || false
-      });
-
-      if (response.success) {
-        // Redirect to dashboard
+    this.authService.login(email!, password!).subscribe({
+      next: () => {
+        // All users go to dashboard after login
         this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        this.errorMessage.set(error.error?.message || 'Invalid credentials. Please try again.');
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        this.isLoading.set(false);
       }
-    } catch (error: any) {
-      this.errorMessage.set(error.message || 'Invalid credentials. Please try again.');
-    } finally {
-      this.isLoading.set(false);
-    }
+    });
+  }
+
+  /**
+   * Handle demo login as user
+   */
+  onDemoLoginUser(): void {
+    this.performDemoLogin('user');
+  }
+
+  /**
+   * Handle demo login as admin
+   */
+  onDemoLoginAdmin(): void {
+    this.performDemoLogin('admin');
+  }
+
+  /**
+   * Perform demo login with specified role
+   */
+  private performDemoLogin(role: 'user' | 'admin'): void {
+    this.errorMessage.set('');
+    this.isLoading.set(true);
+
+    this.authService.demoLogin(role).subscribe({
+      next: () => {
+        // All users go to dashboard after login
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        this.errorMessage.set(error.error?.message || 'Demo login failed');
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        this.isLoading.set(false);
+      }
+    });
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {

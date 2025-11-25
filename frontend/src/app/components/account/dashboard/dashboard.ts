@@ -1,9 +1,8 @@
-import { Component, signal, computed, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth/auth.service';
-import { UserService } from '../../../services/auth/user.service';
-import { User, ActivityItem } from '../../../models/user.model';
+import { AuthService } from '../../../services/auth.service';
+import { ActivityItem, ActivityType } from '../../../models/user.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,34 +10,58 @@ import { User, ActivityItem } from '../../../models/user.model';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   authService = inject(AuthService);
-  userService = inject(UserService);
 
-  user = signal<User | null>(null);
-  recentActivity = signal<ActivityItem[]>([]);
+  // Use auth service's user signal directly
+  user = this.authService.user;
+
+  // Mock recent activity for demo
+  recentActivity = signal<ActivityItem[]>([
+    {
+      id: '1',
+      type: ActivityType.ORDER_PLACED,
+      message: 'Order #1234 placed',
+      timestamp: new Date(),
+      icon: '📦',
+    },
+    {
+      id: '2',
+      type: ActivityType.ORDER_SHIPPED,
+      message: 'Package shipped',
+      timestamp: new Date(),
+      icon: '🚚',
+    },
+  ]);
 
   readerLevel = computed<string>(() => {
     const orderCount = this.user()?.orderCount || 0;
-    return this.userService.getReaderLevel(orderCount);
+    if (orderCount >= 10) return 'Master';
+    if (orderCount >= 5) return 'Adept';
+    if (orderCount >= 1) return 'Apprentice';
+    return 'Initiate';
   });
 
   readerLevelIcon = computed<string>(() => {
-    return this.userService.getReaderLevelIcon(this.readerLevel());
+    const level = this.readerLevel();
+    const icons: Record<string, string> = {
+      'Master': '🏆',
+      'Adept': '⭐',
+      'Apprentice': '📚',
+      'Initiate': '🌙'
+    };
+    return icons[level] || '🌙';
   });
-
-  async ngOnInit(): Promise<void> {
-    const user = await this.userService.getCurrentUser();
-    this.user.set(user);
-
-    const activity = await this.userService.getRecentActivity();
-    this.recentActivity.set(activity);
-  }
 
   getInitials(): string {
     const user = this.user();
     if (!user) return '';
-    return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+    const name = user.name || user.email || '';
+    const parts = name.split(' ');
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
   }
 
   logout(): void {
