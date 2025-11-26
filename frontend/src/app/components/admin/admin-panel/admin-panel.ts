@@ -21,6 +21,9 @@ export class AdminPanelComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  // Tab state
+  activeTab = signal<'general' | 'products' | 'sales' | 'users'>('general');
+
   // State
   products = signal<Product[]>([]);
   isLoading = signal(true);
@@ -30,6 +33,10 @@ export class AdminPanelComponent implements OnInit {
   showEditor = signal(false);
   showDeleteConfirm = signal(false);
   productToDelete = signal<Product | null>(null);
+
+  // User management state
+  userSearchQuery = signal('');
+  selectedUser = signal<any | null>(null);
 
   // Computed stats
   stats = computed(() => {
