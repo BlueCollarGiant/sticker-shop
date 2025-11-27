@@ -2,7 +2,7 @@ import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product, ProductCategory, ProductCollection, SortOption, FilterState, ProductBadge, ProductImage } from '../../models/product.model';
-import { CartService } from '../../services/cart.service';
+import { CartStore } from '../../features/cart/cart.store';
 import { ProductsService } from '../../services/products';
 
 @Component({
@@ -16,7 +16,7 @@ export class Products implements OnInit {
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
 
-  cartService = inject(CartService);
+  cartStore = inject(CartStore);
   productsService = inject(ProductsService);
 
   filters = signal<FilterState>({
@@ -167,6 +167,15 @@ export class Products implements OnInit {
   }
 
   addToCart(product: Product): void {
-    this.cartService.addToCart(product);
+    const firstImage = product.images[0];
+    const imageUrl = typeof firstImage === 'string' ? firstImage : firstImage.url;
+
+    this.cartStore.addItem({
+      productId: product.id,
+      quantity: 1,
+      price: product.salePrice || product.price,
+      title: product.title,
+      imageUrl: imageUrl,
+    });
   }
 }

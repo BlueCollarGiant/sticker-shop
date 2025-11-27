@@ -1,7 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink } from '@angular/router';
-import { CartService } from './services/cart.service';
+import { CartStore } from './features/cart/cart.store';
 import { AuthService } from './services/auth.service';
 import { CartDrawerComponent } from './components/cart/cart-drawer/cart-drawer';
 
@@ -13,10 +13,10 @@ import { CartDrawerComponent } from './components/cart/cart-drawer/cart-drawer';
 })
 export class App {
   protected readonly title = signal('sticker-shop');
-  cartService = inject(CartService);
+  cartStore = inject(CartStore);
   authService = inject(AuthService);
 
   toggleCart(): void {
-    this.cartService.toggleDrawer();
+    this.cartStore.toggleDrawer();
   }
 }
