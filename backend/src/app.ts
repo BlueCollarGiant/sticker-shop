@@ -2,11 +2,13 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import { env, getAllowedOrigins } from './config/env';
 import { createCartRouter } from './domain/cart/cart.router';
+import { createAuthRouter, authService } from './domain/auth/auth.router';
+import { AuthController } from './domain/auth/auth.controller';
+import { authenticate } from './middleware/auth.middleware';
 import { errorHandler } from './middleware/error-handler';
 import { notFound } from './middleware/not-found';
 
 // Import existing routes (will migrate these later)
-const authRouter = require('../routes/auth');
 const productsRouter = require('../routes/products');
 const ordersRouter = require('../routes/orders');
 
@@ -38,7 +40,12 @@ export function createApp(): Express {
 
   // Routes
   app.use('/api/cart', createCartRouter());
-  app.use('/api/auth', authRouter);
+  app.use('/api/auth', createAuthRouter());
+
+  // Auth /me route (requires authentication middleware)
+  const authController = new AuthController(authService);
+  app.get('/api/auth/me', authenticate, authController.getCurrentUser);
+
   app.use('/api/products', productsRouter);
   app.use('/api/orders', ordersRouter);
 

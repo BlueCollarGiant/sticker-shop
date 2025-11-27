@@ -2,7 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { CartStore } from '../../features/cart/cart.store';
-import { AuthService } from '../../services/auth.service';
+import { AuthStore } from '../../features/auth/auth.store';
 
 @Component({
   selector: 'app-checkout',
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Checkout {
   cartStore = inject(CartStore);
-  authService = inject(AuthService);
+  auth = inject(AuthStore);
   router = inject(Router);
 
   processing = signal(false);

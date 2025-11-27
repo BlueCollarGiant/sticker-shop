@@ -1,27 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const printifyService = require('../services/printify');
-const mockDataService = require('../services/mock-data.service');
-const { DEMO_MODE } = require('../config/demo-mode');
+const { DemoProductStore } = require('../dist/infra/demo/demo-product.store');
+
+// Use environment variable instead of deleted config file
+const DEMO_MODE = process.env.DEMO_MODE === 'true' || true;
+
+// Initialize demo product store
+const demoProductStore = new DemoProductStore();
 
 // Get the appropriate service based on demo mode
 const getProductService = () => {
-  return DEMO_MODE ? mockDataService : printifyService;
+  return DEMO_MODE ? demoProductStore : printifyService;
 };
 
 router.get('/', async (req, res) => {
   try {
     const service = getProductService();
-
-    if (DEMO_MODE) {
-      // Mock service returns data synchronously
-      const products = service.getAll();
-      res.json(products);
-    } else {
-      // Printify service returns promise
-      const products = await service.getProducts();
-      res.json(products);
-    }
+    // DemoProductStore.getAll() now returns Promise
+    const products = await service.getAll();
+    res.json(products);
   } catch (error) {
     res.status(500).json({
       error: 'Failed to fetch products',
@@ -33,14 +31,9 @@ router.get('/', async (req, res) => {
 router.get('/catalog', async (req, res) => {
   try {
     const service = getProductService();
-
-    if (DEMO_MODE) {
-      const catalog = service.getCatalog();
-      res.json(catalog);
-    } else {
-      const catalog = await service.getCatalog();
-      res.json(catalog);
-    }
+    // DemoProductStore.getCatalog() now returns Promise
+    const catalog = await service.getCatalog();
+    res.json(catalog);
   } catch (error) {
     res.status(500).json({
       error: 'Failed to fetch catalog',
@@ -52,14 +45,9 @@ router.get('/catalog', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const service = getProductService();
-
-    if (DEMO_MODE) {
-      const product = service.getById(req.params.id);
-      res.json(product);
-    } else {
-      const product = await service.getProduct(req.params.id);
-      res.json(product);
-    }
+    // DemoProductStore.getById() now returns Promise
+    const product = await service.getById(req.params.id);
+    res.json(product);
   } catch (error) {
     res.status(500).json({
       error: 'Failed to fetch product',

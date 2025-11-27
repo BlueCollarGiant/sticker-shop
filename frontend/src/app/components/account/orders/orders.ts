@@ -1,7 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthStore } from '../../../features/auth/auth.store';
 
 interface OrderItem {
   id: string;
@@ -28,7 +28,7 @@ interface Order {
   styleUrl: './orders.css',
 })
 export class OrdersComponent {
-  authService = inject(AuthService);
+  auth = inject(AuthStore);
 
   orders = signal<Order[]>([]);
   loading = signal(true);

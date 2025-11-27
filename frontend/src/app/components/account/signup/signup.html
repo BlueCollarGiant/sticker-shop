@@ -8,12 +8,15 @@
     <div class="signup-form-container">
       <h2 class="signup-title">Join the Library of Night Readers</h2>
 
-      <div *ngIf="showSuccess()" class="success-message">
-        <p>Welcome to the Library! 🌙</p>
-        <p>Redirecting to your dashboard...</p>
-      </div>
+      @if (showSuccess()) {
+        <div class="success-message">
+          <p>Welcome to the Library! 🌙</p>
+          <p>Redirecting to your dashboard...</p>
+        </div>
+      }
 
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form" *ngIf="!showSuccess()">
+      @if (!showSuccess()) {
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">First Name</label>
@@ -48,7 +51,9 @@
           <label for="subscribe" class="form-check-label">Subscribe to Night Reader updates</label>
         </div>
 
-        <div *ngIf="errorMessage()" class="error-alert">{{ errorMessage() }}</div>
+        @if (errorMessage()) {
+          <div class="error-alert">{{ errorMessage() }}</div>
+        }
 
         <button type="submit" class="btn-signup" [disabled]="isLoading()">
           {{ isLoading() ? 'CREATING ACCOUNT...' : 'CREATE MY ACCOUNT' }}
@@ -58,6 +63,7 @@
           <p>Already a member? <a routerLink="/account/login">Login</a></p>
         </div>
       </form>
+      }
     </div>
   </div>
 </div>

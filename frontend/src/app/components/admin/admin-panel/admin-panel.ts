@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminService } from '../../../services/admin.service';
-import { AuthService } from '../../../services/auth.service';
+import { AuthStore } from '../../../features/auth/auth.store';
 import { Product, ProductCategory, ProductCollection, ProductBadge, ProductImage } from '../../../models/product.model';
 import { StockManagerComponent } from '../stock-manager/stock-manager';
 import { BadgeToggleComponent } from '../badge-toggle/badge-toggle';
@@ -18,7 +18,7 @@ import { ProductEditorComponent } from '../product-editor/product-editor';
 })
 export class AdminPanelComponent implements OnInit {
   private adminService = inject(AdminService);
-  private authService = inject(AuthService);
+  private auth = inject(AuthStore);
   private router = inject(Router);
 
   // Tab state
@@ -63,11 +63,11 @@ export class AdminPanelComponent implements OnInit {
     );
   });
 
-  currentUser = this.authService.user;
+  currentUser = this.auth.user;
 
   ngOnInit(): void {
     // Verify admin access
-    if (!this.authService.isAdmin()) {
+    if (!this.auth.isAdmin()) {
       this.router.navigate(['/']);
       return;
     }

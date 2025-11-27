@@ -2,7 +2,7 @@ import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthStore } from '../../../features/auth/auth.store';
 import { ToastService } from '../../../services/toast.service';
 import { User, NotificationPreferences, PasswordChangeData, DeleteAccountData } from '../../../models/user.model';
 
@@ -14,12 +14,12 @@ import { User, NotificationPreferences, PasswordChangeData, DeleteAccountData } 
   styleUrl: './settings.css'
 })
 export class AccountSettingsComponent implements OnInit {
-  private authService = inject(AuthService);
+  private auth = inject(AuthStore);
   private toastService = inject(ToastService);
   private router = inject(Router);
 
-  // Use auth service's user signal directly
-  user = this.authService.user;
+  // Use auth store's user signal directly
+  user = this.auth.user;
   loading = signal(true);
 
   // Profile Form
@@ -256,7 +256,7 @@ export class AccountSettingsComponent implements OnInit {
       this.toastService.success('Your account has been deleted (Demo Mode)');
 
       setTimeout(() => {
-        this.authService.logout();
+        this.auth.logout();
       }, 2000);
     } catch (err: any) {
       this.toastService.error(err.message || 'Failed to delete account');

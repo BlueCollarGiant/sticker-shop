@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { DemoProductStore } = require('../../src/infra/demo/demo-product.store');
-const authenticate = require('../../middleware/auth.middleware');
+const { DemoProductStore } = require('../../dist/infra/demo/demo-product.store');
+const { authenticate } = require('../../dist/middleware/auth.middleware');
 const { requireAdmin } = require('../../middleware/role.middleware');
 
 // Initialize DemoProductStore

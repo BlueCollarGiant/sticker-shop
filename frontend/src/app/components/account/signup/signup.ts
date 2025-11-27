@@ -2,7 +2,7 @@ import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthStore } from '../../../features/auth/auth.store';
 
 @Component({
   selector: 'app-signup',
@@ -11,7 +11,7 @@ import { AuthService } from '../../../services/auth/auth.service';
   styleUrl: './signup.css',
 })
 export class SignupComponent {
-  authService = inject(AuthService);
+  auth = inject(AuthStore);
   router = inject(Router);
 
   signupForm = new FormGroup({
@@ -74,27 +74,11 @@ export class SignupComponent {
 
     const formData = this.signupForm.value;
 
-    try {
-      const response = await this.authService.signup({
-        firstName: formData.firstName!,
-        lastName: formData.lastName!,
-        email: formData.email!,
-        password: formData.password!,
-        phone: formData.phone || undefined,
-        subscribe: formData.subscribe || false
-      });
+    // Combine first and last name for the name field
+    const fullName = `${formData.firstName} ${formData.lastName}`;
 
-      if (response.success) {
-        this.showSuccess.set(true);
-        setTimeout(() => {
-          this.router.navigate(['/dashboard']);
-        }, 2000);
-      }
-    } catch (error: any) {
-      this.errorMessage.set(error.message || 'Registration failed');
-    } finally {
-      this.isLoading.set(false);
-    }
+    // AuthStore handles loading state, errors, and navigation internally
+    this.auth.register(formData.email!, formData.password!, fullName);
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {

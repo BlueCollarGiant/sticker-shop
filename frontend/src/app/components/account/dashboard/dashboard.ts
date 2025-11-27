@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthStore } from '../../../features/auth/auth.store';
 import { ActivityItem, ActivityType } from '../../../models/user.model';
 
 @Component({
@@ -11,10 +11,10 @@ import { ActivityItem, ActivityType } from '../../../models/user.model';
   styleUrl: './dashboard.css',
 })
 export class DashboardComponent {
-  authService = inject(AuthService);
+  auth = inject(AuthStore);
 
-  // Use auth service's user signal directly
-  user = this.authService.user;
+  // Use auth store's user signal directly
+  user = this.auth.user;
 
   // Mock recent activity for demo
   recentActivity = signal<ActivityItem[]>([
@@ -35,7 +35,8 @@ export class DashboardComponent {
   ]);
 
   readerLevel = computed<string>(() => {
-    const orderCount = this.user()?.orderCount || 0;
+    // TODO: When orders feature is implemented, use actual order count
+    const orderCount = 0;
     if (orderCount >= 10) return 'Master';
     if (orderCount >= 5) return 'Adept';
     if (orderCount >= 1) return 'Apprentice';
@@ -66,7 +67,7 @@ export class DashboardComponent {
 
   logout(): void {
     if (confirm('Log out of your account?')) {
-      this.authService.logout();
+      this.auth.logout();
     }
   }
 }

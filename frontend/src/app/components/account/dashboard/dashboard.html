@@ -6,9 +6,9 @@
       <!-- Profile Card -->
       <div class="profile-card">
         <div class="profile-avatar">{{ getInitials() }}</div>
-        <h2 class="profile-name">{{ user()?.firstName }} {{ user()?.lastName }}</h2>
+        <h2 class="profile-name">{{ user()?.name }}</h2>
         <p class="profile-email">{{ user()?.email }}</p>
-        <p class="profile-joined">Member since {{ user()?.joinedAt | date:'MMM yyyy' }}</p>
+        <p class="profile-joined">Member since {{ user()?.createdAt | date:'MMM yyyy' }}</p>
         <div class="reader-level">
           <span class="level-icon">{{ readerLevelIcon() }}</span>
           <span class="level-name">Reader Level: {{ readerLevel() }}</span>
@@ -22,7 +22,7 @@
           <a routerLink="/dashboard/orders" class="action-card">
             <div class="action-icon">📦</div>
             <div class="action-title">View Orders</div>
-            <div class="action-count">{{ user()?.orderCount }} total</div>
+            <div class="action-count">0 total</div>
           </a>
           <a routerLink="/cart" class="action-card">
             <div class="action-icon">🛒</div>
@@ -43,13 +43,17 @@
       <div class="recent-activity">
         <h3>Recent Activity</h3>
         <div class="activity-list">
-          <div *ngFor="let activity of recentActivity()" class="activity-item">
-            <div class="activity-message">{{ activity.message }}</div>
-            <div class="activity-time">{{ activity.timestamp | date:'short' }}</div>
-          </div>
-          <div *ngIf="recentActivity().length === 0" class="empty-activity">
-            No recent activity
-          </div>
+          @for (activity of recentActivity(); track activity.id) {
+            <div class="activity-item">
+              <div class="activity-message">{{ activity.message }}</div>
+              <div class="activity-time">{{ activity.timestamp | date:'short' }}</div>
+            </div>
+          }
+          @if (recentActivity().length === 0) {
+            <div class="empty-activity">
+              No recent activity
+            </div>
+          }
         </div>
       </div>
     </div>

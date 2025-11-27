@@ -2,7 +2,7 @@ import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthStore } from '../../../features/auth/auth.store';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +11,7 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './login.css',
 })
 export class LoginComponent {
-  authService = inject(AuthService);
+  auth = inject(AuthStore);
   router = inject(Router);
 
   loginForm = new FormGroup({
@@ -34,55 +34,22 @@ export class LoginComponent {
 
     const { email, password } = this.loginForm.value;
 
-    this.authService.login(email!, password!).subscribe({
-      next: () => {
-        // All users go to dashboard after login
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        this.errorMessage.set(error.error?.message || 'Invalid credentials. Please try again.');
-        this.isLoading.set(false);
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      }
-    });
+    // AuthStore handles loading state, errors, and navigation internally
+    this.auth.login(email!, password!);
   }
 
   /**
    * Handle demo login as user
    */
   onDemoLoginUser(): void {
-    this.performDemoLogin('user');
+    this.auth.login('demo@nightreader.com', 'demo123');
   }
 
   /**
    * Handle demo login as admin
    */
   onDemoLoginAdmin(): void {
-    this.performDemoLogin('admin');
-  }
-
-  /**
-   * Perform demo login with specified role
-   */
-  private performDemoLogin(role: 'user' | 'admin'): void {
-    this.errorMessage.set('');
-    this.isLoading.set(true);
-
-    this.authService.demoLogin(role).subscribe({
-      next: () => {
-        // All users go to dashboard after login
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        this.errorMessage.set(error.error?.message || 'Demo login failed');
-        this.isLoading.set(false);
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      }
-    });
+    this.auth.login('admin@nightreader.com', 'admin123');
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {

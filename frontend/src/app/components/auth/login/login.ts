@@ -1,8 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthStore } from '../../../features/auth/auth.store';
 
 @Component({
   selector: 'app-login',
@@ -20,86 +20,39 @@ export class LoginComponent {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  auth = inject(AuthStore);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
 
   /**
    * Handle standard login form submission
    */
   onLogin(): void {
     this.errorMessage.set(null);
-    this.isLoading.set(true);
 
     const emailValue = this.email();
     const passwordValue = this.password();
 
     if (!emailValue || !passwordValue) {
       this.errorMessage.set('Please enter email and password');
-      this.isLoading.set(false);
       return;
     }
 
-    this.authService.login(emailValue, passwordValue).subscribe({
-      next: () => {
-        // Check for return URL, otherwise go to dashboard
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-        if (returnUrl) {
-          this.router.navigate([returnUrl]);
-        } else {
-          this.router.navigate(['/dashboard']);
-        }
-      },
-      error: (error) => {
-        this.errorMessage.set(error.error?.message || 'Login failed. Please try again.');
-        this.isLoading.set(false);
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      }
-    });
+    // AuthStore handles loading state, errors, and navigation internally
+    this.auth.login(emailValue, passwordValue);
   }
 
   /**
    * Handle demo login as user
    */
   onDemoLoginUser(): void {
-    this.performDemoLogin('user');
+    this.auth.login('demo@nightreader.com', 'demo123');
   }
 
   /**
    * Handle demo login as admin
    */
   onDemoLoginAdmin(): void {
-    this.performDemoLogin('admin');
-  }
-
-  /**
-   * Perform demo login with specified role
-   */
-  private performDemoLogin(role: 'user' | 'admin'): void {
-    this.errorMessage.set(null);
-    this.isLoading.set(true);
-
-    this.authService.demoLogin(role).subscribe({
-      next: () => {
-        // Check for return URL, otherwise go to dashboard
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-        if (returnUrl) {
-          this.router.navigate([returnUrl]);
-        } else {
-          this.router.navigate(['/dashboard']);
-        }
-      },
-      error: (error) => {
-        this.errorMessage.set(error.error?.message || 'Demo login failed');
-        this.isLoading.set(false);
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      }
-    });
+    this.auth.login('admin@nightreader.com', 'admin123');
   }
 }
