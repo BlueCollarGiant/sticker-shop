@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { CartService } from '../../../services/cart.service';
+import { CartStore } from '../../../features/cart/cart.store';
 import { CartItemComponent } from '../../cart-item/cart-item';
 
 @Component({
@@ -11,11 +11,11 @@ import { CartItemComponent } from '../../cart-item/cart-item';
   styleUrl: './cart-drawer.css',
 })
 export class CartDrawerComponent {
-  cartService = inject(CartService);
+  cartStore = inject(CartStore);
   router = inject(Router);
 
   closeDrawer(): void {
-    this.cartService.closeDrawer();
+    this.cartStore.closeDrawer();
   }
 
   onBackdropClick(event: MouseEvent): void {
@@ -25,11 +25,11 @@ export class CartDrawerComponent {
   }
 
   onQuantityChange(event: { itemId: string; newQuantity: number }): void {
-    this.cartService.updateQuantity(event.itemId, event.newQuantity);
+    this.cartStore.updateQuantity(event.itemId, event.newQuantity);
   }
 
   onRemoveItem(itemId: string): void {
-    this.cartService.removeFromCart(itemId);
+    this.cartStore.removeItem(itemId);
   }
 
   goToCheckout(): void {

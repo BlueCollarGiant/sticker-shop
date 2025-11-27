@@ -30,26 +30,17 @@ export class CartStore {
   error = signal<string | null>(null);
   isDrawerOpen = signal<boolean>(false);
 
-  // Computed totals (derived from items)
-  totals = computed<CartTotals>(() => {
-    const cartItems = this.items();
-    const subtotal = cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    const shipping = subtotal >= 50 ? 0 : 5.99;
-    const tax = subtotal * 0.08;
-    const total = subtotal + shipping + tax;
-    const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-    return {
-      subtotal: Math.round(subtotal * 100) / 100,
-      shipping: Math.round(shipping * 100) / 100,
-      tax: Math.round(tax * 100) / 100,
-      total: Math.round(total * 100) / 100,
-      itemCount,
-    };
+  // Totals from backend (do NOT calculate on frontend)
+  private _totals = signal<CartTotals>({
+    subtotal: 0,
+    shipping: 0,
+    tax: 0,
+    total: 0,
+    itemCount: 0,
   });
+
+  // Read-only access to totals (calculated by backend)
+  totals = this._totals.asReadonly();
 
   constructor() {
     // Load from localStorage on init
@@ -74,6 +65,7 @@ export class CartStore {
     this.api.getCart().subscribe({
       next: (response) => {
         this.items.set(response.data.cart.items);
+        this._totals.set(response.data.totals);
         this.loading.set(false);
       },
       error: (err) => {
@@ -94,6 +86,7 @@ export class CartStore {
     this.api.addItem(request).subscribe({
       next: (response) => {
         this.items.set(response.data.cart.items);
+        this._totals.set(response.data.totals);
         this.loading.set(false);
         this.openDrawer();
       },
@@ -115,6 +108,7 @@ export class CartStore {
     this.api.updateItem(itemId, { quantity }).subscribe({
       next: (response) => {
         this.items.set(response.data.cart.items);
+        this._totals.set(response.data.totals);
         this.loading.set(false);
       },
       error: (err) => {
@@ -135,6 +129,7 @@ export class CartStore {
     this.api.removeItem(itemId).subscribe({
       next: (response) => {
         this.items.set(response.data.cart.items);
+        this._totals.set(response.data.totals);
         this.loading.set(false);
       },
       error: (err) => {
@@ -155,6 +150,13 @@ export class CartStore {
     this.api.clearCart().subscribe({
       next: (response) => {
         this.items.set([]);
+        this._totals.set({
+          subtotal: 0,
+          shipping: 0,
+          tax: 0,
+          total: 0,
+          itemCount: 0,
+        });
         this.loading.set(false);
       },
       error: (err) => {

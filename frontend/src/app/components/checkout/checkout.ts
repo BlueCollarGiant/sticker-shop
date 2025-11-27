@@ -1,7 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { CartService } from '../../services/cart.service';
+import { CartStore } from '../../features/cart/cart.store';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './checkout.css',
 })
 export class Checkout {
-  cartService = inject(CartService);
+  cartStore = inject(CartStore);
   authService = inject(AuthService);
   router = inject(Router);
 
@@ -21,8 +21,8 @@ export class Checkout {
     this.processing.set(true);
 
     // Get cart items
-    const cartItems = this.cartService.cartItems();
-    const totals = this.cartService.cartTotals();
+    const cartItems = this.cartStore.items();
+    const totals = this.cartStore.totals();
 
     // Generate order
     const order = {
@@ -33,10 +33,10 @@ export class Checkout {
       total: totals.total,
       items: cartItems.map(item => ({
         id: item.productId,
-        name: item.productTitle,
+        name: item.title,
         price: item.price,
         quantity: item.quantity,
-        image: item.productImage
+        image: item.imageUrl
       }))
     };
 
@@ -47,7 +47,7 @@ export class Checkout {
     localStorage.setItem('user_orders', JSON.stringify(orders));
 
     // Clear cart
-    this.cartService.clearCart();
+    this.cartStore.clearCart();
 
     // Simulate processing delay
     setTimeout(() => {
@@ -64,10 +64,10 @@ export class Checkout {
   }
 
   get cartItems() {
-    return this.cartService.cartItems();
+    return this.cartStore.items();
   }
 
   get cartTotals() {
-    return this.cartService.cartTotals();
+    return this.cartStore.totals();
   }
 }

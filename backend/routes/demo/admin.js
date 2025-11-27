@@ -1,17 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const mockDataService = require('../../services/mock-data.service');
+const { DemoProductStore } = require('../../src/infra/demo/demo-product.store');
 const authenticate = require('../../middleware/auth.middleware');
 const { requireAdmin } = require('../../middleware/role.middleware');
+
+// Initialize DemoProductStore
+const productStore = new DemoProductStore();
 
 // Apply authentication and admin role check to all routes
 router.use(authenticate);
 router.use(requireAdmin());
 
 // GET /api/demo/admin/products - List all products
-router.get('/products', (req, res) => {
+router.get('/products', async (req, res) => {
   try {
-    const products = mockDataService.getAll();
+    const products = await productStore.getAll();
     res.json(products);
   } catch (error) {
     res.status(500).json({
@@ -22,9 +25,9 @@ router.get('/products', (req, res) => {
 });
 
 // POST /api/demo/admin/products - Create new product
-router.post('/products', (req, res) => {
+router.post('/products', async (req, res) => {
   try {
-    const newProduct = mockDataService.create(req.body);
+    const newProduct = await productStore.create(req.body);
     res.status(201).json(newProduct);
   } catch (error) {
     res.status(400).json({
@@ -35,9 +38,9 @@ router.post('/products', (req, res) => {
 });
 
 // PUT /api/demo/admin/products/:id - Update product
-router.put('/products/:id', (req, res) => {
+router.put('/products/:id', async (req, res) => {
   try {
-    const updatedProduct = mockDataService.update(req.params.id, req.body);
+    const updatedProduct = await productStore.update(req.params.id, req.body);
     res.json(updatedProduct);
   } catch (error) {
     res.status(404).json({
@@ -48,9 +51,9 @@ router.put('/products/:id', (req, res) => {
 });
 
 // DELETE /api/demo/admin/products/:id - Delete product
-router.delete('/products/:id', (req, res) => {
+router.delete('/products/:id', async (req, res) => {
   try {
-    const result = mockDataService.delete(req.params.id);
+    const result = await productStore.delete(req.params.id);
     res.json(result);
   } catch (error) {
     res.status(404).json({
@@ -61,7 +64,7 @@ router.delete('/products/:id', (req, res) => {
 });
 
 // PATCH /api/demo/admin/products/:id/stock - Update stock
-router.patch('/products/:id/stock', (req, res) => {
+router.patch('/products/:id/stock', async (req, res) => {
   try {
     const { stock } = req.body;
 
@@ -72,7 +75,7 @@ router.patch('/products/:id/stock', (req, res) => {
       });
     }
 
-    const updatedProduct = mockDataService.updateStock(req.params.id, stock);
+    const updatedProduct = await productStore.updateStock(req.params.id, stock);
     res.json(updatedProduct);
   } catch (error) {
     res.status(404).json({
@@ -83,7 +86,7 @@ router.patch('/products/:id/stock', (req, res) => {
 });
 
 // PATCH /api/demo/admin/products/:id/badges - Toggle badge
-router.patch('/products/:id/badges', (req, res) => {
+router.patch('/products/:id/badges', async (req, res) => {
   try {
     const { badge } = req.body;
 
@@ -102,7 +105,7 @@ router.patch('/products/:id/badges', (req, res) => {
       });
     }
 
-    const updatedProduct = mockDataService.toggleBadge(req.params.id, badge);
+    const updatedProduct = await productStore.toggleBadge(req.params.id, badge);
     res.json(updatedProduct);
   } catch (error) {
     res.status(404).json({

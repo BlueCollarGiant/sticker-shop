@@ -4,12 +4,12 @@ import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthResponse, LoginRequest, RegisterRequest } from '../models/auth.model';
 import { User } from '../models/user.model';
+import { ApiConfig } from '../core/config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:3000/api/auth';
   private readonly TOKEN_KEY = 'night_reader_token';
 
   // Signal for current user
@@ -37,7 +37,7 @@ export class AuthService {
   login(email: string, password: string): Observable<AuthResponse> {
     const request: LoginRequest = { email, password };
 
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, request).pipe(
+    return this.http.post<AuthResponse>(ApiConfig.AUTH.LOGIN(), request).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
   }
@@ -62,7 +62,7 @@ export class AuthService {
   register(email: string, password: string, name?: string): Observable<AuthResponse> {
     const request: RegisterRequest = { email, password, name };
 
-    return this.http.post<AuthResponse>(`${this.API_URL}/register`, request).pipe(
+    return this.http.post<AuthResponse>(ApiConfig.AUTH.REGISTER(), request).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
   }
@@ -78,7 +78,7 @@ export class AuthService {
     this.userSignal.set(null);
 
     // Optional: call backend logout endpoint
-    this.http.post(`${this.API_URL}/logout`, {}).subscribe();
+    this.http.post(ApiConfig.AUTH.LOGOUT(), {}).subscribe();
 
     // Redirect to login
     this.router.navigate(['/login']);
@@ -88,7 +88,7 @@ export class AuthService {
    * Get current user from backend (requires valid token)
    */
   getCurrentUser(): Observable<{ user: User }> {
-    return this.http.get<{ user: User }>(`${this.API_URL}/me`).pipe(
+    return this.http.get<{ user: User }>(ApiConfig.AUTH.ME()).pipe(
       tap(response => this.userSignal.set(response.user))
     );
   }

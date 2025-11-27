@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartItem } from '../../models/cart.model';
+import { CartItem } from '../../features/cart/cart.types';
 
 @Component({
   selector: 'app-cart-item',
@@ -46,12 +46,6 @@ export class CartItemComponent {
       this.remove.emit(this.item.id);
       this.showRemoveConfirm = false;
     }
-  }
-
-  formatCollection(collection: string): string {
-    return collection.split('-').map(word =>
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
   }
 
   getItemTotal(): number {

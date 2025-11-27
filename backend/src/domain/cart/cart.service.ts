@@ -1,4 +1,5 @@
 import { ICartRepository, Cart, CartTotals, AddToCartInput, UpdateCartItemInput, RemoveFromCartInput } from './cart.types';
+import { CART_CONSTANTS } from './cart.constants';
 
 /**
  * Cart Service - Business logic for cart operations
@@ -81,8 +82,8 @@ export class CartService {
   /**
    * Calculate cart totals
    * Business rules:
-   * - Free shipping over $50
-   * - 8% tax rate
+   * - Free shipping over FREE_SHIPPING_THRESHOLD
+   * - TAX_RATE applied to subtotal
    */
   calculateTotals(cart: Cart): CartTotals {
     const subtotal = cart.items.reduce(
@@ -90,8 +91,10 @@ export class CartService {
       0
     );
 
-    const shipping = subtotal >= 50 ? 0 : 5.99;
-    const tax = subtotal * 0.08;
+    const shipping = subtotal >= CART_CONSTANTS.FREE_SHIPPING_THRESHOLD
+      ? 0
+      : CART_CONSTANTS.SHIPPING_COST;
+    const tax = subtotal * CART_CONSTANTS.TAX_RATE;
     const total = subtotal + shipping + tax;
     const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
 

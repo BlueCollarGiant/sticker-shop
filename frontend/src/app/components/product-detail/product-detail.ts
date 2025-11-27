@@ -2,7 +2,7 @@ import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductsService } from '../../services/products';
-import { CartService } from '../../services/cart.service';
+import { CartStore } from '../../features/cart/cart.store';
 import { Product, ProductVariant, ProductImage } from '../../models/product.model';
 
 @Component({
@@ -16,7 +16,7 @@ export class ProductDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private productsService = inject(ProductsService);
-  private cartService = inject(CartService);
+  private cartStore = inject(CartStore);
 
   // State
   product = signal<Product | null>(null);
@@ -151,7 +151,20 @@ export class ProductDetail implements OnInit {
     const stock = variant ? variant.stock : p.stock;
     if (stock === 0) return;
 
-    this.cartService.addToCart(p);
+    // Get primary image URL
+    const imageUrl = typeof p.images[0] === 'string'
+      ? p.images[0]
+      : p.images[0]?.url || '';
+
+    // Add to cart with new API
+    this.cartStore.addItem({
+      productId: p.id,
+      variantId: variant?.id,
+      quantity: 1,
+      price: this.currentPrice(),
+      title: p.title,
+      imageUrl: imageUrl
+    });
   }
 
   goBack(): void {
