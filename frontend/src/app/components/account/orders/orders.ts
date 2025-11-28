@@ -38,16 +38,33 @@ export class OrdersComponent {
   }
 
   loadOrders() {
-    // Load orders from localStorage
-    const savedOrders = localStorage.getItem('user_orders');
+    const currentUser = this.auth.user();
+
+    if (!currentUser) {
+      console.error('No user logged in');
+      this.loading.set(false);
+      return;
+    }
+
+    // Load user-specific orders from localStorage
+    const storageKey = `user_orders_${currentUser.id}`;
+    const savedOrders = localStorage.getItem(storageKey);
+
     if (savedOrders) {
       const parsedOrders = JSON.parse(savedOrders);
       // Convert date strings back to Date objects
       parsedOrders.forEach((order: any) => {
         order.date = new Date(order.date);
       });
-      this.orders.set(parsedOrders);
+
+      // Filter orders to only show current user's orders (extra safety check)
+      const userOrders = parsedOrders.filter((order: any) =>
+        !order.userId || order.userId === currentUser.id
+      );
+
+      this.orders.set(userOrders);
     }
+
     this.loading.set(false);
   }
 

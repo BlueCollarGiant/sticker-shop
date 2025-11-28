@@ -119,6 +119,34 @@ export class DemoAuthStore implements IAuthRepository {
     return userWithoutPassword;
   }
 
+  /**
+   * Check if users database is empty
+   */
+  async isEmpty(): Promise<boolean> {
+    const users = await this.loadUsers();
+    return users.size === 0;
+  }
+
+  /**
+   * Initialize with demo users (for seeding)
+   */
+  async initializeWithDemoUsers(): Promise<void> {
+    const users = new Map<string, StoredUser>();
+    this.DEMO_USERS.forEach(user => {
+      users.set(user.email.toLowerCase(), user);
+    });
+    await this.saveUsers(users);
+    console.log(`[SEED] Initialized ${this.DEMO_USERS.length} demo users`);
+  }
+
+  /**
+   * Get user count
+   */
+  async getUserCount(): Promise<number> {
+    const users = await this.loadUsers();
+    return users.size;
+  }
+
   async findUserByEmail(email: string): Promise<User | null> {
     const users = await this.loadUsers();
     const user = users.get(email.toLowerCase());

@@ -1,4 +1,13 @@
-import { Address } from './cart.model';
+// Address type for future implementation
+export interface Address {
+  id?: string;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  isDefault?: boolean;
+}
 
 // Demo mode user interface (simplified for demo)
 export interface User {

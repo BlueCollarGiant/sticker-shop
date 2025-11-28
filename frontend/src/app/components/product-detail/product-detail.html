@@ -80,11 +80,11 @@
       </div>
 
       <!-- Variant Selector: Sizes -->
-      <div class="variant-selector" *ngIf="product()!.variants && product()!.variants.length > 0">
+      <div class="variant-selector" *ngIf="product()?.variants && product()!.variants!.length > 0">
         <h3 class="variant-label">Select Size:</h3>
         <div class="variant-options">
           <button
-            *ngFor="let variant of product()!.variants"
+            *ngFor="let variant of product()!.variants!"
             class="variant-chip"
             [class.selected]="isVariantSelected(variant)"
             [class.out-of-stock]="variant.stock === 0"

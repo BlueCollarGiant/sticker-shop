@@ -1,20 +1,34 @@
 import { createApp } from './app';
 import { env } from './config/env';
+import { DemoProductStore } from './infra/demo/demo-product.store';
+import { DemoAuthStore } from './infra/demo/demo-auth.store';
+import { seedAll } from './seeds/seed-all';
 
-const app = createApp();
-const PORT = env.PORT;
+async function startServer() {
+  // Auto-seed on startup if needed
+  const productStore = new DemoProductStore();
+  const authStore = new DemoAuthStore();
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 Backend server running on port ${PORT}`);
-  console.log(`📍 Mode: ${env.DEMO_MODE ? 'DEMO' : 'PRODUCTION'}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/api/health\n`);
+  const productsEmpty = await productStore.isEmpty();
+  const usersEmpty = await authStore.isEmpty();
 
-  if (env.DEMO_MODE) {
-    console.log('🎭 DEMO MODE ENABLED');
-    console.log('  - Using mock data from data/demo-products.json');
-    console.log('  - Admin panel available at /api/demo/admin');
-    console.log('  - Demo accounts:');
-    console.log('    User: demo@nightreader.com / demo123');
-    console.log('    Admin: admin@nightreader.com / admin123\n');
+  if (productsEmpty || usersEmpty) {
+    console.log('[SEED] Database empty, auto-seeding...');
+    await seedAll();
+  } else {
+    const userCount = await authStore.getUserCount();
+    const catalog = await productStore.getCatalog();
+    console.log(`[SEED] Loaded ${userCount} users, ${catalog.totalProducts} products`);
   }
-});
+
+  const app = createApp();
+  const PORT = env.PORT;
+
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n🚀 Night Reader Shop - Backend running on port ${PORT}`);
+    console.log(`📍 Mode: ${env.DEMO_MODE ? 'DEMO' : 'PRODUCTION'}`);
+    console.log(`🔗 Health: http://localhost:${PORT}/api/health\n`);
+  });
+}
+
+startServer();

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product, ProductCategory, ProductCollection, SortOption, FilterState, ProductBadge, ProductImage } from '../../models/product.model';
 import { CartStore } from '../../features/cart/cart.store';
-import { ProductsService } from '../../services/products';
+import { ProductStore } from '../../features/products/product.store';
 
 @Component({
   selector: 'app-products',
@@ -12,12 +12,14 @@ import { ProductsService } from '../../services/products';
   styleUrl: './products.css',
 })
 export class Products implements OnInit {
-  allProducts = signal<Product[]>([]);
-  isLoading = signal(true);
-  errorMessage = signal<string | null>(null);
-
   cartStore = inject(CartStore);
-  productsService = inject(ProductsService);
+  productStore = inject(ProductStore);
+
+  allProducts = signal<Product[]>([]);
+
+  // Expose store signals for template
+  isLoading = this.productStore.isLoading;
+  errorMessage = this.productStore.errorMessage;
 
   filters = signal<FilterState>({
     categories: [],
@@ -39,30 +41,19 @@ export class Products implements OnInit {
   /**
    * Load products from API
    */
-  loadProducts(): void {
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
+  async loadProducts(): Promise<void> {
+    await this.productStore.loadAllProducts();
 
-    this.productsService.getProducts().subscribe({
-      next: (response: any) => {
-        // Handle both formats: direct array or { data: [...] }
-        const products = Array.isArray(response) ? response : response.data;
+    // Update local allProducts from store
+    const storeProducts = this.productStore.allProducts();
 
-        // Convert createdAt strings to Date objects for sorting
-        const productsWithDates = products.map((p: any) => ({
-          ...p,
-          createdAt: new Date(p.createdAt)
-        }));
+    // Convert createdAt strings to Date objects for sorting
+    const productsWithDates = storeProducts.map((p: any) => ({
+      ...p,
+      createdAt: p.createdAt instanceof Date ? p.createdAt : new Date(p.createdAt)
+    }));
 
-        this.allProducts.set(productsWithDates);
-        this.isLoading.set(false);
-      },
-      error: (error) => {
-        console.error('Error loading products:', error);
-        this.errorMessage.set('Failed to load products. Please try again later.');
-        this.isLoading.set(false);
-      }
-    });
+    this.allProducts.set(productsWithDates);
   }
 
   // Computed filtered and sorted products

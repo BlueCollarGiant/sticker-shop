@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartTotals } from '../../models/cart.model';
+import { CartTotals } from '../../features/cart/cart.types';
 
 @Component({
   selector: 'app-cart-summary',

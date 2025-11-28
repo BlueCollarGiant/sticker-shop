@@ -1,40 +1,73 @@
 const express = require('express');
 const router = express.Router();
-const printifyService = require('../services/printify');
+
+// Demo order storage (in-memory for now)
+let orders = [];
+let orderIdCounter = 1;
 
 router.post('/create', async (req, res) => {
   try {
     const orderData = req.body;
-    const order = await printifyService.createOrder(orderData);
-    res.json(order);
+
+    // Create demo order
+    const order = {
+      id: `order-${orderIdCounter++}`,
+      ...orderData,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    };
+
+    orders.push(order);
+
+    res.json({
+      success: true,
+      data: order,
+      message: 'Order created successfully (demo mode)',
+    });
   } catch (error) {
-    res.status(500).json({ 
-      error: 'Failed to create order', 
-      message: error.message 
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create order',
+      message: error.message
     });
   }
 });
 
 router.get('/', async (req, res) => {
   try {
-    const orders = await printifyService.getOrders();
-    res.json(orders);
+    res.json({
+      success: true,
+      data: orders,
+    });
   } catch (error) {
-    res.status(500).json({ 
-      error: 'Failed to fetch orders', 
-      message: error.message 
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch orders',
+      message: error.message
     });
   }
 });
 
 router.get('/:id', async (req, res) => {
   try {
-    const order = await printifyService.getOrder(req.params.id);
-    res.json(order);
+    const order = orders.find(o => o.id === req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      data: order,
+    });
   } catch (error) {
-    res.status(500).json({ 
-      error: 'Failed to fetch order', 
-      message: error.message 
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch order',
+      message: error.message
     });
   }
 });

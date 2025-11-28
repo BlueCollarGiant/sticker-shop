@@ -35,8 +35,11 @@ export class AdminPanelComponent implements OnInit {
   productToDelete = signal<Product | null>(null);
 
   // User management state
+  users = signal<any[]>([]);
   userSearchQuery = signal('');
-  selectedUser = signal<any | null>(null);
+  selectedUserId = signal<string | null>(null);
+  userOrders = signal<any[]>([]);
+  loadingUsers = signal(false);
 
   // Computed stats
   stats = computed(() => {
@@ -63,6 +66,17 @@ export class AdminPanelComponent implements OnInit {
     );
   });
 
+  // Filtered users
+  filteredUsers = computed(() => {
+    const query = this.userSearchQuery().toLowerCase();
+    if (!query) return this.users();
+
+    return this.users().filter(u =>
+      u.name?.toLowerCase().includes(query) ||
+      u.email?.toLowerCase().includes(query)
+    );
+  });
+
   currentUser = this.auth.user;
 
   ngOnInit(): void {
@@ -73,6 +87,7 @@ export class AdminPanelComponent implements OnInit {
     }
 
     this.loadProducts();
+    this.loadUsers();
   }
 
   loadProducts(): void {
@@ -163,6 +178,84 @@ export class AdminPanelComponent implements OnInit {
         this.showDeleteConfirm.set(false);
         this.productToDelete.set(null);
       }
+    });
+  }
+
+  // ===== USER MANAGEMENT METHODS =====
+
+  loadUsers(): void {
+    this.loadingUsers.set(true);
+
+    this.adminService.getAllUsers().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.users.set(response.data);
+        }
+        this.loadingUsers.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+        this.loadingUsers.set(false);
+      }
+    });
+  }
+
+  toggleUserDetails(userId: string): void {
+    // If clicking the same user, collapse
+    if (this.selectedUserId() === userId) {
+      this.selectedUserId.set(null);
+      this.userOrders.set([]);
+      return;
+    }
+
+    // Expand new user
+    this.selectedUserId.set(userId);
+
+    // Load user's orders from localStorage
+    this.loadUserOrders(userId);
+  }
+
+  loadUserOrders(userId: string): void {
+    // Since orders are in localStorage, we need to read them from there
+    // In a real backend implementation, this would be an API call
+    const storageKey = `user_orders_${userId}`;
+    const savedOrders = localStorage.getItem(storageKey);
+
+    if (savedOrders) {
+      try {
+        const orders = JSON.parse(savedOrders);
+        // Convert date strings to Date objects
+        orders.forEach((order: any) => {
+          order.date = new Date(order.date);
+        });
+        this.userOrders.set(orders);
+      } catch (error) {
+        console.error('Error parsing user orders:', error);
+        this.userOrders.set([]);
+      }
+    } else {
+      this.userOrders.set([]);
+    }
+  }
+
+  isUserExpanded(userId: string): boolean {
+    return this.selectedUserId() === userId;
+  }
+
+  getUserInitials(name: string): string {
+    if (!name) return '?';
+    const parts = name.split(' ');
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  formatDate(date: Date): string {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 }

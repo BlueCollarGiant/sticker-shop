@@ -25,7 +25,10 @@
       "Bash(dir /b \"c:\\Users\\boop boop\\Documents\\GitHub\\sticker-shop\\frontend\\src\\app\\services\\auth\")",
       "Bash(dir /b \"c:\\Users\\boop boop\\Documents\\GitHub\\sticker-shop\\frontend\\src\\app\\components\\auth\")",
       "Bash(dir:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(powershell -Command \"Stop-Process -Id 10724 -Force\")",
+      "Bash(powershell:*)",
+      "Bash(del nul)"
     ],
     "deny": [],
     "ask": []

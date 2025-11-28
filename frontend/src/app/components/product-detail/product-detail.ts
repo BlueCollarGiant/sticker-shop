@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ProductsService } from '../../services/products';
+import { ProductStore } from '../../features/products/product.store';
 import { CartStore } from '../../features/cart/cart.store';
 import { Product, ProductVariant, ProductImage } from '../../models/product.model';
 
@@ -15,16 +15,18 @@ import { Product, ProductVariant, ProductImage } from '../../models/product.mode
 export class ProductDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private productsService = inject(ProductsService);
+  private productStore = inject(ProductStore);
   private cartStore = inject(CartStore);
 
   // State
-  product = signal<Product | null>(null);
-  isLoading = signal(true);
-  errorMessage = signal<string | null>(null);
   selectedImageIndex = signal(0);
   selectedVariant = signal<ProductVariant | null>(null);
   relatedProducts = signal<Product[]>([]);
+
+  // Use store signals
+  product = this.productStore.currentProduct;
+  isLoading = this.productStore.isLoading;
+  errorMessage = this.productStore.errorMessage;
 
   // Computed
   selectedImage = computed(() => {
@@ -73,60 +75,37 @@ export class ProductDetail implements OnInit {
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
       this.loadProduct(productId);
-    } else {
-      this.errorMessage.set('Product ID not found');
-      this.isLoading.set(false);
     }
   }
 
-  loadProduct(id: string): void {
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
+  async loadProduct(id: string): Promise<void> {
+    await this.productStore.loadProductById(id);
 
-    this.productsService.getProduct(id).subscribe({
-      next: (product: any) => {
-        // Convert createdAt to Date if needed
-        if (typeof product.createdAt === 'string') {
-          product.createdAt = new Date(product.createdAt);
-        }
+    const product = this.product();
 
-        this.product.set(product);
-
-        // Select first variant by default if variants exist
-        if (product.variants && product.variants.length > 0) {
-          this.selectedVariant.set(product.variants[0]);
-        }
-
-        this.isLoading.set(false);
-
-        // Load related products
-        this.loadRelatedProducts(product.category);
-      },
-      error: (error) => {
-        console.error('Error loading product:', error);
-        this.errorMessage.set('Product not found');
-        this.isLoading.set(false);
+    if (product) {
+      // Select first variant by default if variants exist
+      if (product.variants && product.variants.length > 0) {
+        this.selectedVariant.set(product.variants[0]);
       }
-    });
+
+      // Load related products
+      await this.loadRelatedProducts(product.category);
+    }
   }
 
-  loadRelatedProducts(category: string): void {
-    this.productsService.getProducts().subscribe({
-      next: (response: any) => {
-        const products = Array.isArray(response) ? response : response.data;
-        const currentId = this.product()?.id;
+  async loadRelatedProducts(category: string): Promise<void> {
+    await this.productStore.loadAllProducts();
 
-        // Filter by same category, exclude current product, limit to 4
-        const related = products
-          .filter((p: Product) => p.category === category && p.id !== currentId)
-          .slice(0, 4);
+    const products = this.productStore.allProducts();
+    const currentId = this.product()?.id;
 
-        this.relatedProducts.set(related);
-      },
-      error: (error) => {
-        console.error('Error loading related products:', error);
-      }
-    });
+    // Filter by same category, exclude current product, limit to 4
+    const related = products
+      .filter((p: any) => p.category === category && p.id !== currentId)
+      .slice(0, 4);
+
+    this.relatedProducts.set(related);
   }
 
   selectImage(index: number): void {

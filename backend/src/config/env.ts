@@ -19,10 +19,6 @@ const envSchema = z.object({
   // JWT
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
   JWT_EXPIRY: z.string().default('24h'),
-
-  // Printify (optional in demo mode)
-  PRINTIFY_API_KEY: z.string().optional(),
-  PRINTIFY_SHOP_ID: z.string().optional(),
 });
 
 /**
@@ -49,11 +45,4 @@ export type Env = z.infer<typeof envSchema>;
  */
 export function getAllowedOrigins(): string[] {
   return env.ALLOWED_ORIGINS.split(',').map(o => o.trim());
-}
-
-/**
- * Check if Printify is enabled
- */
-export function isPrintifyEnabled(): boolean {
-  return !env.DEMO_MODE && !!env.PRINTIFY_API_KEY && !!env.PRINTIFY_SHOP_ID;
 }

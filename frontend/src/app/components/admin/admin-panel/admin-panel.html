@@ -346,7 +346,7 @@
     @if (activeTab() === 'users') {
       <header class="admin-header">
         <h1 class="admin-title">User Management</h1>
-        <p class="admin-subtitle">Search and manage user accounts</p>
+        <p class="admin-subtitle">{{ filteredUsers().length }} user{{ filteredUsers().length !== 1 ? 's' : '' }} total</p>
       </header>
 
       <div class="search-section">
@@ -354,7 +354,7 @@
           <input
             type="text"
             class="search-input"
-            placeholder="Search by email, name, or order number..."
+            placeholder="Search by name or email..."
             [(ngModel)]="userSearchQuery"
           />
           <span class="search-icon">🔍</span>
@@ -362,23 +362,91 @@
       </div>
 
       <div class="content-section">
-        @if (userSearchQuery()) {
+        @if (loadingUsers()) {
+          <div class="placeholder-content">
+            <div class="placeholder-icon">⏳</div>
+            <p class="placeholder-text">Loading users...</p>
+          </div>
+        } @else if (filteredUsers().length === 0) {
           <div class="placeholder-content">
             <div class="placeholder-icon">👤</div>
-            <p class="placeholder-text">User search is currently in demo mode</p>
-            <p class="placeholder-subtext">In a live environment, searching for "{{ userSearchQuery() }}" would display:</p>
-            <ul class="feature-list">
-              <li>User account details</li>
-              <li>Order history and status</li>
-              <li>Shopping behavior data</li>
-              <li>Account management options (blacklist email, etc.)</li>
-            </ul>
+            <p class="placeholder-text">No users found</p>
+            <p class="placeholder-subtext">Try a different search term</p>
           </div>
         } @else {
-          <div class="placeholder-content">
-            <div class="placeholder-icon">🔍</div>
-            <p class="placeholder-text">Enter a search term to find users</p>
-            <p class="placeholder-subtext">Search by email, name, or order number</p>
+          <div class="users-list">
+            @for (user of filteredUsers(); track user.id) {
+              <div class="user-card" [class.expanded]="isUserExpanded(user.id)">
+                <div class="user-summary" (click)="toggleUserDetails(user.id)">
+                  <div class="user-avatar">
+                    {{ getUserInitials(user.name) }}
+                  </div>
+                  <div class="user-info">
+                    <div class="user-name">{{ user.name }}</div>
+                    <div class="user-email">{{ user.email }}</div>
+                  </div>
+                  <div class="user-meta">
+                    <span class="user-role" [class.admin-role]="user.role === 'admin'">
+                      {{ user.role }}
+                    </span>
+                    <span class="expand-icon">{{ isUserExpanded(user.id) ? '▼' : '▶' }}</span>
+                  </div>
+                </div>
+
+                @if (isUserExpanded(user.id)) {
+                  <div class="user-details">
+                    <div class="user-details-section">
+                      <h3 class="details-title">Account Information</h3>
+                      <div class="details-grid">
+                        <div class="detail-item">
+                          <span class="detail-label">User ID:</span>
+                          <span class="detail-value">{{ user.id }}</span>
+                        </div>
+                        <div class="detail-item">
+                          <span class="detail-label">Email:</span>
+                          <span class="detail-value">{{ user.email }}</span>
+                        </div>
+                        <div class="detail-item">
+                          <span class="detail-label">Role:</span>
+                          <span class="detail-value">{{ user.role }}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="user-details-section">
+                      <h3 class="details-title">Order History ({{ userOrders().length }})</h3>
+                      @if (userOrders().length > 0) {
+                        <div class="orders-table">
+                          @for (order of userOrders(); track order.id) {
+                            <div class="order-row">
+                              <div class="order-number">
+                                <strong>#{{ order.orderNumber }}</strong>
+                              </div>
+                              <div class="order-date">
+                                {{ formatDate(order.date) }}
+                              </div>
+                              <div class="order-status">
+                                <span class="status-badge" [class]="'status-' + order.status">
+                                  {{ order.status }}
+                                </span>
+                              </div>
+                              <div class="order-total">
+                                ${{ order.total.toFixed(2) }}
+                              </div>
+                              <div class="order-items">
+                                {{ order.items.length }} item{{ order.items.length !== 1 ? 's' : '' }}
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      } @else {
+                        <p class="empty-message">No orders found for this user</p>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
           </div>
         }
       </div>

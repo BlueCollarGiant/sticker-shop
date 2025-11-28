@@ -15,9 +15,9 @@
           <div class="summary-items">
             @for (item of cartItems; track item.id) {
               <div class="summary-item">
-                <img [src]="item.productImage" [alt]="item.productTitle" class="item-image">
+                <img [src]="item.imageUrl" [alt]="item.title" class="item-image">
                 <div class="item-info">
-                  <p class="item-name">{{ item.productTitle }}</p>
+                  <p class="item-name">{{ item.title }}</p>
                   <p class="item-qty">Qty: {{ item.quantity }}</p>
                 </div>
                 <p class="item-price">${{ (item.price * item.quantity).toFixed(2) }}</p>

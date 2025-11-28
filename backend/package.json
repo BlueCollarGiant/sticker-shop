@@ -1,17 +1,17 @@
 {
-  "name": "printify-stickers-backend",
+  "name": "night-reader-backend",
   "version": "1.0.0",
-  "description": "Express backend for Printify sticker e-commerce",
+  "description": "Express backend for Night Reader sticker shop",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "seed": "node seeds/seed.js"
+    "seed": "ts-node src/seeds/seed-all.ts"
   },
   "keywords": [
     "express",
-    "printify",
+    "ecommerce",
     "api"
   ],
   "author": "",

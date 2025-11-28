@@ -51,4 +51,25 @@ export class AdminService {
   toggleBadge(id: string, badge: string): Observable<Product> {
     return this.http.patch<Product>(`${this.API_URL}/products/${id}/badges`, { badge });
   }
+
+  /**
+   * Get all users (admin only)
+   */
+  getAllUsers(): Observable<{ success: boolean; data: any[] }> {
+    return this.http.get<{ success: boolean; data: any[] }>(`${this.API_URL}/users`);
+  }
+
+  /**
+   * Get user by ID with their orders (admin only)
+   */
+  getUserById(userId: string): Observable<{ success: boolean; data: any }> {
+    return this.http.get<{ success: boolean; data: any }>(`${this.API_URL}/users/${userId}`);
+  }
+
+  /**
+   * Get user's orders (admin only)
+   */
+  getUserOrders(userId: string): Observable<{ success: boolean; data: any[] }> {
+    return this.http.get<{ success: boolean; data: any[] }>(`${this.API_URL}/users/${userId}/orders`);
+  }
 }

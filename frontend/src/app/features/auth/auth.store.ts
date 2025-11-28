@@ -38,6 +38,22 @@ export class AuthStore {
   constructor() {
     // Load user from token on initialization
     this.loadUserFromToken();
+
+    // Clean up old shared localStorage data
+    this.migrateOldLocalStorage();
+  }
+
+  /**
+   * Migrate old non-user-specific localStorage to user-specific
+   * This handles the transition from shared 'user_orders' to 'user_orders_{userId}'
+   */
+  private migrateOldLocalStorage(): void {
+    const oldOrders = localStorage.getItem('user_orders');
+    if (oldOrders) {
+      console.warn('[Migration] Found old shared user_orders, removing...');
+      // Remove old shared data (we can't migrate it without knowing which user it belongs to)
+      localStorage.removeItem('user_orders');
+    }
   }
 
   /**
@@ -106,8 +122,15 @@ export class AuthStore {
    * Logout current user
    */
   logout(): void {
+    const userId = this._user()?.id;
+
     // Call backend logout endpoint (optional - JWT is stateless)
     this.api.logout().subscribe();
+
+    // Clear user-specific data from localStorage
+    if (userId) {
+      this.clearUserData(userId);
+    }
 
     // Clear token from storage
     localStorage.removeItem(this.TOKEN_KEY);
@@ -117,6 +140,18 @@ export class AuthStore {
 
     // Redirect to login
     this.router.navigate(['/login']);
+  }
+
+  /**
+   * Clear all user-specific data from localStorage
+   */
+  private clearUserData(userId: string): void {
+    // Clear user-specific orders
+    localStorage.removeItem(`user_orders_${userId}`);
+
+    // Add other user-specific data keys here as needed
+    // localStorage.removeItem(`user_preferences_${userId}`);
+    // localStorage.removeItem(`user_cart_${userId}`);
   }
 
   /**

@@ -16,14 +16,5 @@
     "role": "admin",
     "createdAt": "2024-01-01T00:00:00.000Z",
     "updatedAt": "2024-01-01T00:00:00.000Z"
-  },
-  {
-    "id": "user-1764217326660-56c98ooju",
-    "email": "newuser@test.com",
-    "password": "test123",
-    "name": "Test User",
-    "role": "user",
-    "createdAt": "2025-11-27T04:22:06.660Z",
-    "updatedAt": "2025-11-27T04:22:06.660Z"
   }
 ]

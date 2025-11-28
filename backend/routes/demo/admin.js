@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { DemoProductStore } = require('../../dist/infra/demo/demo-product.store');
+const { DemoAuthStore } = require('../../dist/infra/demo/demo-auth.store');
 const { authenticate } = require('../../dist/middleware/auth.middleware');
 const { requireAdmin } = require('../../middleware/role.middleware');
 
-// Initialize DemoProductStore
+// Initialize stores
 const productStore = new DemoProductStore();
+const authStore = new DemoAuthStore();
 
 // Apply authentication and admin role check to all routes
 router.use(authenticate);
@@ -110,6 +112,83 @@ router.patch('/products/:id/badges', async (req, res) => {
   } catch (error) {
     res.status(404).json({
       error: 'Failed to toggle badge',
+      message: error.message
+    });
+  }
+});
+
+// ===== USER MANAGEMENT ENDPOINTS =====
+
+// GET /api/demo/admin/users - List all users
+router.get('/users', async (req, res) => {
+  try {
+    const fs = require('fs').promises;
+    const path = require('path');
+    const usersFile = path.join(__dirname, '../../data/demo-users.json');
+
+    // Read users from file
+    const data = await fs.readFile(usersFile, 'utf8');
+    const users = JSON.parse(data);
+
+    // Remove passwords from response
+    const safeUsers = users.map(user => {
+      const { password, ...safeUser } = user;
+      return safeUser;
+    });
+
+    res.json({
+      success: true,
+      data: safeUsers
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch users',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/demo/admin/users/:userId - Get specific user details
+router.get('/users/:userId', async (req, res) => {
+  try {
+    const user = await authStore.findUserById(req.params.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch user',
+      message: error.message
+    });
+  }
+});
+
+// GET /api/demo/admin/users/:userId/orders - Get user's orders from localStorage data
+router.get('/users/:userId/orders', async (req, res) => {
+  try {
+    // In a real app, this would query a database
+    // For demo, we'll return a note that orders are stored in browser localStorage
+    res.json({
+      success: true,
+      data: [],
+      message: 'Orders are stored in browser localStorage. Use frontend admin panel to view user orders.',
+      note: 'In production, orders would be stored in backend database'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch user orders',
       message: error.message
     });
   }

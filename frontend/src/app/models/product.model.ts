@@ -8,7 +8,7 @@ export interface Product {
   category: ProductCategory | string;
   collection: ProductCollection | string;
   images: ProductImage[] | string[];
-  variants: ProductVariant[];
+  variants?: ProductVariant[];
   tags: string[];
   badges?: ProductBadge[] | string[];
   rating: number;

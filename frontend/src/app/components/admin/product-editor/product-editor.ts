@@ -74,7 +74,7 @@ export class ProductEditorComponent implements OnInit {
     });
     this.images.set(images);
 
-    this.variants.set([...product.variants]);
+    this.variants.set(product.variants ? [...product.variants] : []);
     this.stock.set(product.stock);
     this.isNew.set(product.isNew || false);
     this.isBestseller.set(product.isBestseller || false);

@@ -20,6 +20,14 @@ export class Checkout {
   completeOrder() {
     this.processing.set(true);
 
+    const currentUser = this.auth.user();
+    if (!currentUser) {
+      console.error('No user logged in');
+      this.processing.set(false);
+      this.router.navigate(['/login']);
+      return;
+    }
+
     // Get cart items
     const cartItems = this.cartStore.items();
     const totals = this.cartStore.totals();
@@ -37,14 +45,16 @@ export class Checkout {
         price: item.price,
         quantity: item.quantity,
         image: item.imageUrl
-      }))
+      })),
+      userId: currentUser.id // Associate order with user
     };
 
-    // Save order to localStorage
-    const savedOrders = localStorage.getItem('user_orders');
+    // Save order to user-specific localStorage
+    const storageKey = `user_orders_${currentUser.id}`;
+    const savedOrders = localStorage.getItem(storageKey);
     const orders = savedOrders ? JSON.parse(savedOrders) : [];
     orders.unshift(order); // Add new order to beginning
-    localStorage.setItem('user_orders', JSON.stringify(orders));
+    localStorage.setItem(storageKey, JSON.stringify(orders));
 
     // Clear cart
     this.cartStore.clearCart();
