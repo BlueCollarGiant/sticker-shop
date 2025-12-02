@@ -8,11 +8,12 @@ import { Product, ProductCategory, ProductCollection, ProductBadge, ProductImage
 import { StockManagerComponent } from '../stock-manager/stock-manager';
 import { BadgeToggleComponent } from '../badge-toggle/badge-toggle';
 import { ProductEditorComponent } from '../product-editor/product-editor';
+import { AdminOrdersComponent } from '../admin-orders/admin-orders';
 
 @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, StockManagerComponent, BadgeToggleComponent, ProductEditorComponent],
+  imports: [CommonModule, FormsModule, StockManagerComponent, BadgeToggleComponent, ProductEditorComponent, AdminOrdersComponent],
   templateUrl: './admin-panel.html',
   styleUrl: './admin-panel.css'
 })
@@ -22,7 +23,7 @@ export class AdminPanelComponent implements OnInit {
   private router = inject(Router);
 
   // Tab state
-  activeTab = signal<'general' | 'products' | 'sales' | 'users'>('general');
+  activeTab = signal<'general' | 'products' | 'orders' | 'sales' | 'users'>('general');
 
   // State
   products = signal<Product[]>([]);

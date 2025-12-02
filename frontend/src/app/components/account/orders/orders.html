@@ -5,25 +5,67 @@
       <a routerLink="/dashboard" class="back-link">← Back to Dashboard</a>
     </div>
 
+    <!-- Status Filter -->
+    <div class="filter-bar">
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'all'"
+        (click)="setFilterAll()">
+        All Orders
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'pending'"
+        (click)="setFilterPending()">
+        Pending
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'processing'"
+        (click)="setFilterProcessing()">
+        Processing
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'shipped'"
+        (click)="setFilterShipped()">
+        Shipped
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'delivered'"
+        (click)="setFilterDelivered()">
+        Delivered
+      </button>
+    </div>
+
+    @if (error()) {
+      <div class="error-message">{{ error() }}</div>
+    }
+
     @if (loading()) {
       <div class="loading-state">
         <p>Loading orders...</p>
       </div>
-    } @else if (orders().length === 0) {
+    } @else if (filteredOrders().length === 0) {
       <div class="empty-state">
         <div class="empty-icon">📦</div>
-        <h2>No orders yet</h2>
-        <p>When you place an order, it will appear here.</p>
-        <a routerLink="/products" class="btn-primary">Start Shopping</a>
+        <h2>No orders found</h2>
+        @if (statusFilter() === 'all') {
+          <p>When you place an order, it will appear here.</p>
+          <a routerLink="/products" class="btn-primary">Start Shopping</a>
+        } @else {
+          <p>No orders with this status</p>
+        }
       </div>
     } @else {
       <div class="orders-list">
-        @for (order of orders(); track order.id) {
+        @for (order of filteredOrders(); track order.id) {
           <div class="order-card">
             <div class="order-header">
               <div class="order-info">
                 <h3 class="order-number">Order #{{ order.orderNumber }}</h3>
-                <p class="order-date">{{ order.date | date:'MMM d, yyyy' }}</p>
+                <p class="order-date">{{ formatDate(order.createdAt) }}</p>
               </div>
               <div class="order-status">
                 <span [class]="'status-badge ' + getStatusBadgeClass(order.status)">
@@ -33,18 +75,36 @@
             </div>
 
             <div class="order-items">
-              @for (item of order.items; track item.id) {
+              @for (item of order.items; track item.productId) {
                 <div class="order-item">
-                  <img [src]="item.image" [alt]="item.name" class="item-image">
+                  <img [src]="item.productImage" [alt]="item.productTitle" class="item-image">
                   <div class="item-details">
-                    <p class="item-name">{{ item.name }}</p>
+                    <p class="item-name">{{ item.productTitle }}</p>
+                    @if (item.variantDetails) {
+                      <p class="item-variant">{{ item.variantDetails }}</p>
+                    }
                     <p class="item-quantity">Qty: {{ item.quantity }}</p>
                   </div>
                   <div class="item-price">
-                    ${{ item.price.toFixed(2) }}
+                    ${{ item.subtotal.toFixed(2) }}
                   </div>
                 </div>
               }
+            </div>
+
+            <div class="order-summary">
+              <div class="summary-row">
+                <span>Subtotal:</span>
+                <span>${{ order.subtotal.toFixed(2) }}</span>
+              </div>
+              <div class="summary-row">
+                <span>Tax:</span>
+                <span>${{ order.tax.toFixed(2) }}</span>
+              </div>
+              <div class="summary-row">
+                <span>Shipping:</span>
+                <span>${{ order.shipping.toFixed(2) }}</span>
+              </div>
             </div>
 
             <div class="order-footer">
@@ -52,6 +112,13 @@
                 <span class="total-label">Total:</span>
                 <span class="total-amount">${{ order.total.toFixed(2) }}</span>
               </div>
+              @if (canCancelOrder(order)) {
+                <button
+                  class="btn-cancel"
+                  (click)="cancelOrder(order.id)">
+                  Cancel Order
+                </button>
+              }
             </div>
           </div>
         }

@@ -7,8 +7,6 @@ import { Router } from 'express';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { DemoProductStore } from '../../infra/demo/demo-product.store';
-import { PostgresProductRepository } from '../../infra/postgres/postgres-product.repository';
-import { env } from '../../config/env';
 import { IProductRepository } from './product.types';
 
 // Singleton instances for shared state
@@ -21,9 +19,7 @@ let productController: ProductController;
  */
 function getProductRepository(): IProductRepository {
   if (!productRepository) {
-    productRepository = env.DEMO_MODE
-      ? new DemoProductStore()
-      : new PostgresProductRepository();
+    productRepository = new DemoProductStore();
   }
   return productRepository;
 }
@@ -41,7 +37,7 @@ function getProductServiceInstance(): ProductService {
 export function createProductRouter(): Router {
   const router = Router();
 
-  // Initialize dependencies (mode-aware singleton pattern)
+  // Initialize dependencies (demo store singleton pattern)
   if (!productController) {
     productService = getProductServiceInstance();
     productController = new ProductController(productService);

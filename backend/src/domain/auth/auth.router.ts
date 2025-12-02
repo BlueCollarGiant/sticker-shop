@@ -1,25 +1,21 @@
 import { Router } from 'express';
 import { DemoAuthStore } from '../../infra/demo/demo-auth.store';
-import { PostgresAuthRepository } from '../../infra/postgres/postgres-auth.repository';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { validate } from '../../middleware/validate';
 import { loginSchema, registerSchema } from '../../validators/auth.validator';
-import { env } from '../../config/env';
 import { IAuthRepository } from './auth.types';
 
 // Singleton instances
 let authRepository: IAuthRepository;
-let authService: AuthService;
+let authServiceInstance: AuthService;
 
 /**
  * Initialize auth repository based on mode
  */
 function getAuthRepository(): IAuthRepository {
   if (!authRepository) {
-    authRepository = env.DEMO_MODE
-      ? new DemoAuthStore()
-      : new PostgresAuthRepository();
+    authRepository = new DemoAuthStore();
   }
   return authRepository;
 }
@@ -28,10 +24,10 @@ function getAuthRepository(): IAuthRepository {
  * Get auth service singleton
  */
 function getAuthService(): AuthService {
-  if (!authService) {
-    authService = new AuthService(getAuthRepository());
+  if (!authServiceInstance) {
+    authServiceInstance = new AuthService(getAuthRepository());
   }
-  return authService;
+  return authServiceInstance;
 }
 
 /**
@@ -40,7 +36,7 @@ function getAuthService(): AuthService {
 export function createAuthRouter(): Router {
   const router = Router();
 
-  // Initialize dependencies (mode-aware)
+  // Initialize dependencies (demo store singleton)
   const service = getAuthService();
   const authController = new AuthController(service);
 
@@ -56,7 +52,7 @@ export function createAuthRouter(): Router {
 
 /**
  * Export auth service instance for use in middleware
- * This is a singleton that switches based on DEMO_MODE
+ * Demo mode uses the file-based store exclusively
  */
 export { getAuthService as getAuthServiceInstance };
 export const authService = getAuthService();

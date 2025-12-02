@@ -1,0 +1,159 @@
+<div class="admin-orders">
+  <div class="admin-orders-header">
+    <h2>Order Management</h2>
+    <button class="btn-refresh" (click)="loadOrders()">Refresh</button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-value">{{ totalOrders() }}</div>
+    </div>
+    <div class="stat-card stat-pending">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value">{{ pendingOrders() }}</div>
+    </div>
+    <div class="stat-card stat-active">
+      <div class="stat-label">Active</div>
+      <div class="stat-value">{{ activeOrders() }}</div>
+    </div>
+    <div class="stat-card stat-completed">
+      <div class="stat-label">Completed</div>
+      <div class="stat-value">{{ completedOrders() }}</div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="controls-bar">
+    <div class="filter-buttons">
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'all'"
+        (click)="setFilterAll()">
+        All
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'pending'"
+        (click)="setFilterPending()">
+        Pending
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'processing'"
+        (click)="setFilterActive()">
+        Processing
+      </button>
+      <button
+        class="filter-btn"
+        [class.active]="statusFilter() === 'delivered'"
+        (click)="setFilterCompleted()">
+        Completed
+      </button>
+    </div>
+
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search orders..."
+        [value]="searchQuery()"
+        (input)="updateSearch($any($event.target).value)"
+      />
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="error-message">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="loading-state">
+      <p>Loading orders...</p>
+    </div>
+  } @else if (filteredOrders().length === 0) {
+    <div class="empty-state">
+      <p>No orders found</p>
+    </div>
+  } @else {
+    <!-- Orders Table -->
+    <div class="orders-table-container">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Date</th>
+            <th>Customer ID</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of filteredOrders(); track order.id) {
+            <tr>
+              <td class="order-number">{{ order.orderNumber }}</td>
+              <td class="order-date">{{ formatDate(order.createdAt) }}</td>
+              <td class="user-id">{{ order.userId }}</td>
+              <td class="item-count">{{ getItemCount(order) }} items</td>
+              <td class="order-total">${{ order.total.toFixed(2) }}</td>
+              <td class="order-status">
+                <select
+                  class="status-select"
+                  [value]="order.status"
+                  (change)="updateOrderStatus(order.id, $any($event.target).value)"
+                  [class]="getStatusBadgeClass(order.status)">
+                  @for (status of orderStatuses; track status) {
+                    <option [value]="status">{{ getStatusText(status) }}</option>
+                  }
+                </select>
+              </td>
+              <td class="order-actions">
+                <button
+                  class="btn-delete"
+                  (click)="deleteOrder(order.id, order.orderNumber)"
+                  title="Delete order">
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <tr class="order-details-row">
+              <td colspan="7">
+                <div class="order-items">
+                  @for (item of order.items; track item.productId) {
+                    <div class="order-item">
+                      <img [src]="item.productImage" [alt]="item.productTitle" class="item-image">
+                      <div class="item-info">
+                        <span class="item-title">{{ item.productTitle }}</span>
+                        @if (item.variantDetails) {
+                          <span class="item-variant">{{ item.variantDetails }}</span>
+                        }
+                        <span class="item-qty">Qty: {{ item.quantity }}</span>
+                      </div>
+                      <div class="item-price">${{ item.subtotal.toFixed(2) }}</div>
+                    </div>
+                  }
+                </div>
+                @if (order.shippingAddress) {
+                  <div class="shipping-info">
+                    <strong>Shipping Address:</strong>
+                    <p>{{ order.shippingAddress.fullName }}</p>
+                    <p>{{ order.shippingAddress.address1 }}</p>
+                    @if (order.shippingAddress.address2) {
+                      <p>{{ order.shippingAddress.address2 }}</p>
+                    }
+                    <p>{{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} {{ order.shippingAddress.zipCode }}</p>
+                    @if (order.shippingAddress.phone) {
+                      <p>Phone: {{ order.shippingAddress.phone }}</p>
+                    }
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

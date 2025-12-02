@@ -23,6 +23,14 @@
       </button>
       <button
         class="nav-tab"
+        [class.active]="activeTab() === 'orders'"
+        (click)="activeTab.set('orders')"
+        type="button">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">Orders</span>
+      </button>
+      <button
+        class="nav-tab"
         [class.active]="activeTab() === 'sales'"
         (click)="activeTab.set('sales')"
         type="button">
@@ -289,6 +297,11 @@
           </table>
         </div>
       }
+    }
+
+    <!-- Orders Tab -->
+    @if (activeTab() === 'orders') {
+      <app-admin-orders></app-admin-orders>
     }
 
     <!-- Sales Tab -->

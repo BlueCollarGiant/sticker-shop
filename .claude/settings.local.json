@@ -29,7 +29,9 @@
       "Bash(powershell -Command \"Stop-Process -Id 10724 -Force\")",
       "Bash(powershell:*)",
       "Bash(del nul)",
-      "Bash(git -C \"c:\\Users\\boop boop\\Documents\\GitHub\\sticker-shop\" log --oneline -20)"
+      "Bash(git -C \"c:\\Users\\boop boop\\Documents\\GitHub\\sticker-shop\" log --oneline -20)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

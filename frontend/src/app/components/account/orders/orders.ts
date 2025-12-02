@@ -1,24 +1,9 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthStore } from '../../../features/auth/auth.store';
-
-interface OrderItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
-interface Order {
-  id: string;
-  orderNumber: string;
-  date: Date;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered';
-  total: number;
-  items: OrderItem[];
-}
+import { OrderStore } from '../../../features/orders/order.store';
+import { Order, OrderStatus } from '../../../features/orders/order.types';
 
 @Component({
   selector: 'app-orders',
@@ -27,11 +12,26 @@ interface Order {
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
-export class OrdersComponent {
+export class OrdersComponent implements OnInit {
   auth = inject(AuthStore);
+  orderStore = inject(OrderStore);
 
-  orders = signal<Order[]>([]);
-  loading = signal(true);
+  // Computed from OrderStore
+  orders = computed(() => this.orderStore.userOrders());
+  loading = computed(() => this.orderStore.isLoading());
+  error = computed(() => this.orderStore.errorMessage());
+
+  // Filter state
+  statusFilter = signal<OrderStatus | 'all'>('all');
+
+  // Filtered orders
+  filteredOrders = computed(() => {
+    const filter = this.statusFilter();
+    if (filter === 'all') {
+      return this.orders();
+    }
+    return this.orders().filter(order => order.status === filter);
+  });
 
   ngOnInit() {
     this.loadOrders();
@@ -42,49 +42,88 @@ export class OrdersComponent {
 
     if (!currentUser) {
       console.error('No user logged in');
-      this.loading.set(false);
       return;
     }
 
-    // Load user-specific orders from localStorage
-    const storageKey = `user_orders_${currentUser.id}`;
-    const savedOrders = localStorage.getItem(storageKey);
-
-    if (savedOrders) {
-      const parsedOrders = JSON.parse(savedOrders);
-      // Convert date strings back to Date objects
-      parsedOrders.forEach((order: any) => {
-        order.date = new Date(order.date);
-      });
-
-      // Filter orders to only show current user's orders (extra safety check)
-      const userOrders = parsedOrders.filter((order: any) =>
-        !order.userId || order.userId === currentUser.id
-      );
-
-      this.orders.set(userOrders);
-    }
-
-    this.loading.set(false);
+    // Load orders from backend via OrderStore
+    this.orderStore.loadUserOrders();
   }
 
-  getStatusBadgeClass(status: string): string {
-    const classes: Record<string, string> = {
-      'pending': 'status-pending',
-      'processing': 'status-processing',
-      'shipped': 'status-shipped',
-      'delivered': 'status-delivered'
+  async cancelOrder(orderId: string) {
+    const confirmed = confirm('Are you sure you want to cancel this order?');
+    if (!confirmed) return;
+
+    const success = await this.orderStore.cancelOrder(orderId);
+    if (success) {
+      // Order will be updated in store automatically
+      console.log('Order cancelled successfully');
+    } else {
+      const errorMsg = this.orderStore.errorMessage();
+      alert(errorMsg || 'Failed to cancel order');
+    }
+  }
+
+  setStatusFilter(status: OrderStatus | 'all') {
+    this.statusFilter.set(status);
+  }
+
+  setFilterAll() {
+    this.statusFilter.set('all');
+  }
+
+  setFilterPending() {
+    this.statusFilter.set(OrderStatus.PENDING);
+  }
+
+  setFilterProcessing() {
+    this.statusFilter.set(OrderStatus.PROCESSING);
+  }
+
+  setFilterShipped() {
+    this.statusFilter.set(OrderStatus.SHIPPED);
+  }
+
+  setFilterDelivered() {
+    this.statusFilter.set(OrderStatus.DELIVERED);
+  }
+
+  getStatusBadgeClass(status: OrderStatus): string {
+    const classes: Record<OrderStatus, string> = {
+      [OrderStatus.PENDING]: 'status-pending',
+      [OrderStatus.PAID]: 'status-paid',
+      [OrderStatus.PROCESSING]: 'status-processing',
+      [OrderStatus.SHIPPED]: 'status-shipped',
+      [OrderStatus.DELIVERED]: 'status-delivered',
+      [OrderStatus.CANCELLED]: 'status-cancelled',
+      [OrderStatus.FAILED]: 'status-failed'
     };
     return classes[status] || 'status-pending';
   }
 
-  getStatusText(status: string): string {
-    const texts: Record<string, string> = {
-      'pending': 'Pending',
-      'processing': 'Processing',
-      'shipped': 'Shipped',
-      'delivered': 'Delivered'
+  getStatusText(status: OrderStatus): string {
+    const texts: Record<OrderStatus, string> = {
+      [OrderStatus.PENDING]: 'Pending Payment',
+      [OrderStatus.PAID]: 'Paid',
+      [OrderStatus.PROCESSING]: 'Processing',
+      [OrderStatus.SHIPPED]: 'Shipped',
+      [OrderStatus.DELIVERED]: 'Delivered',
+      [OrderStatus.CANCELLED]: 'Cancelled',
+      [OrderStatus.FAILED]: 'Failed'
     };
-    return texts[status] || 'Pending';
+    return texts[status] || 'Unknown';
+  }
+
+  canCancelOrder(order: Order): boolean {
+    // Can only cancel pending or paid orders that haven't shipped yet
+    return [OrderStatus.PENDING, OrderStatus.PAID].includes(order.status);
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   }
 }

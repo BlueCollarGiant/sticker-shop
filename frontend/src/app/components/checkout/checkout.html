@@ -9,6 +9,96 @@
       </div>
     } @else {
       <div class="checkout-content">
+        <!-- Shipping Information -->
+        <div class="shipping-section">
+          <h2>Shipping Information</h2>
+          <form class="shipping-form">
+            <div class="form-group">
+              <label for="fullName">Full Name *</label>
+              <input
+                type="text"
+                id="fullName"
+                [value]="shippingForm().fullName"
+                (input)="updateShippingField('fullName', $any($event.target).value)"
+                placeholder="John Doe"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="address1">Address Line 1 *</label>
+              <input
+                type="text"
+                id="address1"
+                [value]="shippingForm().address1"
+                (input)="updateShippingField('address1', $any($event.target).value)"
+                placeholder="123 Main St"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="address2">Address Line 2</label>
+              <input
+                type="text"
+                id="address2"
+                [value]="shippingForm().address2"
+                (input)="updateShippingField('address2', $any($event.target).value)"
+                placeholder="Apt 4B (optional)"
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City *</label>
+                <input
+                  type="text"
+                  id="city"
+                  [value]="shippingForm().city"
+                  (input)="updateShippingField('city', $any($event.target).value)"
+                  placeholder="New York"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="state">State *</label>
+                <input
+                  type="text"
+                  id="state"
+                  [value]="shippingForm().state"
+                  (input)="updateShippingField('state', $any($event.target).value)"
+                  placeholder="NY"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="zipCode">Zip Code *</label>
+                <input
+                  type="text"
+                  id="zipCode"
+                  [value]="shippingForm().zipCode"
+                  (input)="updateShippingField('zipCode', $any($event.target).value)"
+                  placeholder="10001"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                [value]="shippingForm().phone"
+                (input)="updateShippingField('phone', $any($event.target).value)"
+                placeholder="(555) 123-4567 (optional)"
+              />
+            </div>
+          </form>
+        </div>
+
         <!-- Order Summary -->
         <div class="order-summary">
           <h2>Order Summary</h2>
@@ -34,6 +124,10 @@
               <span>Tax:</span>
               <span>${{ cartTotals.tax.toFixed(2) }}</span>
             </div>
+            <div class="total-row">
+              <span>Shipping:</span>
+              <span>${{ cartTotals.shipping.toFixed(2) }}</span>
+            </div>
             <div class="total-row total-final">
               <span>Total:</span>
               <span>${{ cartTotals.total.toFixed(2) }}</span>
@@ -43,6 +137,9 @@
 
         <!-- Checkout Actions -->
         <div class="checkout-actions">
+          @if (errorMessage()) {
+            <div class="error-message">{{ errorMessage() }}</div>
+          }
           <button
             class="btn-complete-order"
             (click)="completeOrder()"
@@ -53,7 +150,7 @@
               <span>Complete Order (Demo)</span>
             }
           </button>
-          <p class="demo-note">Demo Mode: This will simulate a purchase and create an order</p>
+          <p class="demo-note">Demo Mode: This will create an order without payment processing</p>
         </div>
       </div>
     }

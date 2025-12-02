@@ -4,25 +4,18 @@ import { env, getAllowedOrigins } from './config/env';
 import { createCartRouter } from './domain/cart/cart.router';
 import { createAuthRouter, authService } from './domain/auth/auth.router';
 import { createProductRouter } from './domain/products/product.router';
+import { createOrderRouter } from './domain/orders/order.router';
+import { createCheckoutRouter } from './domain/checkout/checkout.router';
 import { AuthController } from './domain/auth/auth.controller';
 import { authenticate } from './middleware/auth.middleware';
 import { errorHandler } from './middleware/error-handler';
 import { notFound } from './middleware/not-found';
-import { connectDatabase } from './infra/postgres/prisma-client';
-
-// Import existing routes (will migrate these later)
-const ordersRouter = require('../routes/orders');
 
 /**
  * Create and configure Express application
  */
 export async function createApp(): Promise<Express> {
   const app = express();
-
-  // Connect to database if not in demo mode
-  if (!env.DEMO_MODE) {
-    await connectDatabase();
-  }
 
   // CORS configuration
   app.use(cors({
@@ -48,12 +41,12 @@ export async function createApp(): Promise<Express> {
   app.use('/api/cart', createCartRouter());
   app.use('/api/auth', createAuthRouter());
   app.use('/api/products', createProductRouter());
+  app.use('/api/orders', createOrderRouter());
+  app.use('/api/checkout', createCheckoutRouter());
 
   // Auth /me route (requires authentication middleware)
   const authController = new AuthController(authService);
   app.get('/api/auth/me', authenticate, authController.getCurrentUser);
-
-  app.use('/api/orders', ordersRouter);
 
   // Demo admin routes (conditional)
   if (env.DEMO_MODE) {
