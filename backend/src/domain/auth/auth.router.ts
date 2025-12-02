@@ -1,9 +1,38 @@
 import { Router } from 'express';
 import { DemoAuthStore } from '../../infra/demo/demo-auth.store';
+import { PostgresAuthRepository } from '../../infra/postgres/postgres-auth.repository';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { validate } from '../../middleware/validate';
 import { loginSchema, registerSchema } from '../../validators/auth.validator';
+import { env } from '../../config/env';
+import { IAuthRepository } from './auth.types';
+
+// Singleton instances
+let authRepository: IAuthRepository;
+let authService: AuthService;
+
+/**
+ * Initialize auth repository based on mode
+ */
+function getAuthRepository(): IAuthRepository {
+  if (!authRepository) {
+    authRepository = env.DEMO_MODE
+      ? new DemoAuthStore()
+      : new PostgresAuthRepository();
+  }
+  return authRepository;
+}
+
+/**
+ * Get auth service singleton
+ */
+function getAuthService(): AuthService {
+  if (!authService) {
+    authService = new AuthService(getAuthRepository());
+  }
+  return authService;
+}
 
 /**
  * Create auth router with dependency injection
@@ -11,10 +40,9 @@ import { loginSchema, registerSchema } from '../../validators/auth.validator';
 export function createAuthRouter(): Router {
   const router = Router();
 
-  // Initialize dependencies (demo mode)
-  const authStore = new DemoAuthStore();
-  const authService = new AuthService(authStore);
-  const authController = new AuthController(authService);
+  // Initialize dependencies (mode-aware)
+  const service = getAuthService();
+  const authController = new AuthController(service);
 
   // Routes
   router.post('/login', validate(loginSchema), authController.login);
@@ -28,7 +56,7 @@ export function createAuthRouter(): Router {
 
 /**
  * Export auth service instance for use in middleware
- * This is a singleton for the demo-mode auth store
+ * This is a singleton that switches based on DEMO_MODE
  */
-const authStore = new DemoAuthStore();
-export const authService = new AuthService(authStore);
+export { getAuthService as getAuthServiceInstance };
+export const authService = getAuthService();

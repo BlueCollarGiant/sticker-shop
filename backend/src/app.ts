@@ -8,6 +8,7 @@ import { AuthController } from './domain/auth/auth.controller';
 import { authenticate } from './middleware/auth.middleware';
 import { errorHandler } from './middleware/error-handler';
 import { notFound } from './middleware/not-found';
+import { connectDatabase } from './infra/postgres/prisma-client';
 
 // Import existing routes (will migrate these later)
 const ordersRouter = require('../routes/orders');
@@ -15,8 +16,13 @@ const ordersRouter = require('../routes/orders');
 /**
  * Create and configure Express application
  */
-export function createApp(): Express {
+export async function createApp(): Promise<Express> {
   const app = express();
+
+  // Connect to database if not in demo mode
+  if (!env.DEMO_MODE) {
+    await connectDatabase();
+  }
 
   // CORS configuration
   app.use(cors({

@@ -5,23 +5,25 @@ import { DemoAuthStore } from './infra/demo/demo-auth.store';
 import { seedAll } from './seeds/seed-all';
 
 async function startServer() {
-  // Auto-seed on startup if needed
-  const productStore = new DemoProductStore();
-  const authStore = new DemoAuthStore();
+  // Auto-seed on startup if needed (only in demo mode)
+  if (env.DEMO_MODE) {
+    const productStore = new DemoProductStore();
+    const authStore = new DemoAuthStore();
 
-  const productsEmpty = await productStore.isEmpty();
-  const usersEmpty = await authStore.isEmpty();
+    const productsEmpty = await productStore.isEmpty();
+    const usersEmpty = await authStore.isEmpty();
 
-  if (productsEmpty || usersEmpty) {
-    console.log('[SEED] Database empty, auto-seeding...');
-    await seedAll();
-  } else {
-    const userCount = await authStore.getUserCount();
-    const catalog = await productStore.getCatalog();
-    console.log(`[SEED] Loaded ${userCount} users, ${catalog.totalProducts} products`);
+    if (productsEmpty || usersEmpty) {
+      console.log('[SEED] Database empty, auto-seeding...');
+      await seedAll();
+    } else {
+      const userCount = await authStore.getUserCount();
+      const catalog = await productStore.getCatalog();
+      console.log(`[SEED] Loaded ${userCount} users, ${catalog.totalProducts} products`);
+    }
   }
 
-  const app = createApp();
+  const app = await createApp();
   const PORT = env.PORT;
 
   app.listen(PORT, '0.0.0.0', () => {
