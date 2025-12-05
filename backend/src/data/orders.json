@@ -1,1 +1,33 @@
-[]
+[
+  {
+    "id": "order-1764901144925-yxmm0lz8i",
+    "items": [
+      {
+        "productId": "5",
+        "productTitle": "Night Reader Hoodie",
+        "productImage": "https://placehold.co/600x600/2C3540/E8DCC4?text=Night+Reader+Hoodie",
+        "quantity": 1,
+        "price": 54.99,
+        "subtotal": 54.99
+      }
+    ],
+    "subtotal": 54.99,
+    "tax": 4.4,
+    "shipping": 0,
+    "total": 59.39,
+    "shippingAddress": {
+      "fullName": "ISAIAH DANIEL RATLIFF",
+      "address1": "995 Lees Lane",
+      "address2": "",
+      "city": "Florissant",
+      "state": "MO",
+      "zipCode": "63031",
+      "country": "USA",
+      "phone": "3149336368"
+    },
+    "userId": "admin-1",
+    "status": "cancelled",
+    "createdAt": "2025-12-05T02:19:04.925Z",
+    "updatedAt": "2025-12-05T02:24:10.637Z"
+  }
+]

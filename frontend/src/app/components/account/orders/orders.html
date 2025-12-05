@@ -6,37 +6,43 @@
     </div>
 
     <!-- Status Filter -->
-    <div class="filter-bar">
-      <button
-        class="filter-btn"
-        [class.active]="statusFilter() === 'all'"
-        (click)="setFilterAll()">
-        All Orders
-      </button>
-      <button
-        class="filter-btn"
-        [class.active]="statusFilter() === 'pending'"
-        (click)="setFilterPending()">
-        Pending
-      </button>
-      <button
-        class="filter-btn"
-        [class.active]="statusFilter() === 'processing'"
-        (click)="setFilterProcessing()">
-        Processing
-      </button>
-      <button
-        class="filter-btn"
-        [class.active]="statusFilter() === 'shipped'"
-        (click)="setFilterShipped()">
-        Shipped
-      </button>
-      <button
-        class="filter-btn"
-        [class.active]="statusFilter() === 'delivered'"
-        (click)="setFilterDelivered()">
-        Delivered
-      </button>
+    <div class="filter-bar card">
+      <div class="filter-title">
+        <p class="kicker">Filter</p>
+        <h3>Status</h3>
+      </div>
+      <div class="filter-chips">
+        <button
+          class="filter-chip"
+          [class.active]="statusFilter() === 'all'"
+          (click)="setFilterAll()">
+          All Orders
+        </button>
+        <button
+          class="filter-chip"
+          [class.active]="statusFilter() === 'pending'"
+          (click)="setFilterPending()">
+          Pending
+        </button>
+        <button
+          class="filter-chip"
+          [class.active]="statusFilter() === 'processing'"
+          (click)="setFilterProcessing()">
+          Processing
+        </button>
+        <button
+          class="filter-chip"
+          [class.active]="statusFilter() === 'shipped'"
+          (click)="setFilterShipped()">
+          Shipped
+        </button>
+        <button
+          class="filter-chip"
+          [class.active]="statusFilter() === 'delivered'"
+          (click)="setFilterDelivered()">
+          Delivered
+        </button>
+      </div>
     </div>
 
     @if (error()) {

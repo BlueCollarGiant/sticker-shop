@@ -10,8 +10,12 @@
     } @else {
       <div class="checkout-content">
         <!-- Shipping Information -->
-        <div class="shipping-section">
-          <h2>Shipping Information</h2>
+        <div class="shipping-section card">
+          <div class="section-header">
+            <p class="section-kicker">Step 1</p>
+            <h2>Shipping Information</h2>
+            <p class="section-subtitle">Tell us where to send your order</p>
+          </div>
           <form class="shipping-form">
             <div class="form-group">
               <label for="fullName">Full Name *</label>
@@ -100,8 +104,12 @@
         </div>
 
         <!-- Order Summary -->
-        <div class="order-summary">
-          <h2>Order Summary</h2>
+        <div class="order-summary card">
+          <div class="section-header">
+            <p class="section-kicker">Step 2</p>
+            <h2>Order Summary</h2>
+            <p class="section-subtitle">Review items before placing your order</p>
+          </div>
           <div class="summary-items">
             @for (item of cartItems; track item.id) {
               <div class="summary-item">
