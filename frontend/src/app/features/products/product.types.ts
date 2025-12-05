@@ -7,7 +7,7 @@ export enum ProductBadge {
   NEW = 'new',
   BESTSELLER = 'bestseller',
   SALE = 'sale',
-  LIMITED = 'limited-edition',
+  LIMITED = 'limited',
 }
 
 export interface ProductImage {

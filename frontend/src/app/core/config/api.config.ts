@@ -1,4 +1,4 @@
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 /**
  * API configuration and utilities
@@ -44,5 +44,38 @@ export class ApiConfig {
     LIST: () => this.endpoint('products'),
     GET: (id: string) => this.endpoint(`products/${id}`),
     CATALOG: () => this.endpoint('products/catalog'),
+  };
+
+  /**
+   * Admin endpoints
+   */
+  static readonly ADMIN = {
+    PRODUCTS: () => this.endpoint('demo/admin/products'),
+    PRODUCT: (id: string) => this.endpoint(`demo/admin/products/${id}`),
+    PRODUCT_STOCK: (id: string) => this.endpoint(`demo/admin/products/${id}/stock`),
+    PRODUCT_BADGES: (id: string) => this.endpoint(`demo/admin/products/${id}/badges`),
+    USERS: () => this.endpoint('demo/admin/users'),
+    USER: (userId: string) => this.endpoint(`demo/admin/users/${userId}`),
+    USER_ORDERS: (userId: string) => this.endpoint(`demo/admin/users/${userId}/orders`),
+  };
+
+  /**
+   * Order endpoints
+   */
+  static readonly ORDERS = {
+    LIST: () => `${environment.apiUrl}/api/orders`,
+    CREATE: () => `${environment.apiUrl}/api/orders`,
+    GET: (id: string) => `${environment.apiUrl}/api/orders/${id}`,
+    USER_ORDERS: () => `${environment.apiUrl}/api/orders/user/me`,
+    UPDATE_STATUS: (id: string) => `${environment.apiUrl}/api/orders/${id}/status`,
+    CANCEL: (id: string) => `${environment.apiUrl}/api/orders/${id}/cancel`,
+    DELETE: (id: string) => `${environment.apiUrl}/api/orders/${id}`,
+  };
+
+  /**
+   * Checkout endpoints
+   */
+  static readonly CHECKOUT = {
+    PAYMENT_INTENT: () => `${environment.apiUrl}/api/checkout/payment-intent`,
   };
 }

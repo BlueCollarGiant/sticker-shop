@@ -1,0 +1,7 @@
+const CART_CONSTANTS = {
+  FREE_SHIPPING_THRESHOLD: 50,
+  SHIPPING_COST: 5.99,
+  TAX_RATE: 0.08,
+};
+
+module.exports = { CART_CONSTANTS };

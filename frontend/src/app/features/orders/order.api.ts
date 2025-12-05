@@ -6,15 +6,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { ApiConfig } from '../../core/config/api.config';
 import { Order, CreateOrderInput, UpdateOrderStatusInput, ApiResponse } from './order.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderApi {
-  private apiUrl = `${environment.apiUrl}/orders`;
-
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
@@ -30,7 +28,7 @@ export class OrderApi {
    */
   createOrder(input: CreateOrderInput): Observable<ApiResponse<Order>> {
     return this.http.post<ApiResponse<Order>>(
-      this.apiUrl,
+      ApiConfig.ORDERS.CREATE(),
       input,
       { headers: this.getHeaders() }
     );
@@ -41,7 +39,7 @@ export class OrderApi {
    */
   getUserOrders(): Observable<ApiResponse<Order[]>> {
     return this.http.get<ApiResponse<Order[]>>(
-      `${this.apiUrl}/user/me`,
+      ApiConfig.ORDERS.USER_ORDERS(),
       { headers: this.getHeaders() }
     );
   }
@@ -51,7 +49,7 @@ export class OrderApi {
    */
   getOrderById(orderId: string): Observable<ApiResponse<Order>> {
     return this.http.get<ApiResponse<Order>>(
-      `${this.apiUrl}/${orderId}`,
+      ApiConfig.ORDERS.GET(orderId),
       { headers: this.getHeaders() }
     );
   }
@@ -61,7 +59,7 @@ export class OrderApi {
    */
   getAllOrders(): Observable<ApiResponse<Order[]>> {
     return this.http.get<ApiResponse<Order[]>>(
-      this.apiUrl,
+      ApiConfig.ORDERS.LIST(),
       { headers: this.getHeaders() }
     );
   }
@@ -71,7 +69,7 @@ export class OrderApi {
    */
   updateOrderStatus(orderId: string, input: UpdateOrderStatusInput): Observable<ApiResponse<Order>> {
     return this.http.patch<ApiResponse<Order>>(
-      `${this.apiUrl}/${orderId}/status`,
+      ApiConfig.ORDERS.UPDATE_STATUS(orderId),
       input,
       { headers: this.getHeaders() }
     );
@@ -82,7 +80,7 @@ export class OrderApi {
    */
   cancelOrder(orderId: string): Observable<ApiResponse<Order>> {
     return this.http.post<ApiResponse<Order>>(
-      `${this.apiUrl}/${orderId}/cancel`,
+      ApiConfig.ORDERS.CANCEL(orderId),
       {},
       { headers: this.getHeaders() }
     );
@@ -93,7 +91,7 @@ export class OrderApi {
    */
   deleteOrder(orderId: string): Observable<ApiResponse<{ success: boolean; message: string }>> {
     return this.http.delete<ApiResponse<{ success: boolean; message: string }>>(
-      `${this.apiUrl}/${orderId}`,
+      ApiConfig.ORDERS.DELETE(orderId),
       { headers: this.getHeaders() }
     );
   }
