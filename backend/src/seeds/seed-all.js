@@ -30,14 +30,29 @@ const defaultUsers = [
 ];
 
 function ensureFile(filePath, fallbackData) {
+  let shouldWrite = false;
+
   if (!fs.existsSync(filePath)) {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    fs.writeFileSync(filePath, JSON.stringify(fallbackData, null, 2), 'utf-8');
-    return;
+    shouldWrite = true;
+  } else {
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      if (!content || content.trim() === '') {
+        shouldWrite = true;
+      } else {
+        const parsed = JSON.parse(content);
+        if (Array.isArray(parsed) && parsed.length === 0) {
+          shouldWrite = true;
+        }
+      }
+    } catch (error) {
+      console.warn(`[seed] Replacing corrupt data file ${path.basename(filePath)}:`, error.message);
+      shouldWrite = true;
+    }
   }
 
-  const content = fs.readFileSync(filePath, 'utf-8');
-  if (!content || content.trim() === '') {
+  if (shouldWrite) {
     fs.writeFileSync(filePath, JSON.stringify(fallbackData, null, 2), 'utf-8');
   }
 }

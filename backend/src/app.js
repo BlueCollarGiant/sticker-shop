@@ -6,6 +6,7 @@ const { createAuthRouter, authService } = require('./domain/auth/auth.router.js'
 const { createProductRouter } = require('./domain/products/product.router.js');
 const { createOrderRouter } = require('./domain/orders/order.router.js');
 const { createCheckoutRouter } = require('./domain/checkout/checkout.router.js');
+const { createAdminRouter } = require('./domain/admin/admin.router.js');
 const { AuthController } = require('./domain/auth/auth.controller.js');
 const { authenticate } = require('./middleware/auth.middleware.js');
 const { errorHandler } = require('./middleware/error-handler.js');
@@ -35,6 +36,7 @@ async function createApp() {
   app.use('/api/products', createProductRouter());
   app.use('/api/orders', createOrderRouter());
   app.use('/api/checkout', createCheckoutRouter());
+  app.use('/api/admin', createAdminRouter());
 
   const authController = new AuthController(authService);
   app.get('/api/auth/me', authenticate, authController.getCurrentUser);
