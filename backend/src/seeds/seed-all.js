@@ -29,41 +29,18 @@ const defaultUsers = [
   },
 ];
 
-function ensureFile(filePath, fallbackData) {
-  let shouldWrite = false;
-
-  if (!fs.existsSync(filePath)) {
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    shouldWrite = true;
-  } else {
-    try {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      if (!content || content.trim() === '') {
-        shouldWrite = true;
-      } else {
-        const parsed = JSON.parse(content);
-        if (Array.isArray(parsed) && parsed.length === 0) {
-          shouldWrite = true;
-        }
-      }
-    } catch (error) {
-      console.warn(`[seed] Replacing corrupt data file ${path.basename(filePath)}:`, error.message);
-      shouldWrite = true;
-    }
-  }
-
-  if (shouldWrite) {
-    fs.writeFileSync(filePath, JSON.stringify(fallbackData, null, 2), 'utf-8');
-  }
+function writeData(filePath, data) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
 
 async function seedAll() {
   console.log('\nSeeding local file stores...\n');
 
-  ensureFile(usersFile, defaultUsers);
-  ensureFile(productsFile, productSeeds);
-  ensureFile(ordersFile, []);
-  ensureFile(cartsFile, []);
+  writeData(usersFile, defaultUsers);
+  writeData(productsFile, productSeeds);
+  writeData(ordersFile, []);
+  writeData(cartsFile, []);
 
   console.log('Users:', JSON.parse(fs.readFileSync(usersFile, 'utf-8')).length);
   console.log('Products:', JSON.parse(fs.readFileSync(productsFile, 'utf-8')).length);
