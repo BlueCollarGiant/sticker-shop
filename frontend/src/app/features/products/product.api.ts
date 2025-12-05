@@ -19,6 +19,9 @@ import { ApiConfig } from '../../core/config/api.config';
 interface ApiResponse<T> {
   success: boolean;
   data: T;
+  total?: number;
+  page?: number;
+  limit?: number;
   message?: string;
 }
 
@@ -30,8 +33,15 @@ export class ProductApi {
 
   getAllProducts(): Observable<ProductListResult> {
     return this.http
-      .get<ApiResponse<ProductListResult>>(ApiConfig.PRODUCTS.LIST())
-      .pipe(map((response) => response.data));
+      .get<{ success: boolean; data: Product[]; total: number; page: number; limit: number }>(
+        ApiConfig.PRODUCTS.LIST()
+      )
+      .pipe(map(response => ({
+        data: response.data,
+        total: response.total,
+        page: response.page,
+        limit: response.limit,
+      })));
   }
 
   getProductById(id: string): Observable<Product> {

@@ -25,11 +25,15 @@ function saveProducts(products) {
   fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
 }
 
+function computeDefaultSalePrice(price) {
+  const discounted = price * 0.9;
+  return Math.round(discounted * 100) / 100;
+}
+
 class FileProductRepository {
   async getAll() {
     const products = loadProducts();
     return {
-      success: true,
       data: products,
       total: products.length,
       page: 1,
@@ -101,13 +105,48 @@ class FileProductRepository {
   }
 
   async toggleBadge(id, badge) {
-    const product = await this.getById(id);
-    const badgeField = `is${badge.charAt(0).toUpperCase() + badge.slice(1)}`;
+    const products = loadProducts();
+    const index = products.findIndex(p => p.id === id);
 
-    const updates = {};
-    updates[badgeField] = !product[badgeField];
+    if (index === -1) {
+      throw new Error(`Product ${id} not found`);
+    }
 
-    return this.update(id, updates);
+    const product = products[index];
+    const badges = Array.isArray(product.badges) ? [...product.badges] : [];
+    const hasBadge = badges.includes(badge);
+
+    const updatedBadges = hasBadge
+      ? badges.filter(b => b !== badge)
+      : [...badges, badge];
+
+    const updates = {
+      badges: updatedBadges,
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (badge === 'new') updates.isNew = updatedBadges.includes('new');
+    if (badge === 'bestseller') updates.isBestseller = updatedBadges.includes('bestseller');
+    if (badge === 'limited') updates.isLimitedEdition = updatedBadges.includes('limited');
+    if (badge === 'sale') {
+      const saleEnabled = updatedBadges.includes('sale');
+      updates.isSale = saleEnabled;
+
+      if (saleEnabled) {
+        const salePrice = product.salePrice ?? computeDefaultSalePrice(product.price);
+        updates.salePrice = salePrice;
+      } else {
+        updates.salePrice = undefined;
+      }
+    }
+
+    products[index] = {
+      ...product,
+      ...updates,
+    };
+
+    saveProducts(products);
+    return products[index];
   }
 
   async getCatalog() {

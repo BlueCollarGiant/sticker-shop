@@ -5,10 +5,13 @@ class ProductController {
 
   getAllProducts = async (req, res) => {
     try {
-      const result = await this.productService.getAllProducts();
+      const { data, total, page, limit } = await this.productService.getAllProducts();
       res.json({
         success: true,
-        data: result,
+        data,
+        total,
+        page,
+        limit,
       });
     } catch (error) {
       res.status(500).json({

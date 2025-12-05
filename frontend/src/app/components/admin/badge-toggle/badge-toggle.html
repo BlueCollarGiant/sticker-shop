@@ -32,12 +32,14 @@
     <span class="toggle-switch"></span>
   </button>
 
-  <div
-    class="badge-toggle readonly"
+  <button
+    class="badge-toggle"
     [class.active]="hasBadge('sale')"
-    title="SALE badge (auto from salePrice)"
+    (click)="toggle('sale')"
+    type="button"
+    title="Toggle SALE badge"
   >
     <span class="badge-label">SALE</span>
     <span class="toggle-switch"></span>
-  </div>
+  </button>
 </div>

@@ -137,6 +137,13 @@ export class AdminPanelComponent implements OnInit {
         if (badge === 'new') updates.isNew = !p.isNew;
         if (badge === 'bestseller') updates.isBestseller = !p.isBestseller;
         if (badge === 'limited') updates.isLimitedEdition = !p.isLimitedEdition;
+        if (badge === 'sale') {
+          const saleOn = !hasBadge;
+          updates.isSale = saleOn;
+          updates.salePrice = saleOn
+            ? Math.round((p.price * 0.9) * 100) / 100
+            : undefined;
+        }
 
         return { ...p, ...updates };
       })

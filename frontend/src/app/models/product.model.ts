@@ -16,6 +16,7 @@ export interface Product {
   isNew: boolean;
   isBestseller: boolean;
   isLimitedEdition: boolean;
+  isSale?: boolean;
   stock: number;
   createdAt: Date;
 }

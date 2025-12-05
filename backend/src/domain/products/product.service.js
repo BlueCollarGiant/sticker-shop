@@ -4,7 +4,13 @@ class ProductService {
   }
 
   async getAllProducts() {
-    return this.productRepository.getAll();
+    const result = await this.productRepository.getAll();
+    return {
+      data: result.data || [],
+      total: result.total ?? (result.data ? result.data.length : 0),
+      page: result.page ?? 1,
+      limit: result.limit ?? (result.data ? result.data.length : 0),
+    };
   }
 
   async getProductById(id) {

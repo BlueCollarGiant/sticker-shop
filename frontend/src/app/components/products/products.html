@@ -170,8 +170,12 @@
 
           <!-- Price -->
           <div class="product-price" [class.on-sale]="product.salePrice">
-            <span class="current-price">\${{ product.price.toFixed(2) }}</span>
-            <span *ngIf="product.salePrice" class="original-price">\${{ product.salePrice.toFixed(2) }}</span>
+            <span class="current-price">
+              \${{ (product.salePrice ?? product.price).toFixed(2) }}
+            </span>
+            <span *ngIf="product.salePrice" class="original-price">
+              \${{ product.price.toFixed(2) }}
+            </span>
           </div>
 
           <!-- Add to Cart Button -->

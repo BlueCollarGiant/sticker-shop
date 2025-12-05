@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Product, ProductBadge } from '../models/product.model';
 import { ApiConfig } from '../core/config/api.config';
 
@@ -14,7 +15,9 @@ export class AdminService {
    * Get all products (admin view)
    */
   getAllProducts(): Observable<{ data: Product[], total: number }> {
-    return this.http.get<{ data: Product[], total: number }>(ApiConfig.ADMIN.PRODUCTS());
+    return this.http.get<{ success: boolean; data: Product[]; total: number }>(
+      ApiConfig.ADMIN.PRODUCTS()
+    ).pipe(map(res => ({ data: res.data, total: res.total })));
   }
 
   /**
