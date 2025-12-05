@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const { env } = require('../../config/env');
+const { env } = require('../../config/env.js');
 
 class AuthService {
   constructor(authRepository) {
@@ -28,26 +27,13 @@ class AuthService {
   }
 
   async login(email, password) {
-    const user = await this.authRepository.findByEmail(email);
+    const userWithPassword = await this.authRepository.getUserWithPassword(email);
 
-    if (!user) {
-      throw new Error('Invalid credentials');
-    }
-
-    const userWithPassword = await this.authRepository.findByEmail(email);
-
-    if (!userWithPassword || !userWithPassword.password) {
-      throw new Error('Invalid credentials');
-    }
-
-    const isValidPassword = await bcrypt.compare(password, userWithPassword.password);
-
-    if (!isValidPassword) {
+    if (!userWithPassword || userWithPassword.password !== password) {
       throw new Error('Invalid credentials');
     }
 
     const { password: _, ...userWithoutPassword } = userWithPassword;
-
     const token = this.generateToken(userWithoutPassword);
 
     return {
@@ -58,7 +44,6 @@ class AuthService {
 
   async register(input) {
     const user = await this.authRepository.createUser(input);
-
     const token = this.generateToken(user);
 
     return {
@@ -69,7 +54,6 @@ class AuthService {
 
   async getUserFromToken(token) {
     const decoded = this.verifyToken(token);
-
     const user = await this.authRepository.findById(decoded.userId);
 
     if (!user) {

@@ -1,10 +1,6 @@
-import { z } from 'zod';
+const { z } = require('zod');
 
-/**
- * Cart validation schemas
- */
-
-export const addToCartSchema = z.object({
+const addToCartSchema = z.object({
   body: z.object({
     productId: z.string().min(1, 'Product ID is required'),
     variantId: z.string().optional(),
@@ -15,7 +11,7 @@ export const addToCartSchema = z.object({
   }),
 });
 
-export const updateCartItemSchema = z.object({
+const updateCartItemSchema = z.object({
   params: z.object({
     id: z.string().min(1, 'Item ID is required'),
   }),
@@ -23,3 +19,8 @@ export const updateCartItemSchema = z.object({
     quantity: z.number().int().nonnegative('Quantity cannot be negative'),
   }),
 });
+
+module.exports = {
+  addToCartSchema,
+  updateCartItemSchema,
+};

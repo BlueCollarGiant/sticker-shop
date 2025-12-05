@@ -1,6 +1,6 @@
-import { z } from 'zod';
+const { z } = require('zod');
 
-export const createProductSchema = z.object({
+const createProductSchema = z.object({
   body: z.object({
     title: z.string().min(1).max(200),
     description: z.string().min(1),
@@ -13,7 +13,7 @@ export const createProductSchema = z.object({
   }),
 });
 
-export const updateProductSchema = z.object({
+const updateProductSchema = z.object({
   params: z.object({
     id: z.string().min(1),
   }),
@@ -26,7 +26,7 @@ export const updateProductSchema = z.object({
   }),
 });
 
-export const updateStockSchema = z.object({
+const updateStockSchema = z.object({
   params: z.object({
     id: z.string().min(1),
   }),
@@ -34,3 +34,9 @@ export const updateStockSchema = z.object({
     stock: z.number().int().nonnegative(),
   }),
 });
+
+module.exports = {
+  createProductSchema,
+  updateProductSchema,
+  updateStockSchema,
+};

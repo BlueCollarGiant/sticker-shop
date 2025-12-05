@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 function loadEnv() {
   const nodeEnv = process.env.NODE_ENV || 'development';
@@ -8,7 +9,7 @@ function loadEnv() {
   const jwtExpiry = process.env.JWT_EXPIRY || '24h';
 
   if (!jwtSecret || jwtSecret.length < 32) {
-    console.error('❌ JWT_SECRET must be at least 32 characters');
+    console.error('JWT_SECRET must be at least 32 characters');
     process.exit(1);
   }
 
@@ -24,7 +25,7 @@ function loadEnv() {
 const env = loadEnv();
 
 function getAllowedOrigins() {
-  return env.ALLOWED_ORIGINS.split(',').map(o => o.trim());
+  return env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim()).filter(Boolean);
 }
 
 module.exports = {

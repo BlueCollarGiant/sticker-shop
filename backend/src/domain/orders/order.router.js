@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { OrderController } = require('./order.controller');
-const { OrderService } = require('./order.service');
-const fileOrderRepository = require('../../infra/file/file-order.repository');
-const { authenticate } = require('../../middleware/auth.middleware');
+const { OrderController } = require('./order.controller.js');
+const { OrderService } = require('./order.service.js');
+const fileOrderRepository = require('../../infra/file/file-order.repository.js');
+const { authenticate } = require('../../middleware/auth.middleware.js');
 
 let orderService;
 let orderController;

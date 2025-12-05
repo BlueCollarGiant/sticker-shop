@@ -1,36 +1,44 @@
 const fs = require('fs');
 const path = require('path');
 
-const PRODUCTS_FILE = path.join(__dirname, '../../data/demo-products.json');
+const PRODUCTS_FILE = path.join(__dirname, '../../data/products.json');
+
+function ensureStore() {
+  if (!fs.existsSync(PRODUCTS_FILE)) {
+    fs.mkdirSync(path.dirname(PRODUCTS_FILE), { recursive: true });
+    fs.writeFileSync(PRODUCTS_FILE, '[]', 'utf-8');
+  }
+}
+
+function loadProducts() {
+  ensureStore();
+  try {
+    const data = fs.readFileSync(PRODUCTS_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error loading products:', error);
+    return [];
+  }
+}
+
+function saveProducts(products) {
+  fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
+}
 
 class FileProductRepository {
-  loadProducts() {
-    try {
-      const data = fs.readFileSync(PRODUCTS_FILE, 'utf-8');
-      return JSON.parse(data);
-    } catch (error) {
-      console.error('Error loading products:', error);
-      return [];
-    }
-  }
-
-  saveProducts(products) {
-    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
-  }
-
   async getAll() {
-    const products = this.loadProducts();
+    const products = loadProducts();
     return {
       success: true,
       data: products,
       total: products.length,
       page: 1,
-      limit: products.length
+      limit: products.length,
     };
   }
 
   async getById(id) {
-    const products = this.loadProducts();
+    const products = loadProducts();
     const product = products.find(p => p.id === id);
 
     if (!product) {
@@ -41,7 +49,7 @@ class FileProductRepository {
   }
 
   async create(productData) {
-    const products = this.loadProducts();
+    const products = loadProducts();
 
     const newProduct = {
       id: `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -51,13 +59,13 @@ class FileProductRepository {
     };
 
     products.push(newProduct);
-    this.saveProducts(products);
+    saveProducts(products);
 
     return newProduct;
   }
 
   async update(id, updateData) {
-    const products = this.loadProducts();
+    const products = loadProducts();
     const index = products.findIndex(p => p.id === id);
 
     if (index === -1) {
@@ -70,12 +78,12 @@ class FileProductRepository {
       updatedAt: new Date().toISOString(),
     };
 
-    this.saveProducts(products);
+    saveProducts(products);
     return products[index];
   }
 
   async delete(id) {
-    const products = this.loadProducts();
+    const products = loadProducts();
     const index = products.findIndex(p => p.id === id);
 
     if (index === -1) {
@@ -83,7 +91,7 @@ class FileProductRepository {
     }
 
     products.splice(index, 1);
-    this.saveProducts(products);
+    saveProducts(products);
 
     return { success: true, message: 'Product deleted successfully' };
   }
@@ -103,7 +111,7 @@ class FileProductRepository {
   }
 
   async getCatalog() {
-    const products = this.loadProducts();
+    const products = loadProducts();
 
     const categories = [...new Set(products.map(p => p.category))];
     const collections = [...new Set(products.map(p => p.collection))];
@@ -114,12 +122,12 @@ class FileProductRepository {
         categories,
         collections,
         totalProducts: products.length,
-      }
+      },
     };
   }
 
   async isEmpty() {
-    return this.loadProducts().length === 0;
+    return loadProducts().length === 0;
   }
 }
 

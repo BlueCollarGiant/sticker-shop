@@ -1,4 +1,4 @@
-const { OrderStatus } = require('./order.service');
+const { OrderStatus } = require('./order.service.js');
 
 class OrderController {
   constructor(orderService) {

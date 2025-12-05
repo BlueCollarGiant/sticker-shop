@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const { ProductController } = require('./product.controller');
-const { ProductService } = require('./product.service');
-const fileProductRepository = require('../../infra/file/file-product.repository');
+const { ProductController } = require('./product.controller.js');
+const { ProductService } = require('./product.service.js');
+const fileProductRepository = require('../../infra/file/file-product.repository.js');
 
 let productService;
 let productController;

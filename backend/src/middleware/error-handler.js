@@ -1,4 +1,4 @@
-const { env } = require('../config/env');
+const { env } = require('../config/env.js');
 
 function errorHandler(err, req, res, next) {
   console.error('Error:', err);

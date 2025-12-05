@@ -1,4 +1,4 @@
-const { authService } = require('../domain/auth/auth.router');
+const { authService } = require('../domain/auth/auth.router.js');
 
 async function authenticate(req, res, next) {
   try {

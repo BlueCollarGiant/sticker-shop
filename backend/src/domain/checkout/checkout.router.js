@@ -1,6 +1,6 @@
 const { Router } = require('express');
-const { CheckoutController } = require('./checkout.controller');
-const { authenticate } = require('../../middleware/auth.middleware');
+const { CheckoutController } = require('./checkout.controller.js');
+const { authenticate } = require('../../middleware/auth.middleware.js');
 
 function createCheckoutRouter() {
   const router = Router();

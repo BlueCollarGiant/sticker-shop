@@ -5,7 +5,6 @@ import { environment } from '../../../environments/environment';
  */
 export class ApiConfig {
   static readonly BASE_URL = environment.apiUrl;
-  static readonly VERSION = environment.apiVersion;
 
   /**
    * Build full API endpoint URL
@@ -50,32 +49,29 @@ export class ApiConfig {
    * Admin endpoints
    */
   static readonly ADMIN = {
-    PRODUCTS: () => this.endpoint('demo/admin/products'),
-    PRODUCT: (id: string) => this.endpoint(`demo/admin/products/${id}`),
-    PRODUCT_STOCK: (id: string) => this.endpoint(`demo/admin/products/${id}/stock`),
-    PRODUCT_BADGES: (id: string) => this.endpoint(`demo/admin/products/${id}/badges`),
-    USERS: () => this.endpoint('demo/admin/users'),
-    USER: (userId: string) => this.endpoint(`demo/admin/users/${userId}`),
-    USER_ORDERS: (userId: string) => this.endpoint(`demo/admin/users/${userId}/orders`),
+    PRODUCTS: () => this.endpoint('products'),
+    PRODUCT: (id: string) => this.endpoint(`products/${id}`),
+    PRODUCT_STOCK: (id: string) => this.endpoint(`products/${id}/stock`),
+    PRODUCT_BADGE: (id: string) => this.endpoint(`products/${id}/badge`),
   };
 
   /**
    * Order endpoints
    */
   static readonly ORDERS = {
-    LIST: () => `${environment.apiUrl}/api/orders`,
-    CREATE: () => `${environment.apiUrl}/api/orders`,
-    GET: (id: string) => `${environment.apiUrl}/api/orders/${id}`,
-    USER_ORDERS: () => `${environment.apiUrl}/api/orders/user/me`,
-    UPDATE_STATUS: (id: string) => `${environment.apiUrl}/api/orders/${id}/status`,
-    CANCEL: (id: string) => `${environment.apiUrl}/api/orders/${id}/cancel`,
-    DELETE: (id: string) => `${environment.apiUrl}/api/orders/${id}`,
+    LIST: () => this.endpoint('orders'),
+    CREATE: () => this.endpoint('orders'),
+    GET: (id: string) => this.endpoint(`orders/${id}`),
+    USER_ORDERS: () => this.endpoint('orders/user/me'),
+    UPDATE_STATUS: (id: string) => this.endpoint(`orders/${id}/status`),
+    CANCEL: (id: string) => this.endpoint(`orders/${id}/cancel`),
+    DELETE: (id: string) => this.endpoint(`orders/${id}`),
   };
 
   /**
    * Checkout endpoints
    */
   static readonly CHECKOUT = {
-    PAYMENT_INTENT: () => `${environment.apiUrl}/api/checkout/payment-intent`,
+    PAYMENT_INTENT: () => this.endpoint('checkout/create-payment-intent'),
   };
 }

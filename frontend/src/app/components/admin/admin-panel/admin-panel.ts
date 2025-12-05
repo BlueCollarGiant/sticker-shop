@@ -185,20 +185,8 @@ export class AdminPanelComponent implements OnInit {
   // ===== USER MANAGEMENT METHODS =====
 
   loadUsers(): void {
-    this.loadingUsers.set(true);
-
-    this.adminService.getAllUsers().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.users.set(response.data);
-        }
-        this.loadingUsers.set(false);
-      },
-      error: (error) => {
-        console.error('Error loading users:', error);
-        this.loadingUsers.set(false);
-      }
-    });
+    this.loadingUsers.set(false);
+    this.users.set([]);
   }
 
   toggleUserDetails(userId: string): void {

@@ -1,4 +1,4 @@
-const { CART_CONSTANTS } = require('./cart.constants');
+const { CART_CONSTANTS } = require('./cart.constants.js');
 
 class CartService {
   constructor(cartRepository) {

@@ -1,14 +1,14 @@
 const { Router } = require('express');
-const { CartController } = require('./cart.controller');
-const { CartService } = require('./cart.service');
-const { DemoCartStore } = require('../../infra/demo/demo-cart.store');
-const { validate } = require('../../middleware/validate');
-const { addToCartSchema, updateCartItemSchema } = require('../../validators/cart.validator');
+const { CartController } = require('./cart.controller.js');
+const { CartService } = require('./cart.service.js');
+const { FileCartRepository } = require('../../infra/file/file-cart.repository.js');
+const { validate } = require('../../middleware/validate.js');
+const { addToCartSchema, updateCartItemSchema } = require('../../validators/cart.validator.js');
 
 function createCartRouter() {
   const router = Router();
 
-  const cartRepository = new DemoCartStore();
+  const cartRepository = new FileCartRepository();
   const cartService = new CartService(cartRepository);
   const cartController = new CartController(cartService);
 
