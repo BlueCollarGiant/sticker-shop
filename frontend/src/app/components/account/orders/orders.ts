@@ -114,8 +114,8 @@ export class OrdersComponent implements OnInit {
   }
 
   canCancelOrder(order: Order): boolean {
-    // Can only cancel pending or paid orders that haven't shipped yet
-    return [OrderStatus.PENDING, OrderStatus.PAID].includes(order.status);
+    // Only allow cancel while pending (no longer once paid/processing/shipped/etc.)
+    return order.status === OrderStatus.PENDING;
   }
 
   formatDate(dateString: string): string {

@@ -169,7 +169,8 @@ export class OrderStore {
     this.error.set(null);
 
     return new Promise((resolve) => {
-      this.orderApi.updateOrderStatus(orderId, { status }).subscribe({
+      const normalizedStatus = (status as string).toLowerCase() as OrderStatus;
+      this.orderApi.updateOrderStatus(orderId, { status: normalizedStatus }).subscribe({
         next: (response) => {
           if (response.success && response.data) {
             // Update in local state

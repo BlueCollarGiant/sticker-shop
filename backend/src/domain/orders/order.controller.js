@@ -147,7 +147,8 @@ class OrderController {
       }
 
       const { id } = req.params;
-      const { status } = req.body;
+      const rawStatus = req.body?.status;
+      const status = typeof rawStatus === 'string' ? rawStatus.toLowerCase() : rawStatus;
 
       if (!Object.values(OrderStatus).includes(status)) {
         res.status(400).json({
