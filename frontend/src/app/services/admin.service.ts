@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Product, ProductBadge } from '../models/product.model';
+import { User } from '../models/user.model';
 import { ApiConfig } from '../core/config/api.config';
 
 @Injectable({
@@ -53,5 +54,23 @@ export class AdminService {
    */
   toggleBadge(id: string, badge: string): Observable<Product> {
     return this.http.patch<Product>(ApiConfig.ADMIN.PRODUCT_BADGE(id), { badge });
+  }
+
+  /**
+   * Get all users (admin only)
+   */
+  getAllUsers(): Observable<{ data: User[]; total: number }> {
+    return this.http.get<{ success: boolean; data: User[]; total: number }>(
+      ApiConfig.ADMIN.USERS()
+    ).pipe(map(res => ({ data: res.data, total: res.total })));
+  }
+
+  /**
+   * Get orders for a specific user (admin only)
+   */
+  getUserOrders(userId: string): Observable<{ data: any[]; total: number }> {
+    return this.http.get<{ success: boolean; data: any[]; total: number }>(
+      ApiConfig.ADMIN.USER_ORDERS(userId)
+    ).pipe(map(res => ({ data: res.data, total: res.total })));
   }
 }

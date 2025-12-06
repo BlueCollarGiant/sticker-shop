@@ -7,9 +7,11 @@ const fileProductRepository = require('../../infra/file/file-product.repository.
 const { OrderController } = require('../orders/order.controller.js');
 const { OrderService } = require('../orders/order.service.js');
 const fileOrderRepository = require('../../infra/file/file-order.repository.js');
+const { getAuthService } = require('../auth/auth.router.js');
 
 let productController;
 let orderController;
+let authService;
 
 function createAdminRouter() {
   const router = Router();
@@ -22,6 +24,10 @@ function createAdminRouter() {
   if (!orderController) {
     const orderService = new OrderService(fileOrderRepository);
     orderController = new OrderController(orderService);
+  }
+
+  if (!authService) {
+    authService = getAuthService();
   }
 
   router.use(authenticate, requireAdmin);
@@ -46,6 +52,33 @@ function createAdminRouter() {
   router.patch('/orders/:id/status', orderController.updateOrderStatus);
   router.post('/orders/:id/cancel', orderController.cancelOrder);
   router.delete('/orders/:id', orderController.deleteOrder);
+
+  router.get('/users', async (req, res, next) => {
+    try {
+      const users = await authService.getAllUsers();
+      res.json({
+        success: true,
+        data: users,
+        total: users.length,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.get('/users/:id/orders', async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const orders = await orderController.orderService.getUserOrders(id);
+      res.json({
+        success: true,
+        data: orders,
+        total: orders.length,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
 
   return router;
 }

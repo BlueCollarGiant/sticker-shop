@@ -192,8 +192,18 @@ export class AdminPanelComponent implements OnInit {
   // ===== USER MANAGEMENT METHODS =====
 
   loadUsers(): void {
-    this.loadingUsers.set(false);
-    this.users.set([]);
+    this.loadingUsers.set(true);
+    this.adminService.getAllUsers().subscribe({
+      next: (response) => {
+        this.users.set(response.data || []);
+        this.loadingUsers.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+        this.users.set([]);
+        this.loadingUsers.set(false);
+      }
+    });
   }
 
   toggleUserDetails(userId: string): void {
@@ -207,31 +217,25 @@ export class AdminPanelComponent implements OnInit {
     // Expand new user
     this.selectedUserId.set(userId);
 
-    // Load user's orders from localStorage
+    // Load user's orders
     this.loadUserOrders(userId);
   }
 
   loadUserOrders(userId: string): void {
-    // Since orders are in localStorage, we need to read them from there
-    // In a real backend implementation, this would be an API call
-    const storageKey = `user_orders_${userId}`;
-    const savedOrders = localStorage.getItem(storageKey);
-
-    if (savedOrders) {
-      try {
-        const orders = JSON.parse(savedOrders);
-        // Convert date strings to Date objects
-        orders.forEach((order: any) => {
-          order.date = new Date(order.date);
-        });
+    this.userOrders.set([]);
+    this.adminService.getUserOrders(userId).subscribe({
+      next: (response) => {
+        const orders = (response.data || []).map((order: any) => ({
+          ...order,
+          date: new Date(order.createdAt || order.date)
+        }));
         this.userOrders.set(orders);
-      } catch (error) {
-        console.error('Error parsing user orders:', error);
+      },
+      error: (error) => {
+        console.error('Error loading user orders:', error);
         this.userOrders.set([]);
       }
-    } else {
-      this.userOrders.set([]);
-    }
+    });
   }
 
   isUserExpanded(userId: string): boolean {

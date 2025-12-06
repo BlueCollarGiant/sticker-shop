@@ -31,6 +31,11 @@ function saveUsers(users) {
 }
 
 class FileAuthRepository {
+  async getAllUsers() {
+    const users = loadUsers();
+    return users.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+  }
+
   async findByEmail(email) {
     const users = loadUsers();
     return users.find(u => u.email.toLowerCase() === email.toLowerCase()) || null;

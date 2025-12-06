@@ -49,10 +49,12 @@ export class ApiConfig {
    * Admin endpoints
    */
   static readonly ADMIN = {
-    PRODUCTS: () => this.endpoint('products'),
-    PRODUCT: (id: string) => this.endpoint(`products/${id}`),
-    PRODUCT_STOCK: (id: string) => this.endpoint(`products/${id}/stock`),
-    PRODUCT_BADGE: (id: string) => this.endpoint(`products/${id}/badge`),
+    PRODUCTS: () => this.endpoint('admin/products'),
+    PRODUCT: (id: string) => this.endpoint(`admin/products/${id}`),
+    PRODUCT_STOCK: (id: string) => this.endpoint(`admin/products/${id}/stock`),
+    PRODUCT_BADGE: (id: string) => this.endpoint(`admin/products/${id}/badge`),
+    USERS: () => this.endpoint('admin/users'),
+    USER_ORDERS: (id: string) => this.endpoint(`admin/users/${id}/orders`),
   };
 
   /**

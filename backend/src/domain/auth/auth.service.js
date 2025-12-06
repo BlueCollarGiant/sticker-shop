@@ -72,6 +72,10 @@ class AuthService {
 
     return user;
   }
+
+  async getAllUsers() {
+    return this.authRepository.getAllUsers();
+  }
 }
 
 module.exports = { AuthService };
