@@ -606,6 +606,10 @@
   max-width: 600px;
 }
 
+.search-container {
+  position: relative;
+}
+
 .placeholder-content {
   background: rgba(44, 53, 64, 0.3);
   border: 1px solid #2c3540;
@@ -993,5 +997,145 @@
   .order-total,
   .order-items {
     text-align: left;
+  }
+}
+
+/* ==================== Search Engine Styles ==================== */
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  background: #1c1f26;
+  border: 1px solid #c9a961;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 100;
+  animation: slideDownFade 0.2s ease;
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid #2c3540;
+  transition: all 0.2s;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+  background: rgba(201, 169, 97, 0.1);
+}
+
+.suggestion-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c9a961 0%, #8b7245 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #0f1419;
+  flex-shrink: 0;
+}
+
+.suggestion-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.suggestion-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #e2dfd8;
+  margin-bottom: 0.25rem;
+}
+
+.suggestion-email {
+  font-size: 0.8125rem;
+  color: #8b8581;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestion-role {
+  flex-shrink: 0;
+}
+
+/* Highlight marks */
+.suggestion-name mark,
+.suggestion-email mark {
+  background: rgba(201, 169, 97, 0.3);
+  color: #c9a961;
+  font-weight: 700;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Scrollbar for suggestions */
+.suggestions-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-track {
+  background: #1c1f26;
+  border-radius: 0 8px 8px 0;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb {
+  background: #2c3540;
+  border-radius: 4px;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #c9a961;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .suggestions-dropdown {
+    max-height: 300px;
+  }
+
+  .suggestion-item {
+    padding: 0.75rem;
+  }
+
+  .suggestion-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+
+  .suggestion-name {
+    font-size: 0.875rem;
+  }
+
+  .suggestion-email {
+    font-size: 0.75rem;
   }
 }

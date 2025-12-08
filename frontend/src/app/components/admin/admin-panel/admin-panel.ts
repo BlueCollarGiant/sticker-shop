@@ -1,14 +1,16 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdminService } from '../../../services/admin.service';
 import { AuthStore } from '../../../features/auth/auth.store';
 import { Product, ProductCategory, ProductCollection, ProductBadge, ProductImage } from '../../../models/product.model';
+import { User } from '../../../models/user.model';
 import { StockManagerComponent } from '../stock-manager/stock-manager';
 import { BadgeToggleComponent } from '../badge-toggle/badge-toggle';
 import { ProductEditorComponent } from '../product-editor/product-editor';
 import { AdminOrdersComponent } from '../admin-orders/admin-orders';
+import { createSearchEngine, handleSearchKeyboard, SearchEngine } from '../../../shared/search/search-engine';
 
 @Component({
   selector: 'app-admin-panel',
@@ -17,7 +19,7 @@ import { AdminOrdersComponent } from '../admin-orders/admin-orders';
   templateUrl: './admin-panel.html',
   styleUrl: './admin-panel.css'
 })
-export class AdminPanelComponent implements OnInit {
+export class AdminPanelComponent implements OnInit, OnDestroy {
   private adminService = inject(AdminService);
   private auth = inject(AuthStore);
   private router = inject(Router);
@@ -36,11 +38,13 @@ export class AdminPanelComponent implements OnInit {
   productToDelete = signal<Product | null>(null);
 
   // User management state
-  users = signal<any[]>([]);
-  userSearchQuery = signal('');
+  users = signal<User[]>([]);
   selectedUserId = signal<string | null>(null);
   userOrders = signal<any[]>([]);
   loadingUsers = signal(false);
+
+  // Search engine for users
+  userSearch!: SearchEngine<User>;
 
   // Computed stats
   stats = computed(() => {
@@ -67,15 +71,12 @@ export class AdminPanelComponent implements OnInit {
     );
   });
 
-  // Filtered users
+  // Filtered users - now using search engine
   filteredUsers = computed(() => {
-    const query = this.userSearchQuery().toLowerCase();
-    if (!query) return this.users();
-
-    return this.users().filter(u =>
-      u.name?.toLowerCase().includes(query) ||
-      u.email?.toLowerCase().includes(query)
-    );
+    if (this.userSearch) {
+      return this.userSearch.filtered();
+    }
+    return this.users();
   });
 
   currentUser = this.auth.user;
@@ -87,8 +88,25 @@ export class AdminPanelComponent implements OnInit {
       return;
     }
 
+    // Initialize user search engine
+    this.userSearch = createSearchEngine(this.users, {
+      fields: ['name', 'email', 'role'],
+      getLabel: (user) => user.name,
+      getKey: (user) => user.id,
+      debounceMs: 200,
+      maxSuggestions: 5,
+      enableSuggestions: true
+    });
+
     this.loadProducts();
     this.loadUsers();
+  }
+
+  ngOnDestroy(): void {
+    // Clean up search engine subscription
+    if (this.userSearch) {
+      this.userSearch.destroy();
+    }
   }
 
   loadProducts(): void {
@@ -257,5 +275,39 @@ export class AdminPanelComponent implements OnInit {
       month: 'short',
       day: 'numeric'
     });
+  }
+
+  // ===== SEARCH ENGINE METHODS =====
+
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.userSearch.setQuery(input.value);
+  }
+
+  onSearchKeyDown(event: KeyboardEvent): void {
+    if (handleSearchKeyboard(event, this.userSearch)) {
+      event.preventDefault();
+    }
+  }
+
+  selectUserSuggestion(user: User): void {
+    this.userSearch.selectSuggestion(user);
+    // Optionally expand the selected user
+    this.toggleUserDetails(user.id);
+  }
+
+  highlightText(text: string): string {
+    return this.userSearch.highlight(text);
+  }
+
+  onSearchBlur(): void {
+    // Delay closing to allow click events on suggestions
+    setTimeout(() => {
+      this.userSearch.closeSuggestions();
+    }, 200);
+  }
+
+  onSearchFocus(): void {
+    this.userSearch.openSuggestions();
   }
 }

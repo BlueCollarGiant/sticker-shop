@@ -363,14 +363,45 @@
       </header>
 
       <div class="search-section">
-        <div class="search-box-large">
+        <div class="search-box-large search-container">
           <input
             type="text"
             class="search-input"
-            placeholder="Search by name or email..."
-            [(ngModel)]="userSearchQuery"
+            placeholder="Search by name, email, or role..."
+            [value]="userSearch.query()"
+            (input)="onSearchInput($event)"
+            (keydown)="onSearchKeyDown($event)"
+            (focus)="onSearchFocus()"
+            (blur)="onSearchBlur()"
+            autocomplete="off"
           />
           <span class="search-icon">🔍</span>
+
+          <!-- Suggestions Dropdown -->
+          @if (userSearch.isOpen() && userSearch.suggestions().length > 0) {
+            <div class="suggestions-dropdown">
+              @for (user of userSearch.suggestions(); track user.id; let idx = $index) {
+                <div
+                  class="suggestion-item"
+                  [class.active]="idx === userSearch.activeIndex()"
+                  (mousedown)="selectUserSuggestion(user)"
+                >
+                  <div class="suggestion-avatar">
+                    {{ getUserInitials(user.name) }}
+                  </div>
+                  <div class="suggestion-content">
+                    <div class="suggestion-name" [innerHTML]="highlightText(user.name)"></div>
+                    <div class="suggestion-email" [innerHTML]="highlightText(user.email)"></div>
+                  </div>
+                  <div class="suggestion-role">
+                    <span class="user-role" [class.admin-role]="user.role === 'admin'">
+                      {{ user.role }}
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
         </div>
       </div>
 
