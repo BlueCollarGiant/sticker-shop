@@ -10,7 +10,7 @@ import { StockManagerComponent } from '../stock-manager/stock-manager';
 import { BadgeToggleComponent } from '../badge-toggle/badge-toggle';
 import { ProductEditorComponent } from '../product-editor/product-editor';
 import { AdminOrdersComponent } from '../admin-orders/admin-orders';
-import { createSearchEngine, handleSearchKeyboard, SearchEngine } from '../../../shared/search/search-engine';
+import { createSearchEngine, handleSearchKeyboard, SearchEngine } from '../../../core/search';
 
 @Component({
   selector: 'app-admin-panel',

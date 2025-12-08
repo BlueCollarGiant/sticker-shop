@@ -76,7 +76,7 @@ export interface SearchEngine<T> {
   resetSelection: () => void;
   openSuggestions: () => void;
   closeSuggestions: () => void;
-  highlight: (text: string, query: string) => string;
+  highlight: (text: string, query?: string) => string;
 
   // Cleanup
   destroy: () => void;

@@ -32,7 +32,9 @@
       "Bash(git -C \"c:\\Users\\boop boop\\Documents\\GitHub\\sticker-shop\" log --oneline -20)",
       "Bash(npx tsc:*)",
       "Bash(npm run dev:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(xcopy:*)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

@@ -57,7 +57,7 @@ filteredUsers = computed(() => this.userSearch.filtered());
 ### The 5 Files
 
 ```
-📁 shared/search/
+📁 core/search/
 ├── search-types.ts         → What shapes/types exist?
 ├── search-tokenize.util.ts → How to break up text?
 ├── search-rank.util.ts     → How to score matches?
@@ -1025,7 +1025,7 @@ onSearchKeyDown(event: KeyboardEvent) {
 
 #### Step 1: Import
 ```typescript
-import { createSearchEngine, handleSearchKeyboard, SearchEngine } from '@app/shared/search';
+import { createSearchEngine, handleSearchKeyboard, SearchEngine } from '@app/core/search';
 import { User } from '@app/models/user.model';
 ```
 
