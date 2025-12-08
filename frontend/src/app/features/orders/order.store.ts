@@ -3,7 +3,7 @@
  * Signal-based state management for orders
  */
 
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { OrderApi } from './order.api';
 import { Order, CreateOrderInput, OrderStatus } from './order.types';
 
@@ -11,6 +11,9 @@ import { Order, CreateOrderInput, OrderStatus } from './order.types';
   providedIn: 'root'
 })
 export class OrderStore {
+  // Dependencies
+  private orderApi = inject(OrderApi);
+
   // State
   private orders = signal<Order[]>([]);
   private loading = signal(false);
@@ -48,8 +51,6 @@ export class OrderStore {
       [OrderStatus.CANCELLED, OrderStatus.FAILED].includes(order.status)
     )
   );
-
-  constructor(private orderApi: OrderApi) {}
 
   /**
    * Create a new order
