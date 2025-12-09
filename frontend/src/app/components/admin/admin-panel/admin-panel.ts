@@ -31,7 +31,6 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   products = signal<Product[]>([]);
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
-  searchQuery = signal('');
   selectedProduct = signal<Product | null>(null);
   showEditor = signal(false);
   showDeleteConfirm = signal(false);
@@ -43,35 +42,31 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   userOrders = signal<any[]>([]);
   loadingUsers = signal(false);
 
-  // Search engine for users (initialized in constructor for injection context)
+  // Search engines (initialized in constructor for injection context)
+  productSearch: SearchEngine<Product>;
   userSearch: SearchEngine<User>;
 
   // Computed stats
   stats = computed(() => {
     const prods = this.products();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     return {
       total: prods.length,
       lowStock: prods.filter(p => p.stock < 10).length,
-      newProducts: prods.filter(p => new Date(p.createdAt) > thirtyDaysAgo).length,
+      newProducts: prods.filter(p => p.isNew).length,
       bestsellers: prods.filter(p => p.isBestseller).length
     };
   });
 
-  // Filtered products
+  // Filtered products - using search engine
   filteredProducts = computed(() => {
-    const query = this.searchQuery().toLowerCase();
-    if (!query) return this.products();
-
-    return this.products().filter(p =>
-      p.title.toLowerCase().includes(query) ||
-      p.category.toLowerCase().includes(query)
-    );
+    if (this.productSearch) {
+      return this.productSearch.filtered();
+    }
+    return this.products();
   });
 
-  // Filtered users - now using search engine
+  // Filtered users - using search engine
   filteredUsers = computed(() => {
     if (this.userSearch) {
       return this.userSearch.filtered();
@@ -82,6 +77,16 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   currentUser = this.auth.user;
 
   constructor() {
+    // Initialize product search engine in constructor (injection context required)
+    this.productSearch = createSearchEngine(this.products, {
+      fields: ['title', 'category', 'subtitle', 'description'],
+      getLabel: (product) => product.title,
+      getKey: (product) => product.id,
+      debounceMs: 300,
+      maxSuggestions: 5,
+      enableSuggestions: true
+    });
+
     // Initialize user search engine in constructor (injection context required)
     this.userSearch = createSearchEngine(this.users, {
       fields: ['name', 'email', 'role'],
@@ -105,7 +110,10 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Clean up search engine subscription
+    // Clean up search engine subscriptions
+    if (this.productSearch) {
+      this.productSearch.destroy();
+    }
     if (this.userSearch) {
       this.userSearch.destroy();
     }
@@ -281,6 +289,39 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
 
   // ===== SEARCH ENGINE METHODS =====
 
+  // Product search
+  onProductSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.productSearch.setQuery(input.value);
+  }
+
+  onProductSearchKeyDown(event: KeyboardEvent): void {
+    if (handleSearchKeyboard(event, this.productSearch)) {
+      event.preventDefault();
+    }
+  }
+
+  onProductSearchFocus(): void {
+    this.productSearch.openSuggestions();
+  }
+
+  onProductSearchBlur(): void {
+    // Delay closing to allow click events on suggestions
+    setTimeout(() => {
+      this.productSearch.closeSuggestions();
+    }, 200);
+  }
+
+  selectProductSuggestion(product: Product): void {
+    this.productSearch.selectSuggestion(product);
+    // Optionally scroll to product in table or highlight it
+  }
+
+  highlightProductText(text: string): string {
+    return this.productSearch.highlight(text);
+  }
+
+  // User search
   onSearchInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.userSearch.setQuery(input.value);

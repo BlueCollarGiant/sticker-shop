@@ -173,14 +173,37 @@
 
         <!-- Search and Actions Bar -->
         <div class="actions-bar">
-          <div class="search-box">
+          <div class="search-box search-container">
             <input
               type="text"
               class="search-input"
-              placeholder="Search products by title, category, or tags..."
-              [(ngModel)]="searchQuery"
+              placeholder="Search products by title, category, description..."
+              [value]="productSearch.query()"
+              (input)="onProductSearchInput($event)"
+              (keydown)="onProductSearchKeyDown($event)"
+              (focus)="onProductSearchFocus()"
+              (blur)="onProductSearchBlur()"
+              autocomplete="off"
             />
             <span class="search-icon">🔍</span>
+
+            <!-- Suggestions Dropdown -->
+            @if (productSearch.isOpen() && productSearch.suggestions().length > 0) {
+              <div class="suggestions-dropdown">
+                @for (product of productSearch.suggestions(); track product.id; let idx = $index) {
+                  <div
+                    class="suggestion-item"
+                    [class.active]="idx === productSearch.activeIndex()"
+                    (mousedown)="selectProductSuggestion(product)"
+                  >
+                    <div class="suggestion-content">
+                      <div class="suggestion-name" [innerHTML]="highlightProductText(product.title)"></div>
+                      <div class="suggestion-email">{{ product.category }}</div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
           </div>
           <button class="btn-primary" (click)="openEditor()" type="button">
             <span class="btn-icon">+</span>
@@ -213,9 +236,9 @@
                         class="product-thumb"
                       />
                       <div class="product-text">
-                        <div class="product-title">{{ product.title }}</div>
+                        <div class="product-title" [innerHTML]="highlightProductText(product.title)"></div>
                         @if (product.subtitle) {
-                          <div class="product-subtitle">{{ product.subtitle }}</div>
+                          <div class="product-subtitle" [innerHTML]="highlightProductText(product.subtitle)"></div>
                         }
                       </div>
                     </div>
@@ -223,7 +246,7 @@
 
                   <!-- Category -->
                   <td class="category-cell">
-                    <span class="category-badge">{{ product.category }}</span>
+                    <span class="category-badge" [innerHTML]="highlightProductText(product.category)"></span>
                   </td>
 
                   <!-- Price -->
@@ -280,10 +303,10 @@
                     <div class="empty-content">
                       <div class="empty-icon">📦</div>
                       <p>No products found</p>
-                      @if (searchQuery()) {
+                      @if (productSearch.query()) {
                         <button
                           class="btn-secondary"
-                          (click)="searchQuery.set('')"
+                          (click)="productSearch.setQuery('')"
                           type="button"
                         >
                           Clear Search
