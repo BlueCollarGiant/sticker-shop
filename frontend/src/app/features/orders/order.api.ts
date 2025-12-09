@@ -1,10 +1,12 @@
 /**
  * Order API
  * HTTP calls to backend order endpoints
+ *
+ * Authentication: Relies on AuthInterceptor to automatically attach JWT token
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiConfig } from '../../core/config/api.config';
 import { Order, CreateOrderInput, UpdateOrderStatusInput, ApiResponse } from './order.types';
@@ -15,22 +17,13 @@ import { Order, CreateOrderInput, UpdateOrderStatusInput, ApiResponse } from './
 export class OrderApi {
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('authToken');
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
-    });
-  }
-
   /**
    * Create a new order
    */
   createOrder(input: CreateOrderInput): Observable<ApiResponse<Order>> {
     return this.http.post<ApiResponse<Order>>(
       ApiConfig.ORDERS.CREATE(),
-      input,
-      { headers: this.getHeaders() }
+      input
     );
   }
 
@@ -39,8 +32,7 @@ export class OrderApi {
    */
   getUserOrders(): Observable<ApiResponse<Order[]>> {
     return this.http.get<ApiResponse<Order[]>>(
-      ApiConfig.ORDERS.USER_ORDERS(),
-      { headers: this.getHeaders() }
+      ApiConfig.ORDERS.USER_ORDERS()
     );
   }
 
@@ -49,8 +41,7 @@ export class OrderApi {
    */
   getOrderById(orderId: string): Observable<ApiResponse<Order>> {
     return this.http.get<ApiResponse<Order>>(
-      ApiConfig.ORDERS.GET(orderId),
-      { headers: this.getHeaders() }
+      ApiConfig.ORDERS.GET(orderId)
     );
   }
 
@@ -59,8 +50,7 @@ export class OrderApi {
    */
   getAllOrders(): Observable<ApiResponse<Order[]>> {
     return this.http.get<ApiResponse<Order[]>>(
-      ApiConfig.ORDERS.LIST(),
-      { headers: this.getHeaders() }
+      ApiConfig.ORDERS.LIST()
     );
   }
 
@@ -70,8 +60,7 @@ export class OrderApi {
   updateOrderStatus(orderId: string, input: UpdateOrderStatusInput): Observable<ApiResponse<Order>> {
     return this.http.patch<ApiResponse<Order>>(
       ApiConfig.ORDERS.UPDATE_STATUS(orderId),
-      input,
-      { headers: this.getHeaders() }
+      input
     );
   }
 
@@ -81,8 +70,7 @@ export class OrderApi {
   cancelOrder(orderId: string): Observable<ApiResponse<Order>> {
     return this.http.post<ApiResponse<Order>>(
       ApiConfig.ORDERS.CANCEL(orderId),
-      {},
-      { headers: this.getHeaders() }
+      {}
     );
   }
 
@@ -91,8 +79,7 @@ export class OrderApi {
    */
   deleteOrder(orderId: string): Observable<ApiResponse<{ success: boolean; message: string }>> {
     return this.http.delete<ApiResponse<{ success: boolean; message: string }>>(
-      ApiConfig.ORDERS.DELETE(orderId),
-      { headers: this.getHeaders() }
+      ApiConfig.ORDERS.DELETE(orderId)
     );
   }
 }

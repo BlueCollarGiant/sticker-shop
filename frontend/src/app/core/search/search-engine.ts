@@ -55,7 +55,7 @@ export function createSearchEngine<T>(
   effect(() => {
     const currentQuery = query();
     querySubject.next(currentQuery);
-  }, { allowSignalWrites: true });
+  });
 
   // Computed: filtered and ranked items
   const filtered = computed(() => {

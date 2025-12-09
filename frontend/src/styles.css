@@ -270,6 +270,19 @@ a:hover {
 }
 
 /* ========================================
+   SEARCH HIGHLIGHTS - Night Reader Theme
+   ======================================== */
+
+mark {
+  background: rgba(201, 169, 97, 0.25) !important;
+  color: var(--ancient-gold) !important;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 3px;
+  border-bottom: 2px solid rgba(201, 169, 97, 0.5);
+}
+
+/* ========================================
    CARDS
    ======================================== */
 

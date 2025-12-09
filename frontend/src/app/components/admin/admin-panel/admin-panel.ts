@@ -43,8 +43,8 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   userOrders = signal<any[]>([]);
   loadingUsers = signal(false);
 
-  // Search engine for users
-  userSearch!: SearchEngine<User>;
+  // Search engine for users (initialized in constructor for injection context)
+  userSearch: SearchEngine<User>;
 
   // Computed stats
   stats = computed(() => {
@@ -81,14 +81,8 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
 
   currentUser = this.auth.user;
 
-  ngOnInit(): void {
-    // Verify admin access
-    if (!this.auth.isAdmin()) {
-      this.router.navigate(['/']);
-      return;
-    }
-
-    // Initialize user search engine
+  constructor() {
+    // Initialize user search engine in constructor (injection context required)
     this.userSearch = createSearchEngine(this.users, {
       fields: ['name', 'email', 'role'],
       getLabel: (user) => user.name,
@@ -97,6 +91,14 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
       maxSuggestions: 5,
       enableSuggestions: true
     });
+  }
+
+  ngOnInit(): void {
+    // Verify admin access
+    if (!this.auth.isAdmin()) {
+      this.router.navigate(['/']);
+      return;
+    }
 
     this.loadProducts();
     this.loadUsers();

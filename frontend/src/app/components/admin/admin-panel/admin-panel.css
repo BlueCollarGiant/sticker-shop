@@ -968,6 +968,16 @@
   font-style: italic;
 }
 
+/* Search Highlight Styling - Night Reader Theme */
+mark {
+  background: rgba(201, 169, 97, 0.2);
+  color: #c9a961;
+  font-weight: 600;
+  padding: 0 2px;
+  border-radius: 2px;
+  border-bottom: 1px solid rgba(201, 169, 97, 0.4);
+}
+
 @media (max-width: 768px) {
   .user-summary {
     padding: 1rem;
