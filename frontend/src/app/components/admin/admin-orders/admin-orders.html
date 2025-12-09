@@ -53,13 +53,37 @@
       </button>
     </div>
 
-    <div class="search-box">
+    <div class="search-box search-container">
       <input
         type="text"
-        placeholder="Search orders..."
-        [value]="searchQuery()"
-        (input)="updateSearch($any($event.target).value)"
+        class="search-input"
+        placeholder="Search orders by order number or customer ID..."
+        [value]="orderSearch.query()"
+        (input)="onSearchInput($event)"
+        (keydown)="onSearchKeyDown($event)"
+        (focus)="onSearchFocus()"
+        (blur)="onSearchBlur()"
+        autocomplete="off"
       />
+      <span class="search-icon">🔍</span>
+
+      <!-- Suggestions Dropdown -->
+      @if (orderSearch.isOpen() && orderSearch.suggestions().length > 0) {
+        <div class="suggestions-dropdown">
+          @for (order of orderSearch.suggestions(); track order.id; let idx = $index) {
+            <div
+              class="suggestion-item"
+              [class.active]="idx === orderSearch.activeIndex()"
+              (mousedown)="selectOrderSuggestion(order)"
+            >
+              <div class="suggestion-content">
+                <div class="suggestion-name" [innerHTML]="highlightText(order.orderNumber)"></div>
+                <div class="suggestion-email">Customer: {{ order.userId.substring(0, 8) }}... • ${{ order.total.toFixed(2) }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
   </div>
 
@@ -73,7 +97,19 @@
     </div>
   } @else if (filteredOrders().length === 0) {
     <div class="empty-state">
-      <p>No orders found</p>
+      <div class="empty-content">
+        <div class="empty-icon">📦</div>
+        <p>No orders found</p>
+        @if (orderSearch.query()) {
+          <button
+            class="btn-secondary"
+            (click)="orderSearch.setQuery('')"
+            type="button"
+          >
+            Clear Search
+          </button>
+        }
+      </div>
     </div>
   } @else {
     <!-- Orders Table -->
@@ -93,9 +129,9 @@
         <tbody>
           @for (order of filteredOrders(); track order.id) {
             <tr>
-              <td class="order-number">{{ order.orderNumber }}</td>
+              <td class="order-number" [innerHTML]="highlightText(order.orderNumber)"></td>
               <td class="order-date">{{ formatDate(order.createdAt) }}</td>
-              <td class="user-id">{{ order.userId }}</td>
+              <td class="user-id" [innerHTML]="highlightText(order.userId)"></td>
               <td class="item-count">{{ getItemCount(order) }} items</td>
               <td class="order-total">${{ order.total.toFixed(2) }}</td>
               <td class="order-status">

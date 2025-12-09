@@ -66,7 +66,7 @@
     "isLimitedEdition": false,
     "stock": 120,
     "createdAt": "2025-01-10T00:00:00.000Z",
-    "updatedAt": "2025-12-09T02:26:27.368Z"
+    "updatedAt": "2025-01-10T00:00:00.000Z"
   },
   {
     "id": "3",
@@ -91,16 +91,16 @@
       "mythology"
     ],
     "badges": [
-      "limited"
+      "new"
     ],
     "rating": 4.7,
     "reviewCount": 15,
-    "isNew": false,
+    "isNew": true,
     "isBestseller": false,
-    "isLimitedEdition": true,
+    "isLimitedEdition": false,
     "stock": 200,
     "createdAt": "2025-02-01T00:00:00.000Z",
-    "updatedAt": "2025-12-09T02:23:14.323Z"
+    "updatedAt": "2025-02-01T00:00:00.000Z"
   },
   {
     "id": "4",
@@ -125,17 +125,16 @@
       "morning"
     ],
     "badges": [
-      "bestseller",
-      "new"
+      "bestseller"
     ],
     "rating": 4.9,
     "reviewCount": 67,
-    "isNew": true,
+    "isNew": false,
     "isBestseller": true,
     "isLimitedEdition": false,
     "stock": 85,
     "createdAt": "2025-01-05T00:00:00.000Z",
-    "updatedAt": "2025-12-09T02:20:15.053Z"
+    "updatedAt": "2025-01-05T00:00:00.000Z"
   },
   {
     "id": "5",
@@ -167,8 +166,8 @@
     "isNew": false,
     "isBestseller": true,
     "isLimitedEdition": true,
-    "stock": 6,
+    "stock": 45,
     "createdAt": "2024-12-20T00:00:00.000Z",
-    "updatedAt": "2025-12-09T02:26:12.003Z"
+    "updatedAt": "2024-12-20T00:00:00.000Z"
   }
 ]

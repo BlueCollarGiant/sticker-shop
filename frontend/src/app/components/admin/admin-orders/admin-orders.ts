@@ -1,8 +1,9 @@
-import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderStore } from '../../../features/orders/order.store';
 import { Order, OrderStatus } from '../../../features/orders/order.types';
+import { createSearchEngine, handleSearchKeyboard, SearchEngine } from '../../../core/search';
 
 @Component({
   selector: 'app-admin-orders',
@@ -11,7 +12,7 @@ import { Order, OrderStatus } from '../../../features/orders/order.types';
   templateUrl: './admin-orders.html',
   styleUrl: './admin-orders.css'
 })
-export class AdminOrdersComponent implements OnInit {
+export class AdminOrdersComponent implements OnInit, OnDestroy {
   orderStore = inject(OrderStore);
 
   // Computed from OrderStore
@@ -21,32 +22,29 @@ export class AdminOrdersComponent implements OnInit {
 
   // Filter state
   statusFilter = signal<OrderStatus | 'all'>('all');
-  searchQuery = signal('');
 
   // Order statuses for dropdown
   orderStatuses = Object.values(OrderStatus);
 
-  // Filtered orders
-  filteredOrders = computed(() => {
+  // Status-filtered orders (before search)
+  statusFilteredOrders = computed(() => {
     let orders = this.allOrders();
-
-    // Filter by status
     const filter = this.statusFilter();
     if (filter !== 'all') {
       orders = orders.filter(order => order.status === filter);
     }
-
-    // Filter by search query
-    const query = this.searchQuery().toLowerCase();
-    if (query) {
-      orders = orders.filter(order =>
-        order.orderNumber.toLowerCase().includes(query) ||
-        order.userId.toLowerCase().includes(query) ||
-        order.items.some(item => item.productTitle.toLowerCase().includes(query))
-      );
-    }
-
     return orders;
+  });
+
+  // Search engine (initialized in constructor for injection context)
+  orderSearch: SearchEngine<Order>;
+
+  // Final filtered orders - applies search on top of status filter
+  filteredOrders = computed(() => {
+    if (this.orderSearch) {
+      return this.orderSearch.filtered();
+    }
+    return this.statusFilteredOrders();
   });
 
   // Stats
@@ -55,8 +53,28 @@ export class AdminOrdersComponent implements OnInit {
   activeOrders = computed(() => this.orderStore.activeOrders().length);
   completedOrders = computed(() => this.orderStore.completedOrders().length);
 
+  constructor() {
+    // Initialize order search engine in constructor (injection context required)
+    // Use statusFilteredOrders as the source so search only applies to status-filtered results
+    this.orderSearch = createSearchEngine(this.statusFilteredOrders, {
+      fields: ['orderNumber', 'userId'],
+      getLabel: (order) => order.orderNumber,
+      getKey: (order) => order.id,
+      debounceMs: 300,
+      maxSuggestions: 5,
+      enableSuggestions: true
+    });
+  }
+
   ngOnInit() {
     this.loadOrders();
+  }
+
+  ngOnDestroy(): void {
+    // Clean up search engine subscriptions
+    if (this.orderSearch) {
+      this.orderSearch.destroy();
+    }
   }
 
   loadOrders() {
@@ -65,7 +83,15 @@ export class AdminOrdersComponent implements OnInit {
   }
 
   async updateOrderStatus(orderId: string, newStatus: OrderStatus) {
-    const success = await this.orderStore.updateOrderStatus(orderId, newStatus);
+    // Auto-complete terminal statuses (paid, cancelled, failed)
+    let finalStatus = newStatus;
+    if (newStatus === OrderStatus.PAID ||
+        newStatus === OrderStatus.CANCELLED ||
+        newStatus === OrderStatus.FAILED) {
+      finalStatus = OrderStatus.DELIVERED;
+    }
+
+    const success = await this.orderStore.updateOrderStatus(orderId, finalStatus);
     if (success) {
       console.log('Order status updated successfully');
     } else {
@@ -108,8 +134,36 @@ export class AdminOrdersComponent implements OnInit {
     this.statusFilter.set(OrderStatus.DELIVERED);
   }
 
-  updateSearch(query: string) {
-    this.searchQuery.set(query);
+  // Search engine methods
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.orderSearch.setQuery(input.value);
+  }
+
+  onSearchKeyDown(event: KeyboardEvent): void {
+    if (handleSearchKeyboard(event, this.orderSearch)) {
+      event.preventDefault();
+    }
+  }
+
+  onSearchFocus(): void {
+    this.orderSearch.openSuggestions();
+  }
+
+  onSearchBlur(): void {
+    // Delay closing to allow click events on suggestions
+    setTimeout(() => {
+      this.orderSearch.closeSuggestions();
+    }, 200);
+  }
+
+  selectOrderSuggestion(order: Order): void {
+    this.orderSearch.selectSuggestion(order);
+    // Optionally scroll to order in table or highlight it
+  }
+
+  highlightText(text: string): string {
+    return this.orderSearch.highlight(text);
   }
 
   getStatusBadgeClass(status: OrderStatus): string {

@@ -1,1 +1,80 @@
-[]
+[
+  {
+    "id": "order-1765248578524-5z4g208k9",
+    "items": [
+      {
+        "productId": "3",
+        "productTitle": "Mythic Warrior",
+        "productImage": "https://placehold.co/600x600/2B1B3D/C9A961?text=Mythic+Warrior",
+        "quantity": 1,
+        "price": 4.99,
+        "subtotal": 4.99
+      }
+    ],
+    "subtotal": 4.99,
+    "tax": 0.4,
+    "shipping": 5.99,
+    "total": 11.38,
+    "shippingAddress": {
+      "fullName": "ISAIAH DANIEL RATLIFF",
+      "address1": "995 Lees Lane",
+      "address2": "",
+      "city": "Florissant",
+      "state": "MO",
+      "zipCode": "63031",
+      "country": "USA",
+      "phone": "3149336368"
+    },
+    "userId": "admin-1",
+    "status": "pending",
+    "createdAt": "2025-12-09T02:49:38.524Z",
+    "updatedAt": "2025-12-09T02:49:38.524Z"
+  },
+  {
+    "id": "order-1765249107970-zj43wg1zf",
+    "items": [
+      {
+        "productId": "1",
+        "productTitle": "Read by Moonlight",
+        "productImage": "https://placehold.co/600x600/1A1410/E8DCC4?text=Read+by+Moonlight",
+        "quantity": 3,
+        "price": 4.99,
+        "subtotal": 14.97
+      },
+      {
+        "productId": "2",
+        "productTitle": "Discipline & Iron",
+        "productImage": "https://placehold.co/600x600/0A1628/D4D8DD?text=Discipline+%26+Iron",
+        "quantity": 3,
+        "price": 24.99,
+        "subtotal": 74.97
+      },
+      {
+        "productId": "4",
+        "productTitle": "Quiet Hours Coffee Mug",
+        "productImage": "https://placehold.co/600x600/1A1410/D4A574?text=Quiet+Hours+Mug",
+        "quantity": 1,
+        "price": 16.99,
+        "subtotal": 16.99
+      }
+    ],
+    "subtotal": 106.93,
+    "tax": 8.55,
+    "shipping": 0,
+    "total": 115.48,
+    "shippingAddress": {
+      "fullName": "ISAIAH DANIEL RATLIFF",
+      "address1": "995 Lees Lane",
+      "address2": "",
+      "city": "Florissant",
+      "state": "MO",
+      "zipCode": "63031",
+      "country": "USA",
+      "phone": "3149336368"
+    },
+    "userId": "admin-1",
+    "status": "pending",
+    "createdAt": "2025-12-09T02:58:27.970Z",
+    "updatedAt": "2025-12-09T02:58:27.970Z"
+  }
+]

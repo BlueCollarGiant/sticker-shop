@@ -5,6 +5,7 @@ const OrderStatus = {
   SHIPPED: 'shipped',
   DELIVERED: 'delivered',
   CANCELLED: 'cancelled',
+  FAILED: 'failed',
 };
 
 class OrderService {
