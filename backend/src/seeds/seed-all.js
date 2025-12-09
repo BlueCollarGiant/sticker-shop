@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
 const { productSeeds } = require('./seed-products.js');
+
+const SALT_ROUNDS = 10;
 
 const usersFile = path.join(__dirname, '../data/users.json');
 const productsFile = path.join(__dirname, '../data/products.json');
@@ -307,7 +310,15 @@ function writeData(filePath, data) {
 async function seedAll() {
   console.log('\nSeeding local file stores...\n');
 
-  writeData(usersFile, defaultUsers);
+  console.log('Hashing passwords for seeded users...');
+  const usersWithHashedPasswords = await Promise.all(
+    defaultUsers.map(async (user) => ({
+      ...user,
+      password: await bcrypt.hash(user.password, SALT_ROUNDS),
+    }))
+  );
+
+  writeData(usersFile, usersWithHashedPasswords);
   writeData(productsFile, productSeeds);
   writeData(ordersFile, []);
   writeData(cartsFile, []);

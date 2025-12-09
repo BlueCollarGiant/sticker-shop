@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const USERS_FILE = path.join(__dirname, '../../data/users.json');
+const SALT_ROUNDS = 10;
 
 function ensureStore() {
   try {
@@ -43,7 +45,11 @@ class FileAuthRepository {
 
   async findById(id) {
     const users = loadUsers();
-    return users.find(u => u.id === id) || null;
+    const user = users.find(u => u.id === id);
+    if (!user) return null;
+
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 
   async getUserWithPassword(email) {
@@ -57,10 +63,12 @@ class FileAuthRepository {
       throw new Error('User with this email already exists');
     }
 
+    const hashedPassword = await bcrypt.hash(userData.password, SALT_ROUNDS);
+
     const newUser = {
       id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       email: userData.email.toLowerCase(),
-      password: userData.password,
+      password: hashedPassword,
       name: userData.name,
       role: userData.role || 'user',
       createdAt: new Date().toISOString(),

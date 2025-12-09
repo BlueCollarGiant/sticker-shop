@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const { env } = require('../../config/env.js');
 
 class AuthService {
@@ -29,7 +30,13 @@ class AuthService {
   async login(email, password) {
     const userWithPassword = await this.authRepository.getUserWithPassword(email);
 
-    if (!userWithPassword || userWithPassword.password !== password) {
+    if (!userWithPassword) {
+      throw new Error('Invalid credentials');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, userWithPassword.password);
+
+    if (!isPasswordValid) {
       throw new Error('Invalid credentials');
     }
 
