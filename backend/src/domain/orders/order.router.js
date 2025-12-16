@@ -19,6 +19,7 @@ function createOrderRouter() {
 
   router.post('/', orderController.createOrder);
   router.get('/user/me', orderController.getUserOrders);
+  router.get('/user/activity', orderController.getUserActivity);
   router.get('/:id', orderController.getOrderById);
   router.get('/', orderController.getAllOrders);
   router.patch('/:id/status', orderController.updateOrderStatus);

@@ -83,15 +83,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   }
 
   async updateOrderStatus(orderId: string, newStatus: OrderStatus) {
-    // Auto-complete terminal statuses (paid, cancelled, failed)
-    let finalStatus = newStatus;
-    if (newStatus === OrderStatus.PAID ||
-        newStatus === OrderStatus.CANCELLED ||
-        newStatus === OrderStatus.FAILED) {
-      finalStatus = OrderStatus.DELIVERED;
-    }
-
-    const success = await this.orderStore.updateOrderStatus(orderId, finalStatus);
+    const success = await this.orderStore.updateOrderStatus(orderId, newStatus);
     if (success) {
       console.log('Order status updated successfully');
     } else {

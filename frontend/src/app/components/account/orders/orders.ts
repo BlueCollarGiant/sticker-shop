@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { Component, signal, inject, OnInit, OnDestroy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthStore } from '../../../features/auth/auth.store';
@@ -12,7 +12,7 @@ import { Order, OrderStatus } from '../../../features/orders/order.types';
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent implements OnInit, OnDestroy {
   auth = inject(AuthStore);
   orderStore = inject(OrderStore);
 
@@ -23,6 +23,9 @@ export class OrdersComponent implements OnInit {
 
   // Filter state
   statusFilter = signal<OrderStatus | 'all'>('all');
+
+  // Auto-refresh interval
+  private refreshInterval: any;
 
   // Filtered orders
   filteredOrders = computed(() => {
@@ -35,6 +38,18 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit() {
     this.loadOrders();
+
+    // Auto-refresh orders every 10 seconds to reflect admin changes
+    this.refreshInterval = setInterval(() => {
+      this.loadOrders();
+    }, 10000); // 10 seconds
+  }
+
+  ngOnDestroy() {
+    // Clean up interval when component is destroyed
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
   }
 
   loadOrders() {

@@ -10,6 +10,7 @@ class OrderController {
     this.updateOrderStatus = this.updateOrderStatus.bind(this);
     this.cancelOrder = this.cancelOrder.bind(this);
     this.deleteOrder = this.deleteOrder.bind(this);
+    this.getUserActivity = this.getUserActivity.bind(this);
   }
 
   async createOrder(req, res) {
@@ -226,6 +227,83 @@ class OrderController {
       res.status(400).json({
         success: false,
         error: 'Failed to delete order',
+        message: error.message,
+      });
+    }
+  }
+
+  async getUserActivity(req, res) {
+    try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'Unauthorized',
+        });
+        return;
+      }
+
+      const orders = await this.orderService.getUserOrders(userId);
+
+      // Convert orders to activity items
+      const activities = [];
+
+      for (const order of orders) {
+        // Add order placed activity
+        activities.push({
+          id: `${order.id}-placed`,
+          type: 'order_placed',
+          message: `Order #${order.id.slice(-8)} placed`,
+          timestamp: order.createdAt,
+          icon: '📦',
+          metadata: {
+            orderId: order.id,
+            total: order.total,
+          }
+        });
+
+        // Add status-specific activities
+        if (order.status === 'shipped') {
+          activities.push({
+            id: `${order.id}-shipped`,
+            type: 'order_shipped',
+            message: `Order #${order.id.slice(-8)} shipped`,
+            timestamp: order.updatedAt,
+            icon: '🚚',
+            metadata: {
+              orderId: order.id,
+            }
+          });
+        } else if (order.status === 'delivered') {
+          activities.push({
+            id: `${order.id}-delivered`,
+            type: 'order_delivered',
+            message: `Order #${order.id.slice(-8)} delivered`,
+            timestamp: order.updatedAt,
+            icon: '✅',
+            metadata: {
+              orderId: order.id,
+            }
+          });
+        }
+      }
+
+      // Sort by timestamp descending (most recent first)
+      activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      // Limit to 10 most recent activities
+      const recentActivities = activities.slice(0, 10);
+
+      res.json({
+        success: true,
+        data: recentActivities,
+        total: recentActivities.length,
+      });
+    } catch (error) {
+      console.error('[OrderController] Get user activity error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch user activity',
         message: error.message,
       });
     }

@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiConfig } from '../../core/config/api.config';
 import { Order, CreateOrderInput, UpdateOrderStatusInput, ApiResponse } from './order.types';
+import { ActivityItem } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +81,15 @@ export class OrderApi {
   deleteOrder(orderId: string): Observable<ApiResponse<{ success: boolean; message: string }>> {
     return this.http.delete<ApiResponse<{ success: boolean; message: string }>>(
       ApiConfig.ORDERS.DELETE(orderId)
+    );
+  }
+
+  /**
+   * Get current user's activity
+   */
+  getUserActivity(): Observable<ApiResponse<ActivityItem[]>> {
+    return this.http.get<ApiResponse<ActivityItem[]>>(
+      ApiConfig.ORDERS.USER_ACTIVITY()
     );
   }
 }

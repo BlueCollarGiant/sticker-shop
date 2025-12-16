@@ -43,16 +43,25 @@
       <div class="recent-activity">
         <h3>Recent Activity</h3>
         <div class="activity-list">
-          @for (activity of recentActivity(); track activity.id) {
-            <div class="activity-item">
-              <div class="activity-message">{{ activity.message }}</div>
-              <div class="activity-time">{{ activity.timestamp | date:'short' }}</div>
-            </div>
-          }
-          @if (recentActivity().length === 0) {
+          @if (isLoadingActivity()) {
             <div class="empty-activity">
-              No recent activity
+              Loading activity...
             </div>
+          } @else {
+            @for (activity of recentActivity(); track activity.id) {
+              <div class="activity-item">
+                <div class="activity-icon">{{ activity.icon }}</div>
+                <div class="activity-content">
+                  <div class="activity-message">{{ activity.message }}</div>
+                  <div class="activity-time">{{ activity.timestamp | date:'short' }}</div>
+                </div>
+              </div>
+            }
+            @if (recentActivity().length === 0) {
+              <div class="empty-activity">
+                No recent activity
+              </div>
+            }
           }
         </div>
       </div>

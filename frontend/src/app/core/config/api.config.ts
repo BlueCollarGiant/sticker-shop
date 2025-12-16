@@ -65,6 +65,7 @@ export class ApiConfig {
     CREATE: () => this.endpoint('orders'),
     GET: (id: string) => this.endpoint(`orders/${id}`),
     USER_ORDERS: () => this.endpoint('orders/user/me'),
+    USER_ACTIVITY: () => this.endpoint('orders/user/activity'),
     UPDATE_STATUS: (id: string) => this.endpoint(`orders/${id}/status`),
     CANCEL: (id: string) => this.endpoint(`orders/${id}/cancel`),
     DELETE: (id: string) => this.endpoint(`orders/${id}`),

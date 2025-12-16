@@ -142,10 +142,22 @@
 }
 
 .activity-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
   padding: var(--spacing-md);
   background: var(--shadow);
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--candlelight-gold);
+}
+
+.activity-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex: 1;
 }
 
 .activity-message {
