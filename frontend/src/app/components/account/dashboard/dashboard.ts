@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthStore } from '../../../features/auth/auth.store';
 import { ActivityItem, ActivityType } from '../../../models/user.model';
 import { OrderApi } from '../../../features/orders/order.api';
+import { OrderStore } from '../../../features/orders/order.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,6 +15,7 @@ import { OrderApi } from '../../../features/orders/order.api';
 export class DashboardComponent implements OnInit, OnDestroy {
   auth = inject(AuthStore);
   orderApi = inject(OrderApi);
+  orderStore = inject(OrderStore);
 
   // Use auth store's user signal directly
   user = this.auth.user;
@@ -21,6 +23,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Live user activity from backend
   recentActivity = signal<ActivityItem[]>([]);
   isLoadingActivity = signal(false);
+
+  // Total order count from OrderStore
+  totalOrders = computed(() => this.orderStore.userOrders().length);
 
   // Auto-refresh interval
   private refreshInterval: any;
@@ -47,11 +52,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadUserActivity();
+    this.loadOrders();
 
     // Auto-refresh activity every 10 seconds to reflect admin changes
     this.refreshInterval = setInterval(() => {
       this.loadUserActivity();
+      this.loadOrders();
     }, 10000); // 10 seconds
+  }
+
+  loadOrders(): void {
+    this.orderStore.loadUserOrders();
   }
 
   ngOnDestroy(): void {
