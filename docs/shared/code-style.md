@@ -8,12 +8,16 @@ Formatting and linting rules for consistent code style across the Sticker Shop p
 
 ```json
 {
-  "semi": true,
-  "trailingComma": "es5",
+  "printWidth": 100,
   "singleQuote": true,
-  "printWidth": 80,
-  "tabWidth": 2,
-  "useTabs": false
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ]
 }
 ```
 

@@ -222,13 +222,9 @@ See [Error Handling](./error-handling.md) for complete patterns.
 ```javascript
 import express from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import bodyParser from 'body-parser';
 
 const app = express();
-
-// Security headers
-app.use(helmet());
 
 // CORS
 app.use(cors({
@@ -236,21 +232,12 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-});
-app.use('/api/', limiter);
-
 // Body parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Request logging (development)
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+// Static file serving (for images, etc.)
+app.use('/images', express.static('public/images'));
 ```
 
 ### Route-Specific Middleware
@@ -364,16 +351,16 @@ logger.warn('Rate limit exceeded', { ip, endpoint });
 - ✅ JWT authentication
 - ✅ Password hashing (bcrypt)
 - ✅ CORS configuration
-- ✅ Helmet.js security headers
-- ✅ Input validation
+- ✅ Input validation (Zod)
+- ✅ Body parsing with size limits
 
 ### TODO
+- ⏳ Helmet.js security headers
 - ⏳ Rate limiting per endpoint
 - ⏳ SQL injection prevention (parameterized queries)
 - ⏳ XSS protection
 - ⏳ CSRF tokens
 - ⏳ API key rotation
-- ⏳ Request size limits
 - ⏳ File upload security
 
 ## Architecture Decisions
