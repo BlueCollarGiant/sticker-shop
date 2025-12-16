@@ -210,6 +210,15 @@
   font-family: monospace;
 }
 
+/* Search Highlighting */
+mark {
+  background: rgba(201, 169, 97, 0.3);
+  color: var(--candlelight-gold);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
 /* Table */
 .orders-table-container {
   background: linear-gradient(180deg, rgba(44,53,64,0.8) 0%, rgba(24,28,36,0.95) 100%);

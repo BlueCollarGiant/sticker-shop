@@ -94,11 +94,11 @@ export function createSearchEngine<T>(
 
     // Methods
     setQuery: (value: string) => {
-      query.set(value);
+      query.set(value || '');
       activeIndex.set(-1);
 
       // Auto-open suggestions if query is not empty
-      if (enableSuggestions && value.trim().length > 0) {
+      if (enableSuggestions && value && value.trim().length > 0) {
         isOpen.set(true);
       } else {
         isOpen.set(false);
@@ -106,7 +106,7 @@ export function createSearchEngine<T>(
     },
 
     selectSuggestion: (item: T) => {
-      const label = config.getLabel(item);
+      const label = config.getLabel(item) || '';
       query.set(label);
       debouncedQuery.set(label);
       isOpen.set(false);
@@ -137,7 +137,8 @@ export function createSearchEngine<T>(
     },
 
     openSuggestions: () => {
-      if (enableSuggestions && query().trim().length > 0) {
+      const currentQuery = query();
+      if (enableSuggestions && currentQuery && currentQuery.trim().length > 0) {
         isOpen.set(true);
       }
     },

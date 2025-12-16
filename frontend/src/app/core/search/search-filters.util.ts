@@ -85,7 +85,7 @@ export function generateSuggestions<T>(
  */
 export function highlightMatches(text: string, query: string): string {
   if (!text || !query || query.trim().length === 0) {
-    return text;
+    return text || '';
   }
 
   const tokens = tokenize(query);
