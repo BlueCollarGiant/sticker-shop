@@ -2,7 +2,7 @@
   {
     "id": "user-1",
     "email": "demo@nightreader.com",
-    "password": "$2b$10$zptNLGaFAuiJq3iOb0/X2OnemlV78xIAsM.RKwjbbOp/1PXkcE8Ke",
+    "password": "$2b$10$P4qPgQrJKSR4XxHJrsR6n.Ax8UyMfy/DmbDONRi76slsfVRUWsUge",
     "name": "Demo User",
     "role": "user",
     "createdAt": "2024-01-01T00:00:00.000Z",
@@ -11,7 +11,7 @@
   {
     "id": "admin-1",
     "email": "admin@nightreader.com",
-    "password": "$2b$10$XT9BvlvvtJoQ.qXcxC4IBe/jbgQMwO6IRfZmaom7B9UiQDxnI9ayu",
+    "password": "$2b$10$8bXZalwPv8hfTR3MPj0YkeJNGyH2W/Hkn1x2QZpbQ1i8iM.aW/J6i",
     "name": "Admin User",
     "role": "admin",
     "createdAt": "2024-01-01T00:00:00.000Z",
@@ -20,7 +20,7 @@
   {
     "id": "user-2",
     "email": "alice.johnson@nightreader.com",
-    "password": "$2b$10$msKMziV3RjRKdxEk/Pm9qOsXsLC2ub1tMdfP1JGpp2f1enJNkQgqa",
+    "password": "$2b$10$iquAoJ4NW0COxSv.Bqm4h.6Mw8imAZXiMipviFo1yWksqrNTzurIq",
     "name": "Alice Johnson",
     "role": "user",
     "createdAt": "2024-01-02T00:00:00.000Z",
@@ -29,7 +29,7 @@
   {
     "id": "user-3",
     "email": "bob.smith@nightreader.com",
-    "password": "$2b$10$1odMPgb8dM8Tw9AQKmCEUeltcB2sVaUM/AYX8x5.gpf0gUI4Tp4ES",
+    "password": "$2b$10$sXNo2Jo0nXA4VSemVBRFb.oyVrOZUzIeFmBS4uN8tPT0DuT3LKJAC",
     "name": "Bob Smith",
     "role": "user",
     "createdAt": "2024-01-03T00:00:00.000Z",
@@ -38,7 +38,7 @@
   {
     "id": "user-4",
     "email": "carol.williams@nightreader.com",
-    "password": "$2b$10$/grXdWhw7cwBQR.ytrn/nuIYO16s4S1Zx4KdJYR8FQKyPl3RU.gzW",
+    "password": "$2b$10$dIGTLI0e4nH0fKwSRla34u89BdYO9o4Yef4AsyxRGENzwYXVwGCOS",
     "name": "Carol Williams",
     "role": "user",
     "createdAt": "2024-01-04T00:00:00.000Z",
@@ -47,7 +47,7 @@
   {
     "id": "user-5",
     "email": "david.brown@nightreader.com",
-    "password": "$2b$10$QZUn4rI7Ok5qQkgidQvaBOCEJq9OSC9pM0CphrXTGQmy8Qd5IYQ26",
+    "password": "$2b$10$UoEajURqj7jRpH526q.ZTucxxfVzuGUQeqxfZ2.0twQ14GYmot9oS",
     "name": "David Brown",
     "role": "user",
     "createdAt": "2024-01-05T00:00:00.000Z",
@@ -56,7 +56,7 @@
   {
     "id": "user-6",
     "email": "emma.davis@nightreader.com",
-    "password": "$2b$10$aUs3E/O.by6CmgMPi6yu0uMhaVfLZVtbO8Bj3vhMntWvFJUKtHXa.",
+    "password": "$2b$10$yKPZAEx2ytBSRhHrGnPct.w6WPN.GFzy1CFm7pRvxhsXlgscwW/1e",
     "name": "Emma Davis",
     "role": "user",
     "createdAt": "2024-01-06T00:00:00.000Z",
@@ -65,7 +65,7 @@
   {
     "id": "user-7",
     "email": "frank.miller@nightreader.com",
-    "password": "$2b$10$aXpw9lCyYI119BcEC1OpEuX88NrJuts1DpwrnOH1pI5.Cm0uPYJs2",
+    "password": "$2b$10$GdsZIAaI4E4frEG/SGUzhuuONosSpOMJJlOUEyidX.ugSozmbclPu",
     "name": "Frank Miller",
     "role": "user",
     "createdAt": "2024-01-07T00:00:00.000Z",
@@ -74,7 +74,7 @@
   {
     "id": "user-8",
     "email": "grace.wilson@nightreader.com",
-    "password": "$2b$10$6dfHT4ni1wpk0iZifOkkwO6r5Df.U3.H8ieuj1E3IFDMWMzEbbA4y",
+    "password": "$2b$10$7/qk37qsAt67Jc0lZsXW7u/YG/MseLz4xZ/JyUDMnKUcxPM8icIrm",
     "name": "Grace Wilson",
     "role": "user",
     "createdAt": "2024-01-08T00:00:00.000Z",
@@ -83,7 +83,7 @@
   {
     "id": "user-9",
     "email": "henry.moore@nightreader.com",
-    "password": "$2b$10$aAyDzw61.Uytf8XQKXMzMOLd8pMYbHl5BwkKf8hbf82CKD7F5Ncx.",
+    "password": "$2b$10$EDeBcxdvxweb/5dzZZ6PrO9C1xi4LbH.nCILN9RCn/ytL6HROdx/6",
     "name": "Henry Moore",
     "role": "user",
     "createdAt": "2024-01-09T00:00:00.000Z",
@@ -92,7 +92,7 @@
   {
     "id": "user-10",
     "email": "isabella.taylor@nightreader.com",
-    "password": "$2b$10$.gVPAd0YFoD9rAM5mtUwVeZVUZ1QjwIOoPeqt7eEev5D6u8GDajHa",
+    "password": "$2b$10$ZSlRBZRKWMI.O7kWbm/XDO97iTynFFDVABacatuh1qw4IvQxxZOjC",
     "name": "Isabella Taylor",
     "role": "user",
     "createdAt": "2024-01-10T00:00:00.000Z",
@@ -101,7 +101,7 @@
   {
     "id": "user-11",
     "email": "jack.anderson@nightreader.com",
-    "password": "$2b$10$HTR9tdmfCnfLK.AS7xKszOAl2J0RoprJPnhd5oYoRv7icy3P4ClF.",
+    "password": "$2b$10$DXVhpgd7IVbDHE7k4mX4quL44XUSNLl9bxmsIuDej2AxCgRxemzmy",
     "name": "Jack Anderson",
     "role": "user",
     "createdAt": "2024-01-11T00:00:00.000Z",
@@ -110,7 +110,7 @@
   {
     "id": "user-12",
     "email": "kate.thomas@nightreader.com",
-    "password": "$2b$10$ySsKZZpHQcIsvrruvIdCyO0n6Ev586nwwnxHUBH0C2R.NFTzHdm/2",
+    "password": "$2b$10$mg9qf34b9gNDl.xD/gMkx.3XAtw3o6L0vc57Cr31LiLmK9kCBFDVa",
     "name": "Kate Thomas",
     "role": "user",
     "createdAt": "2024-01-12T00:00:00.000Z",
@@ -119,7 +119,7 @@
   {
     "id": "user-13",
     "email": "liam.jackson@nightreader.com",
-    "password": "$2b$10$Gi8Ys9pvYEtYgvetPpC.eOmc3XIUcTR3AupvcWh/EzJEh9JUHIwf6",
+    "password": "$2b$10$A09MJV36S7zgxQyw602JoulTqcJKacVUKemKRBW12Zb3lo9jHNM4W",
     "name": "Liam Jackson",
     "role": "user",
     "createdAt": "2024-01-13T00:00:00.000Z",
@@ -128,7 +128,7 @@
   {
     "id": "user-14",
     "email": "mia.white@nightreader.com",
-    "password": "$2b$10$5YVC66PFzSJlm313y09oP.aXPzBBSDmqnFc/3iw.g5Hicx.s3tUGC",
+    "password": "$2b$10$1ElvHEIjQv.0feEyDFl39edTaWWWJJuWSdHlSB8nh4Ynd2KwcJ292",
     "name": "Mia White",
     "role": "user",
     "createdAt": "2024-01-14T00:00:00.000Z",
@@ -137,7 +137,7 @@
   {
     "id": "user-15",
     "email": "noah.harris@nightreader.com",
-    "password": "$2b$10$D52/DekVerPAQuMyAVuWI.VlXldtSNRgwqxKMzo0zOri2i8GQePma",
+    "password": "$2b$10$3HvgAiBY/YM/aYJZtXnLLOHTqjbfuTpCHYpY5X2bn0LZIrkn.hEJy",
     "name": "Noah Harris",
     "role": "user",
     "createdAt": "2024-01-15T00:00:00.000Z",
@@ -146,7 +146,7 @@
   {
     "id": "user-16",
     "email": "olivia.martin@nightreader.com",
-    "password": "$2b$10$B5r0PwzCNN31Uo149v3VeODE.0fLqmSNVjTXxlH4pu1IsBz8l9rtS",
+    "password": "$2b$10$5gjO6tt1B1Y/mmbEZ3ipduVV.OmEyGyWcKCjuFKuk2esMQ.4O4wT6",
     "name": "Olivia Martin",
     "role": "user",
     "createdAt": "2024-01-16T00:00:00.000Z",
@@ -155,7 +155,7 @@
   {
     "id": "user-17",
     "email": "peter.thompson@nightreader.com",
-    "password": "$2b$10$eFKEhrF4CYXKbow/bllYm.FEEZWUCljVtfDMVBnW26cPOkpFgchKW",
+    "password": "$2b$10$scbCOy/fPVxSxzyffZbpAOKOELxRr21tTsg1tfknzvxr1p80MnE/.",
     "name": "Peter Thompson",
     "role": "user",
     "createdAt": "2024-01-17T00:00:00.000Z",
@@ -164,7 +164,7 @@
   {
     "id": "user-18",
     "email": "quinn.garcia@nightreader.com",
-    "password": "$2b$10$/RufGw4eTcg8Rc9H5As0ueWbCEkVLmOO0PSRg3M8K8KsErL0EiJ3a",
+    "password": "$2b$10$fGmJG55A7KprksbbLVfNZOrekkP3I9dOxP6H8qF464RGqFHVZXVui",
     "name": "Quinn Garcia",
     "role": "user",
     "createdAt": "2024-01-18T00:00:00.000Z",
@@ -173,7 +173,7 @@
   {
     "id": "user-19",
     "email": "rachel.martinez@nightreader.com",
-    "password": "$2b$10$.WWhHf4OgRLc/wtTNeKOXu9290zFk.qtaq1NkIhum2b5R9eQWGL1S",
+    "password": "$2b$10$WrHrQwa4kSfI.1MamPdmw.EH5un2ls8a3F2p7iXHjNqHk6FX4bwfa",
     "name": "Rachel Martinez",
     "role": "user",
     "createdAt": "2024-01-19T00:00:00.000Z",
@@ -182,7 +182,7 @@
   {
     "id": "user-20",
     "email": "samuel.robinson@nightreader.com",
-    "password": "$2b$10$f.0ynZVCo3J85q8qcsHBS.xE44G9hwxdq2yWmzNIqzqNWjDwWlcsK",
+    "password": "$2b$10$yHJcZM8aBveYKAf7589VR.OrKfUNKHXz.jMV5IVs4lbzgjzYYUNYS",
     "name": "Samuel Robinson",
     "role": "user",
     "createdAt": "2024-01-20T00:00:00.000Z",
@@ -191,7 +191,7 @@
   {
     "id": "user-21",
     "email": "tara.clark@nightreader.com",
-    "password": "$2b$10$9CwLyT0msnYfYxARMxqUCuyiGMv7p7X5qcb7XCayOhjWwRtoUhLFC",
+    "password": "$2b$10$H4wxrkzCUb0R34FYbPS6/e1WxCuRb9drQP1Qj6h7G2d.TvojjWAWW",
     "name": "Tara Clark",
     "role": "user",
     "createdAt": "2024-01-21T00:00:00.000Z",
@@ -200,7 +200,7 @@
   {
     "id": "user-22",
     "email": "uma.rodriguez@nightreader.com",
-    "password": "$2b$10$3gYCMlAK6zguMokbcT.bQutp8Rv26v3yFmBWJjAcF7wVWwHd75vCa",
+    "password": "$2b$10$9ZE92Rx1g4DTjfc3WZiiDeL580vNYAc92bMxWbg0vxoWBL1.wlK8G",
     "name": "Uma Rodriguez",
     "role": "user",
     "createdAt": "2024-01-22T00:00:00.000Z",
@@ -209,7 +209,7 @@
   {
     "id": "user-23",
     "email": "victor.lewis@nightreader.com",
-    "password": "$2b$10$Q/QlO9bHMuj5Cc2f5nSXIOA8YwTYUCzjtJkysclKXewBvk2kX82W.",
+    "password": "$2b$10$UXG7awcu4f7lZ5XO6u281.ynRR.4POWb42YpJREv0L0NoKTLk/Cpe",
     "name": "Victor Lewis",
     "role": "user",
     "createdAt": "2024-01-23T00:00:00.000Z",
@@ -218,7 +218,7 @@
   {
     "id": "user-24",
     "email": "wendy.lee@nightreader.com",
-    "password": "$2b$10$s/owoy/wBEcmldJN7bFNXeZ58IoqijcDRIgvGQX8Zuw2JgQ6mnkqa",
+    "password": "$2b$10$SlAMYszGFDutdibzFcChsewCK5lILeJnRzJgw.aOIOz.Fzyg3NM4K",
     "name": "Wendy Lee",
     "role": "user",
     "createdAt": "2024-01-24T00:00:00.000Z",
@@ -227,7 +227,7 @@
   {
     "id": "user-25",
     "email": "xavier.walker@nightreader.com",
-    "password": "$2b$10$OJVc.KNQHT05lHVAWbaVx.UTnx.tXCAioZF.VO38z7bJnxsU5w0je",
+    "password": "$2b$10$6H3yq0kF3yXmYvvtI9NzTO.qKdlfnxPx9KlD.HAiuQiVtCTLjuV1u",
     "name": "Xavier Walker",
     "role": "user",
     "createdAt": "2024-01-25T00:00:00.000Z",
@@ -236,7 +236,7 @@
   {
     "id": "user-26",
     "email": "yara.hall@nightreader.com",
-    "password": "$2b$10$70n8NbX0.n/5HNc8QpDJLOpujudfvE1Noglqmvht/pPo6B9yAS7T6",
+    "password": "$2b$10$DKdDmBxApkUzzeJ9tjOvAOpuwE2U89Rsh9.kAz14nSaxo9quK8y8S",
     "name": "Yara Hall",
     "role": "user",
     "createdAt": "2024-01-26T00:00:00.000Z",
@@ -245,7 +245,7 @@
   {
     "id": "user-27",
     "email": "zack.allen@nightreader.com",
-    "password": "$2b$10$5vmwgPEqssT6ZU0oqbZ3j.zuumbzlIdqrhwLpMtiGzqUBUblVeALW",
+    "password": "$2b$10$YOA7xaae9YGhMXO2zA6jVempZZZin4ksOWkU8UeJz8wQaeK5J33hi",
     "name": "Zack Allen",
     "role": "user",
     "createdAt": "2024-01-27T00:00:00.000Z",
@@ -254,7 +254,7 @@
   {
     "id": "user-28",
     "email": "amy.young@nightreader.com",
-    "password": "$2b$10$uip5H9J.v/cVW0qQCykZIuCiJ/cK/Ee9PYnqy0CbOoFC5FdPQh1ZK",
+    "password": "$2b$10$MuhG3kDTtuNkD8VL2YxNV.0DXxK3AWg.mYhf3s7uJwe9dNUUJO99S",
     "name": "Amy Young",
     "role": "user",
     "createdAt": "2024-01-28T00:00:00.000Z",
@@ -263,7 +263,7 @@
   {
     "id": "user-29",
     "email": "brian.king@nightreader.com",
-    "password": "$2b$10$4Q9NCpnK6QjrWHMounwW5u4dgKt1LIpTjhYxJCFqGDwoy8D3E9GE.",
+    "password": "$2b$10$gpvFvacRgxyPqjVOIiY.tOyrMiGxOtK9ZxH03Vr1XJQjpe.NMuIAa",
     "name": "Brian King",
     "role": "user",
     "createdAt": "2024-01-29T00:00:00.000Z",
@@ -272,7 +272,7 @@
   {
     "id": "user-30",
     "email": "claire.wright@nightreader.com",
-    "password": "$2b$10$1uIU2UNS6L3SEfhrFFrwEeQb.VN.A6AEpytfBtsQoF9wEvXM0CnAu",
+    "password": "$2b$10$sAnKEtuSINZT4mr8s1zPkOb2CfXEr6q6RNp62QIz.PCdhdd2x9vKO",
     "name": "Claire Wright",
     "role": "user",
     "createdAt": "2024-01-30T00:00:00.000Z",
@@ -281,7 +281,7 @@
   {
     "id": "user-31",
     "email": "daniel.lopez@nightreader.com",
-    "password": "$2b$10$z0vFuH835VMaGJ807cuGz./CSGCluJF/9iYIQCFsLGtmVbQjaxoP.",
+    "password": "$2b$10$cC826VjiIlew2clWiEfjHOnrjMm5Yz.8Jk0BuMPYw.ttkhMqCgRVm",
     "name": "Daniel Lopez",
     "role": "user",
     "createdAt": "2024-01-31T00:00:00.000Z",

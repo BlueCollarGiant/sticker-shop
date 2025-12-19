@@ -262,29 +262,34 @@ class OrderController {
           }
         });
 
-        // Add status-specific activities
-        if (order.status === 'shipped') {
-          activities.push({
-            id: `${order.id}-shipped`,
-            type: 'order_shipped',
-            message: `Order #${order.id.slice(-8)} shipped`,
-            timestamp: order.updatedAt,
-            icon: '🚚',
-            metadata: {
-              orderId: order.id,
-            }
-          });
-        } else if (order.status === 'delivered') {
-          activities.push({
-            id: `${order.id}-delivered`,
-            type: 'order_delivered',
-            message: `Order #${order.id.slice(-8)} delivered`,
-            timestamp: order.updatedAt,
-            icon: '✅',
-            metadata: {
-              orderId: order.id,
-            }
-          });
+        // Add status-specific activities (only if status is different from initial 'pending')
+        // Use updatedAt for status changes, but only if it differs from createdAt
+        const hasStatusChanged = order.status !== 'pending' &&
+                                 new Date(order.updatedAt).getTime() !== new Date(order.createdAt).getTime();
+
+        if (hasStatusChanged) {
+          const statusConfig = {
+            paid: { message: 'Payment confirmed', icon: '💳', type: 'order_paid' },
+            processing: { message: 'Processing order', icon: '⚙️', type: 'order_processing' },
+            shipped: { message: 'Order shipped', icon: '🚚', type: 'order_shipped' },
+            delivered: { message: 'Order delivered', icon: '✅', type: 'order_delivered' },
+            cancelled: { message: 'Order cancelled', icon: '❌', type: 'order_cancelled' },
+          };
+
+          const config = statusConfig[order.status];
+          if (config) {
+            activities.push({
+              id: `${order.id}-${order.status}`,
+              type: config.type,
+              message: `Order #${order.id.slice(-8)} - ${config.message}`,
+              timestamp: order.updatedAt,
+              icon: config.icon,
+              metadata: {
+                orderId: order.id,
+                status: order.status,
+              }
+            });
+          }
         }
       }
 
