@@ -86,6 +86,19 @@ export enum ActivityType {
   PASSWORD_CHANGED = 'password_changed'
 }
 
+/**
+ * Order notification from the Order Activity Projection system
+ * Backend contract from /api/orders/user/activity
+ */
+export interface OrderNotification {
+  orderId: string;
+  status: string;
+  orderNumber: string | null;
+  createdAt: string;
+  updatedAt: string;
+  isTerminal: boolean;
+}
+
 export interface PasswordChangeData {
   currentPassword: string;
   newPassword: string;

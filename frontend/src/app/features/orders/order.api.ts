@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiConfig } from '../../core/config/api.config';
 import { Order, CreateOrderInput, UpdateOrderStatusInput, ApiResponse } from './order.types';
-import { ActivityItem } from '../../models/user.model';
+import { OrderNotification } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -85,10 +85,11 @@ export class OrderApi {
   }
 
   /**
-   * Get current user's activity
+   * Get current user's activity (Order Activity Projection)
+   * Returns pre-sorted, pre-limited order notifications (max 3)
    */
-  getUserActivity(): Observable<ApiResponse<ActivityItem[]>> {
-    return this.http.get<ApiResponse<ActivityItem[]>>(
+  getUserActivity(): Observable<ApiResponse<OrderNotification[]>> {
+    return this.http.get<ApiResponse<OrderNotification[]>>(
       ApiConfig.ORDERS.USER_ACTIVITY()
     );
   }

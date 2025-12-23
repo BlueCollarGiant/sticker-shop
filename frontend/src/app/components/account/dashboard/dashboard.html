@@ -48,16 +48,17 @@
               Loading activity...
             </div>
           } @else {
-            @for (activity of recentActivity(); track activity.id) {
+            @for (notification of recentNotifications(); track notification.orderId) {
               <div class="activity-item">
-                <div class="activity-icon">{{ activity.icon }}</div>
                 <div class="activity-content">
-                  <div class="activity-message">{{ activity.message }}</div>
-                  <div class="activity-time">{{ activity.timestamp | date:'short' }}</div>
+                  <div class="activity-message">
+                    {{ getOrderDisplayName(notification) }} - {{ getStatusText(notification.status) }}
+                  </div>
+                  <div class="activity-time">{{ notification.updatedAt | date:'short' }}</div>
                 </div>
               </div>
             }
-            @if (recentActivity().length === 0) {
+            @if (recentNotifications().length === 0) {
               <div class="empty-activity">
                 No recent activity
               </div>

@@ -1,8 +1,10 @@
 const { OrderStatus } = require('./order.service.js');
+const { OrderProjectionService } = require('./order-projection.service.js');
 
 class OrderController {
   constructor(orderService) {
     this.orderService = orderService;
+    this.projectionService = new OrderProjectionService();
     this.createOrder = this.createOrder.bind(this);
     this.getOrderById = this.getOrderById.bind(this);
     this.getUserOrders = this.getUserOrders.bind(this);
@@ -243,66 +245,16 @@ class OrderController {
         return;
       }
 
+      // Get all orders for the authenticated user
       const orders = await this.orderService.getUserOrders(userId);
 
-      // Convert orders to activity items
-      const activities = [];
-
-      for (const order of orders) {
-        // Add order placed activity
-        activities.push({
-          id: `${order.id}-placed`,
-          type: 'order_placed',
-          message: `Order #${order.id.slice(-8)} placed`,
-          timestamp: order.createdAt,
-          icon: '📦',
-          metadata: {
-            orderId: order.id,
-            total: order.total,
-          }
-        });
-
-        // Add status-specific activities (only if status is different from initial 'pending')
-        // Use updatedAt for status changes, but only if it differs from createdAt
-        const hasStatusChanged = order.status !== 'pending' &&
-                                 new Date(order.updatedAt).getTime() !== new Date(order.createdAt).getTime();
-
-        if (hasStatusChanged) {
-          const statusConfig = {
-            paid: { message: 'Payment confirmed', icon: '💳', type: 'order_paid' },
-            processing: { message: 'Processing order', icon: '⚙️', type: 'order_processing' },
-            shipped: { message: 'Order shipped', icon: '🚚', type: 'order_shipped' },
-            delivered: { message: 'Order delivered', icon: '✅', type: 'order_delivered' },
-            cancelled: { message: 'Order cancelled', icon: '❌', type: 'order_cancelled' },
-          };
-
-          const config = statusConfig[order.status];
-          if (config) {
-            activities.push({
-              id: `${order.id}-${order.status}`,
-              type: config.type,
-              message: `Order #${order.id.slice(-8)} - ${config.message}`,
-              timestamp: order.updatedAt,
-              icon: config.icon,
-              metadata: {
-                orderId: order.id,
-                status: order.status,
-              }
-            });
-          }
-        }
-      }
-
-      // Sort by timestamp descending (most recent first)
-      activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-      // Limit to 10 most recent activities
-      const recentActivities = activities.slice(0, 10);
+      // Project recent activity using the Order Activity Projection system
+      const notifications = this.projectionService.projectRecentActivity(orders);
 
       res.json({
         success: true,
-        data: recentActivities,
-        total: recentActivities.length,
+        data: notifications,
+        total: notifications.length,
       });
     } catch (error) {
       console.error('[OrderController] Get user activity error:', error);

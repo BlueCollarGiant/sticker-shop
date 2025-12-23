@@ -2,7 +2,7 @@ import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthStore } from '../../../features/auth/auth.store';
-import { ActivityItem, ActivityType } from '../../../models/user.model';
+import { OrderNotification } from '../../../models/user.model';
 import { OrderApi } from '../../../features/orders/order.api';
 import { OrderStore } from '../../../features/orders/order.store';
 
@@ -20,8 +20,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Use auth store's user signal directly
   user = this.auth.user;
 
-  // Live user activity from backend
-  recentActivity = signal<ActivityItem[]>([]);
+  // Recent order notifications from backend (Order Activity Projection)
+  recentNotifications = signal<OrderNotification[]>([]);
   isLoadingActivity = signal(false);
 
   // Total order count from OrderStore
@@ -77,14 +77,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.orderApi.getUserActivity().subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          // Convert string timestamps to Date objects and limit to 3 most recent
-          const activities = response.data
-            .map(activity => ({
-              ...activity,
-              timestamp: new Date(activity.timestamp)
-            }))
-            .slice(0, 3); // Limit to 3 most recent activities
-          this.recentActivity.set(activities);
+          // Backend returns pre-sorted, pre-limited notifications (max 3)
+          // No frontend sorting, filtering, or ranking needed
+          this.recentNotifications.set(response.data);
         }
         this.isLoadingActivity.set(false);
       },
@@ -104,6 +99,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return name.slice(0, 2).toUpperCase();
+  }
+
+  /**
+   * Format order number for display
+   * Returns the order number if present, otherwise returns a neutral placeholder
+   */
+  getOrderDisplayName(notification: OrderNotification): string {
+    return notification.orderNumber || `Order ${notification.orderId.slice(-8)}`;
+  }
+
+  /**
+   * Format status text for display (verbatim from backend)
+   * Capitalizes first letter for readability
+   */
+  getStatusText(status: string): string {
+    return status.charAt(0).toUpperCase() + status.slice(1);
   }
 
   logout(): void {
