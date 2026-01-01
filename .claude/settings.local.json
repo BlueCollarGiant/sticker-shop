@@ -34,7 +34,8 @@
       "Bash(npm run dev:*)",
       "Bash(mkdir:*)",
       "Bash(xcopy:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(del order-activity-projection-planning.md IMPLEMENTATION-SUMMARY.md FRONTEND-IMPLEMENTATION-SUMMARY.md TEST-RESULTS.md)"
     ],
     "deny": [],
     "ask": []

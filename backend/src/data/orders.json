@@ -1,6 +1,37 @@
 [
   {
-    "id": "order-1766520406921-ry2024ai1",
+    "id": "order-1767283222295-ifm3ckdll",
+    "items": [
+      {
+        "productId": "1",
+        "productTitle": "Read by Moonlight",
+        "productImage": "https://placehold.co/600x600/1A1410/E8DCC4?text=Read+by+Moonlight",
+        "quantity": 1,
+        "price": 4.99,
+        "subtotal": 4.99
+      }
+    ],
+    "subtotal": 4.99,
+    "tax": 0.4,
+    "shipping": 5.99,
+    "total": 11.38,
+    "shippingAddress": {
+      "fullName": "Isaiah Ratliff",
+      "address1": "1115 Bloomfield road",
+      "address2": "1115 Bloomfield road",
+      "city": "cape girardeau",
+      "state": "MO",
+      "zipCode": "63703",
+      "country": "USA",
+      "phone": "3149336368"
+    },
+    "userId": "user-1",
+    "status": "delivered",
+    "createdAt": "2026-01-01T16:00:22.295Z",
+    "updatedAt": "2026-01-01T16:01:22.784Z"
+  },
+  {
+    "id": "order-1767283314927-en2znum7y",
     "items": [
       {
         "productId": "3",
@@ -16,80 +47,18 @@
     "shipping": 5.99,
     "total": 11.38,
     "shippingAddress": {
-      "fullName": "ISAIAH D RATLIFF",
-      "address1": "1115 Bloomfield road",
+      "fullName": "ISAIAH DANIEL RATLIFF",
+      "address1": "995 Lees Lane",
       "address2": "",
-      "city": "Cape Girardeau",
-      "state": "Missouri",
-      "zipCode": "63701",
-      "country": "USA",
-      "phone": ""
-    },
-    "userId": "admin-1",
-    "status": "processing",
-    "createdAt": "2025-12-23T20:06:46.921Z",
-    "updatedAt": "2025-12-23T20:07:58.887Z"
-  },
-  {
-    "id": "order-1766520436611-z12t2qdm4",
-    "items": [
-      {
-        "productId": "2",
-        "productTitle": "Discipline & Iron",
-        "productImage": "https://placehold.co/600x600/0A1628/D4D8DD?text=Discipline+%26+Iron",
-        "quantity": 1,
-        "price": 24.99,
-        "subtotal": 24.99
-      }
-    ],
-    "subtotal": 24.99,
-    "tax": 2,
-    "shipping": 5.99,
-    "total": 32.98,
-    "shippingAddress": {
-      "fullName": "Isaiah Ratliff",
-      "address1": "1115 Bloomfield road",
-      "address2": "1115 Bloomfield road",
-      "city": "cape girardeau",
+      "city": "Florissant",
       "state": "MO",
-      "zipCode": "63703",
+      "zipCode": "63031",
       "country": "USA",
       "phone": "3149336368"
     },
     "userId": "admin-1",
-    "status": "cancelled",
-    "createdAt": "2025-12-23T20:07:16.611Z",
-    "updatedAt": "2025-12-23T20:08:21.795Z"
-  },
-  {
-    "id": "order-1766520456459-r8z8cdzo9",
-    "items": [
-      {
-        "productId": "4",
-        "productTitle": "Quiet Hours Coffee Mug",
-        "productImage": "https://placehold.co/600x600/1A1410/D4A574?text=Quiet+Hours+Mug",
-        "quantity": 1,
-        "price": 16.99,
-        "subtotal": 16.99
-      }
-    ],
-    "subtotal": 16.99,
-    "tax": 1.36,
-    "shipping": 5.99,
-    "total": 24.34,
-    "shippingAddress": {
-      "fullName": "Isaiah Ratliff",
-      "address1": "1115 Bloomfield road",
-      "address2": "1115 Bloomfield road",
-      "city": "cape girardeau",
-      "state": "MO",
-      "zipCode": "63703",
-      "country": "USA",
-      "phone": "3149336368"
-    },
-    "userId": "admin-1",
-    "status": "cancelled",
-    "createdAt": "2025-12-23T20:07:36.459Z",
-    "updatedAt": "2025-12-23T20:08:03.632Z"
+    "status": "pending",
+    "createdAt": "2026-01-01T16:01:54.927Z",
+    "updatedAt": "2026-01-01T16:01:54.927Z"
   }
 ]
