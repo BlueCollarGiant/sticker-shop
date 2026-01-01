@@ -32,10 +32,21 @@ function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
 }
 
+function sanitizeUser(user) {
+  const { password, resetToken, resetTokenExpires, ...userWithoutSensitive } = user;
+  return userWithoutSensitive;
+}
+
+function getSortTimestamp(user) {
+  const value = user.createdAt || user.updatedAt || '';
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
 class FileAuthRepository {
   async getAllUsers() {
     const users = loadUsers();
-    return users.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+    return users.map(sanitizeUser);
   }
 
   async findByEmail(email) {
@@ -48,8 +59,7 @@ class FileAuthRepository {
     const user = users.find(u => u.id === id);
     if (!user) return null;
 
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return sanitizeUser(user);
   }
 
   async getUserWithPassword(email) {
@@ -80,6 +90,18 @@ class FileAuthRepository {
 
     const { password, ...userWithoutPassword } = newUser;
     return userWithoutPassword;
+  }
+
+  async getUsersPage(page, limit) {
+    const users = loadUsers();
+    const sortedUsers = users.slice().sort((a, b) => {
+      const timeDiff = getSortTimestamp(b) - getSortTimestamp(a);
+      if (timeDiff !== 0) return timeDiff;
+      return String(b.id).localeCompare(String(a.id));
+    });
+    const start = (page - 1) * limit;
+    const pagedUsers = sortedUsers.slice(start, start + limit);
+    return pagedUsers.map(sanitizeUser);
   }
 
   async getUserCount() {

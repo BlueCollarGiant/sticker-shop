@@ -382,10 +382,10 @@
     @if (activeTab() === 'users') {
       <header class="admin-header">
         <h1 class="admin-title">User Management</h1>
-        <p class="admin-subtitle">{{ filteredUsers().length }} user{{ filteredUsers().length !== 1 ? 's' : '' }} total</p>
+        <p class="admin-subtitle">Manage user accounts and review orders</p>
       </header>
 
-      <div class="search-section">
+      <div class="users-header-row">
         <div class="search-box-large search-container">
           <input
             type="text"
@@ -425,6 +425,31 @@
               }
             </div>
           }
+        </div>
+
+        <div class="users-header-right">
+          <div class="users-total">Total Users: {{ usersMeta().total }}</div>
+          <div class="users-pagination">
+            <button
+              class="btn-secondary btn-page"
+              type="button"
+              (click)="goToPreviousUsersPage()"
+              [disabled]="loadingUsers() || usersMeta().page <= 1"
+            >
+              Prev
+            </button>
+            <span class="page-status">
+              Page {{ usersMeta().page }} of {{ usersMeta().totalPages }}
+            </span>
+            <button
+              class="btn-secondary btn-page"
+              type="button"
+              (click)="goToNextUsersPage()"
+              [disabled]="loadingUsers() || usersMeta().page >= usersMeta().totalPages"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
 
@@ -515,6 +540,29 @@
               </div>
             }
           </div>
+          @if (!loadingUsers() && filteredUsers().length > 0 && usersMeta().totalPages > 1) {
+            <div class="users-pagination users-pagination-bottom">
+              <button
+                class="btn-secondary btn-page"
+                type="button"
+                (click)="goToPreviousUsersPage()"
+                [disabled]="loadingUsers() || usersMeta().page <= 1"
+              >
+                Prev
+              </button>
+              <span class="page-status">
+                Page {{ usersMeta().page }} of {{ usersMeta().totalPages }}
+              </span>
+              <button
+                class="btn-secondary btn-page"
+                type="button"
+                (click)="goToNextUsersPage()"
+                [disabled]="loadingUsers() || usersMeta().page >= usersMeta().totalPages"
+              >
+                Next
+              </button>
+            </div>
+          }
         }
       </div>
     }

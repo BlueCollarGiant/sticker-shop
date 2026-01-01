@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AdminService } from '../../../services/admin.service';
+import { AdminService, UsersPaginationMeta } from '../../../services/admin.service';
 import { AuthStore } from '../../../features/auth/auth.store';
 import { Product, ProductCategory, ProductCollection, ProductBadge, ProductImage } from '../../../models/product.model';
 import { User } from '../../../models/user.model';
@@ -41,6 +41,12 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   selectedUserId = signal<string | null>(null);
   userOrders = signal<any[]>([]);
   loadingUsers = signal(false);
+  usersMeta = signal<UsersPaginationMeta>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 1
+  });
 
   // Search engines (initialized in constructor for injection context)
   productSearch: SearchEngine<Product>;
@@ -219,19 +225,46 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
 
   // ===== USER MANAGEMENT METHODS =====
 
-  loadUsers(): void {
+  loadUsers(page = this.usersMeta().page): void {
     this.loadingUsers.set(true);
-    this.adminService.getAllUsers().subscribe({
+    const limit = this.usersMeta().limit;
+    this.adminService.getAllUsers(page, limit).subscribe({
       next: (response) => {
         this.users.set(response.data || []);
+        this.usersMeta.set({
+          page: response.meta?.page ?? page,
+          limit: response.meta?.limit ?? limit,
+          total: response.meta?.total ?? 0,
+          totalPages: response.meta?.totalPages ?? 1
+        });
+        this.selectedUserId.set(null);
+        this.userOrders.set([]);
         this.loadingUsers.set(false);
       },
       error: (error) => {
         console.error('Error loading users:', error);
         this.users.set([]);
+        this.usersMeta.set({
+          page,
+          limit,
+          total: 0,
+          totalPages: 1
+        });
         this.loadingUsers.set(false);
       }
     });
+  }
+
+  goToPreviousUsersPage(): void {
+    const { page } = this.usersMeta();
+    if (page <= 1) return;
+    this.loadUsers(page - 1);
+  }
+
+  goToNextUsersPage(): void {
+    const { page, totalPages } = this.usersMeta();
+    if (page >= totalPages) return;
+    this.loadUsers(page + 1);
   }
 
   toggleUserDetails(userId: string): void {

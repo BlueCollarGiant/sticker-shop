@@ -55,11 +55,27 @@ function createAdminRouter() {
 
   router.get('/users', async (req, res, next) => {
     try {
-      const users = await authService.getAllUsers();
+      const pageValue = parseInt(req.query.page, 10);
+      const limitValue = parseInt(req.query.limit, 10);
+      const page = Number.isNaN(pageValue) || pageValue < 1 ? 1 : pageValue;
+      let limit = Number.isNaN(limitValue) || limitValue < 1 ? 20 : limitValue;
+      limit = Math.min(limit, 100);
+
+      const total = await authService.getUserCount();
+      const totalPages = Math.max(1, Math.ceil(total / limit));
+
+      // Return empty array for out-of-range pages instead of capping
+      const users = page > totalPages ? [] : await authService.getUsersPage(page, limit);
+
       res.json({
         success: true,
         data: users,
-        total: users.length,
+        meta: {
+          page,
+          limit,
+          total,
+          totalPages,
+        },
       });
     } catch (error) {
       next(error);

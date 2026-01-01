@@ -83,6 +83,14 @@ class AuthService {
   async getAllUsers() {
     return this.authRepository.getAllUsers();
   }
+
+  async getUserCount() {
+    return this.authRepository.getUserCount();
+  }
+
+  async getUsersPage(page, limit) {
+    return this.authRepository.getUsersPage(page, limit);
+  }
 }
 
 module.exports = { AuthService };

@@ -6,6 +6,13 @@ import { Product, ProductBadge } from '../models/product.model';
 import { User } from '../models/user.model';
 import { ApiConfig } from '../core/config/api.config';
 
+export interface UsersPaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -59,10 +66,16 @@ export class AdminService {
   /**
    * Get all users (admin only)
    */
-  getAllUsers(): Observable<{ data: User[]; total: number }> {
-    return this.http.get<{ success: boolean; data: User[]; total: number }>(
-      ApiConfig.ADMIN.USERS()
-    ).pipe(map(res => ({ data: res.data, total: res.total })));
+  getAllUsers(page = 1, limit = 20): Observable<{ data: User[]; meta: UsersPaginationMeta }> {
+    return this.http.get<{ success: boolean; data: User[]; meta: UsersPaginationMeta }>(
+      ApiConfig.ADMIN.USERS(),
+      {
+        params: {
+          page: String(page),
+          limit: String(limit)
+        }
+      }
+    ).pipe(map(res => ({ data: res.data, meta: res.meta })));
   }
 
   /**
