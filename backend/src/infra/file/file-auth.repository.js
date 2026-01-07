@@ -92,20 +92,55 @@ class FileAuthRepository {
     return userWithoutPassword;
   }
 
-  async getUsersPage(page, limit) {
+  async getUsersPage(page, limit, query) {
     const users = loadUsers();
-    const sortedUsers = users.slice().sort((a, b) => {
+
+    // Filter by query if provided
+    const filteredUsers = query ? this._filterUsers(users, query) : users;
+
+    // Sort using existing logic
+    const sortedUsers = filteredUsers.slice().sort((a, b) => {
       const timeDiff = getSortTimestamp(b) - getSortTimestamp(a);
       if (timeDiff !== 0) return timeDiff;
       return String(b.id).localeCompare(String(a.id));
     });
+
     const start = (page - 1) * limit;
     const pagedUsers = sortedUsers.slice(start, start + limit);
     return pagedUsers.map(sanitizeUser);
   }
 
-  async getUserCount() {
-    return loadUsers().length;
+  async getUserCount(query) {
+    const users = loadUsers();
+    // Return filtered count if query provided, otherwise total count
+    return query ? this._filterUsers(users, query).length : users.length;
+  }
+
+  /**
+   * Filter users using AND token matching (matches frontend search engine logic)
+   * Query is split by whitespace into tokens, all tokens must match at least one field
+   * @private
+   */
+  _filterUsers(users, query) {
+    // Tokenize query: lowercase and split by whitespace
+    const tokens = query.toLowerCase().trim().split(/\s+/).filter(t => t.length > 0);
+
+    if (tokens.length === 0) {
+      return users;
+    }
+
+    return users.filter(user => {
+      // All tokens must match at least one of: name, email, role
+      return tokens.every(token => {
+        const name = (user.name || '').toLowerCase();
+        const email = (user.email || '').toLowerCase();
+        const role = (user.role || '').toLowerCase();
+
+        return name.includes(token) ||
+               email.includes(token) ||
+               role.includes(token);
+      });
+    });
   }
 
   async isEmpty() {

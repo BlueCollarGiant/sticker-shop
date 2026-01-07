@@ -84,12 +84,12 @@ class AuthService {
     return this.authRepository.getAllUsers();
   }
 
-  async getUserCount() {
-    return this.authRepository.getUserCount();
+  async getUserCount(query) {
+    return this.authRepository.getUserCount(query);
   }
 
-  async getUsersPage(page, limit) {
-    return this.authRepository.getUsersPage(page, limit);
+  async getUsersPage(page, limit, query) {
+    return this.authRepository.getUsersPage(page, limit, query);
   }
 }
 

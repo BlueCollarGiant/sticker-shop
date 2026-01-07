@@ -459,7 +459,7 @@
             <div class="placeholder-icon">⏳</div>
             <p class="placeholder-text">Loading users...</p>
           </div>
-        } @else if (filteredUsers().length === 0) {
+        } @else if (users().length === 0) {
           <div class="placeholder-content">
             <div class="placeholder-icon">👤</div>
             <p class="placeholder-text">No users found</p>
@@ -467,7 +467,7 @@
           </div>
         } @else {
           <div class="users-list">
-            @for (user of filteredUsers(); track user.id) {
+            @for (user of users(); track user.id) {
               <div class="user-card" [class.expanded]="isUserExpanded(user.id)">
                 <div class="user-summary" (click)="toggleUserDetails(user.id)">
                   <div class="user-avatar">
@@ -540,7 +540,7 @@
               </div>
             }
           </div>
-          @if (!loadingUsers() && filteredUsers().length > 0 && usersMeta().totalPages > 1) {
+          @if (!loadingUsers() && users().length > 0 && usersMeta().totalPages > 1) {
             <div class="users-pagination users-pagination-bottom">
               <button
                 class="btn-secondary btn-page"

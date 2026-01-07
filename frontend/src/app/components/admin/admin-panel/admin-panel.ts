@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -48,6 +48,9 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
     totalPages: 1
   });
 
+  // Race condition protection for user search
+  private usersRequestId = 0;
+
   // Search engines (initialized in constructor for injection context)
   productSearch: SearchEngine<Product>;
   userSearch: SearchEngine<User>;
@@ -72,13 +75,8 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
     return this.products();
   });
 
-  // Filtered users - using search engine
-  filteredUsers = computed(() => {
-    if (this.userSearch) {
-      return this.userSearch.filtered();
-    }
-    return this.users();
-  });
+  // NOTE: Users list is NOT filtered client-side - server handles filtering via `q` param
+  // The userSearch engine is only used for input state, debouncing, and suggestions
 
   currentUser = this.auth.user;
 
@@ -94,6 +92,8 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
     });
 
     // Initialize user search engine in constructor (injection context required)
+    // NOTE: Search engine is used for input state, debouncing, and suggestions ONLY
+    // It does NOT filter the displayed list - filtering is server-side via `q` param
     this.userSearch = createSearchEngine(this.users, {
       fields: ['name', 'email', 'role'],
       getLabel: (user) => user.name,
@@ -101,6 +101,13 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
       debounceMs: 200,
       maxSuggestions: 5,
       enableSuggestions: true
+    });
+
+    // Watch debounced query and trigger server-side search with page reset
+    effect(() => {
+      const debouncedQuery = this.userSearch.debouncedQuery();
+      // Reset page to 1 and fetch with new query
+      this.loadUsers(1, debouncedQuery);
     });
   }
 
@@ -225,11 +232,21 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
 
   // ===== USER MANAGEMENT METHODS =====
 
-  loadUsers(page = this.usersMeta().page): void {
+  loadUsers(page = this.usersMeta().page, query?: string): void {
     this.loadingUsers.set(true);
     const limit = this.usersMeta().limit;
-    this.adminService.getAllUsers(page, limit).subscribe({
+
+    // Race condition protection: increment request ID before fetch
+    this.usersRequestId++;
+    const currentRequestId = this.usersRequestId;
+
+    this.adminService.getAllUsers(page, limit, query).subscribe({
       next: (response) => {
+        // Only apply results if this is still the latest request
+        if (currentRequestId !== this.usersRequestId) {
+          return; // Stale response, ignore
+        }
+
         this.users.set(response.data || []);
         this.usersMeta.set({
           page: response.meta?.page ?? page,
@@ -242,6 +259,11 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
         this.loadingUsers.set(false);
       },
       error: (error) => {
+        // Only handle error if this is still the latest request
+        if (currentRequestId !== this.usersRequestId) {
+          return; // Stale response, ignore
+        }
+
         console.error('Error loading users:', error);
         this.users.set([]);
         this.usersMeta.set({
@@ -258,13 +280,17 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   goToPreviousUsersPage(): void {
     const { page } = this.usersMeta();
     if (page <= 1) return;
-    this.loadUsers(page - 1);
+    // Preserve current search query when navigating
+    const query = this.userSearch.debouncedQuery();
+    this.loadUsers(page - 1, query);
   }
 
   goToNextUsersPage(): void {
     const { page, totalPages } = this.usersMeta();
     if (page >= totalPages) return;
-    this.loadUsers(page + 1);
+    // Preserve current search query when navigating
+    const query = this.userSearch.debouncedQuery();
+    this.loadUsers(page + 1, query);
   }
 
   toggleUserDetails(userId: string): void {

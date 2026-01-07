@@ -61,11 +61,15 @@ function createAdminRouter() {
       let limit = Number.isNaN(limitValue) || limitValue < 1 ? 20 : limitValue;
       limit = Math.min(limit, 100);
 
-      const total = await authService.getUserCount();
+      // Parse search query (trim and treat empty string as no filter)
+      const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+      const query = q.length > 0 ? q : undefined;
+
+      const total = await authService.getUserCount(query);
       const totalPages = Math.max(1, Math.ceil(total / limit));
 
       // Return empty array for out-of-range pages instead of capping
-      const users = page > totalPages ? [] : await authService.getUsersPage(page, limit);
+      const users = page > totalPages ? [] : await authService.getUsersPage(page, limit, query);
 
       res.json({
         success: true,

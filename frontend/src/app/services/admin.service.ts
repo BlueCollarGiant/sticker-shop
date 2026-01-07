@@ -66,15 +66,20 @@ export class AdminService {
   /**
    * Get all users (admin only)
    */
-  getAllUsers(page = 1, limit = 20): Observable<{ data: User[]; meta: UsersPaginationMeta }> {
+  getAllUsers(page = 1, limit = 20, q?: string): Observable<{ data: User[]; meta: UsersPaginationMeta }> {
+    const params: any = {
+      page: String(page),
+      limit: String(limit)
+    };
+
+    // Only add q parameter if non-empty (after trim)
+    if (q && q.trim().length > 0) {
+      params.q = q.trim();
+    }
+
     return this.http.get<{ success: boolean; data: User[]; meta: UsersPaginationMeta }>(
       ApiConfig.ADMIN.USERS(),
-      {
-        params: {
-          page: String(page),
-          limit: String(limit)
-        }
-      }
+      { params }
     ).pipe(map(res => ({ data: res.data, meta: res.meta })));
   }
 
