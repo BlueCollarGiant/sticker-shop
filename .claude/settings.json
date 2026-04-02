@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.stripe.com)",
+      "WebFetch(domain:stripe.com)",
+      "Bash(npm list:*)"
+    ]
+  }
+}

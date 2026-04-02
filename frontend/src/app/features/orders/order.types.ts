@@ -57,6 +57,7 @@ export interface CreateOrderInput {
   tax: number;
   shipping: number;
   total: number;
+  status?: OrderStatus;
   paymentIntentId?: string;
   shippingAddress?: ShippingAddress;
 }

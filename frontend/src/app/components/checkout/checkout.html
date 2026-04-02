@@ -143,6 +143,16 @@
           </div>
         </div>
 
+        <!-- Payment -->
+        <div class="payment-section card">
+          <div class="section-header">
+            <p class="section-kicker">Step 3</p>
+            <h2>Payment</h2>
+            <p class="section-subtitle">Test card: 4242 4242 4242 4242 · Any future date · Any CVC</p>
+          </div>
+          <div id="card-element" class="card-input-wrapper"></div>
+        </div>
+
         <!-- Checkout Actions -->
         <div class="checkout-actions">
           @if (errorMessage()) {
@@ -151,14 +161,13 @@
           <button
             class="btn-complete-order"
             (click)="completeOrder()"
-            [disabled]="processing()">
+            [disabled]="processing() || !stripeReady()">
             @if (processing()) {
               <span>Processing...</span>
             } @else {
-              <span>Complete Order (Demo)</span>
+              <span>Complete Order</span>
             }
           </button>
-          <p class="demo-note">Demo Mode: This will create an order without payment processing</p>
         </div>
       </div>
     }

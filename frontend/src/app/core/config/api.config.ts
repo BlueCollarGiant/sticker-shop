@@ -75,6 +75,7 @@ export class ApiConfig {
    * Checkout endpoints
    */
   static readonly CHECKOUT = {
+    CONFIG: () => this.endpoint('checkout/config'),
     PAYMENT_INTENT: () => this.endpoint('checkout/create-payment-intent'),
   };
 }

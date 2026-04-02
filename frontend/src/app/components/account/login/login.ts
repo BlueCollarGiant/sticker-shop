@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -16,12 +16,22 @@ export class LoginComponent {
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     rememberMe: new FormControl(false)
   });
 
   isLoading = signal<boolean>(false);
   errorMessage = signal<string>('');
+
+  constructor() {
+    // Mirror store error and loading state into local signals for the template
+    effect(() => {
+      this.isLoading.set(this.auth.loading());
+      if (this.auth.error()) {
+        this.errorMessage.set(this.auth.error()!);
+      }
+    });
+  }
 
   async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
@@ -35,6 +45,7 @@ export class LoginComponent {
     const { email, password } = this.loginForm.value;
 
     // AuthStore handles loading state, errors, and navigation internally
+    // Error and loading state are mirrored to local signals via effect() in the constructor
     this.auth.login(email!, password!);
   }
 
