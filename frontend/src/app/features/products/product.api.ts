@@ -4,12 +4,13 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   Product,
   ProductListResult,
+  ProductListMeta,
   ProductCatalog,
   CreateProductInput,
   UpdateProductInput,
@@ -19,10 +20,14 @@ import { ApiConfig } from '../../core/config/api.config';
 interface ApiResponse<T> {
   success: boolean;
   data: T;
-  total?: number;
+  meta?: ProductListMeta;
+  message?: string;
+}
+
+export interface ProductQueryParams {
+  q?: string;
   page?: number;
   limit?: number;
-  message?: string;
 }
 
 @Injectable({
@@ -31,17 +36,20 @@ interface ApiResponse<T> {
 export class ProductApi {
   private http = inject(HttpClient);
 
-  getAllProducts(): Observable<ProductListResult> {
+  getAllProducts(params?: ProductQueryParams): Observable<ProductListResult> {
+    let httpParams = new HttpParams();
+    if (params?.q) httpParams = httpParams.set('q', params.q);
+    if (params?.page) httpParams = httpParams.set('page', String(params.page));
+    if (params?.limit) httpParams = httpParams.set('limit', String(params.limit));
+
     return this.http
-      .get<{ success: boolean; data: Product[]; total: number; page: number; limit: number }>(
-        ApiConfig.PRODUCTS.LIST()
-      )
-      .pipe(map(response => ({
-        data: response.data,
-        total: response.total,
-        page: response.page,
-        limit: response.limit,
-      })));
+      .get<ApiResponse<Product[]>>(ApiConfig.PRODUCTS.LIST(), { params: httpParams })
+      .pipe(
+        map(response => ({
+          data: response.data,
+          meta: response.meta ?? { page: 1, limit: 12, total: response.data.length, totalPages: 1 },
+        }))
+      );
   }
 
   getProductById(id: string): Observable<Product> {

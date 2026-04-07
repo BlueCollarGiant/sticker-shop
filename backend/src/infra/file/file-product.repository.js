@@ -30,6 +30,28 @@ function computeDefaultSalePrice(price) {
   return Math.round(discounted * 100) / 100;
 }
 
+function tokenize(query) {
+  if (!query || typeof query !== 'string') return [];
+  return query.toLowerCase().split(/\s+/).filter(Boolean);
+}
+
+function matchesQuery(product, tokens) {
+  if (tokens.length === 0) return true;
+
+  const searchable = [
+    product.title,
+    product.description,
+    product.category,
+    product.collection,
+    Array.isArray(product.tags) ? product.tags.join(' ') : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+  return tokens.every(token => searchable.includes(token));
+}
+
 class FileProductRepository {
   async getAll() {
     const products = loadProducts();
@@ -39,6 +61,20 @@ class FileProductRepository {
       page: 1,
       limit: products.length,
     };
+  }
+
+  async getPage(page, limit, query) {
+    const products = loadProducts();
+    const tokens = tokenize(query);
+    const filtered = products.filter(p => matchesQuery(p, tokens));
+    const start = (page - 1) * limit;
+    return filtered.slice(start, start + limit);
+  }
+
+  async getCount(query) {
+    const products = loadProducts();
+    const tokens = tokenize(query);
+    return products.filter(p => matchesQuery(p, tokens)).length;
   }
 
   async getById(id) {

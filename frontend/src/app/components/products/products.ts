@@ -1,13 +1,16 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Product, ProductCategory, ProductCollection, SortOption, FilterState, ProductBadge, ProductImage } from '../../models/product.model';
 import { CartStore } from '../../features/cart/cart.store';
 import { ProductStore } from '../../features/products/product.store';
 
 @Component({
   selector: 'app-products',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
@@ -15,11 +18,14 @@ export class Products implements OnInit {
   cartStore = inject(CartStore);
   productStore = inject(ProductStore);
 
-  allProducts = signal<Product[]>([]);
-
-  // Expose store signals for template
   isLoading = this.productStore.isLoading;
   errorMessage = this.productStore.errorMessage;
+  currentPage = this.productStore.currentPage;
+  totalPages = this.productStore.totalPages;
+  totalProducts = this.productStore.totalProducts;
+
+  searchQuery = signal('');
+  private searchSubject = new Subject<string>();
 
   filters = signal<FilterState>({
     categories: [],
@@ -35,52 +41,57 @@ export class Products implements OnInit {
   ProductBadge = ProductBadge;
 
   ngOnInit(): void {
-    this.loadProducts();
+    // Debounce search input — fires backend request after 300ms idle
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(query => {
+      this.productStore.loadAllProducts({ q: query, page: 1, limit: 12 });
+    });
+
+    this.productStore.loadAllProducts({ page: 1, limit: 12 });
   }
 
-  /**
-   * Load products from API
-   */
-  async loadProducts(): Promise<void> {
-    await this.productStore.loadAllProducts();
-
-    // Update local allProducts from store
-    const storeProducts = this.productStore.allProducts();
-
-    // Convert createdAt strings to Date objects for sorting
-    const productsWithDates = storeProducts.map((p: any) => ({
-      ...p,
-      createdAt: p.createdAt instanceof Date ? p.createdAt : new Date(p.createdAt)
-    }));
-
-    this.allProducts.set(productsWithDates);
+  onSearchInput(query: string): void {
+    this.searchQuery.set(query);
+    this.searchSubject.next(query);
   }
 
-  // Computed filtered and sorted products
+  clearSearch(): void {
+    this.searchQuery.set('');
+    this.searchSubject.next('');
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages()) return;
+    this.productStore.loadPage(page, this.searchQuery() || undefined);
+  }
+
+  // Client-side filter and sort over the current page results.
+  // Category, collection, price, and sort are applied to the loaded page.
+  // NOTE: these do not trigger a new backend request — they narrow the current page.
   products = computed(() => {
-    let filtered = this.allProducts();
+    let filtered = this.productStore.allProducts() as Product[];
     const currentFilters = this.filters();
 
-    // Filter by categories
     if (currentFilters.categories.length > 0) {
       filtered = filtered.filter(p => currentFilters.categories.includes(p.category as ProductCategory));
     }
 
-    // Filter by collections
     if (currentFilters.collections.length > 0) {
       filtered = filtered.filter(p => currentFilters.collections.includes(p.collection as ProductCollection));
     }
 
-    // Filter by price
     filtered = filtered.filter(p =>
       p.price >= currentFilters.priceRange.min &&
       p.price <= currentFilters.priceRange.max
     );
 
-    // Sort
     switch (currentFilters.sortBy) {
       case SortOption.NEWEST:
-        filtered = [...filtered].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        filtered = [...filtered].sort((a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
         break;
       case SortOption.POPULAR:
         filtered = [...filtered].sort((a, b) => b.reviewCount - a.reviewCount);
@@ -122,6 +133,8 @@ export class Products implements OnInit {
   }
 
   clearFilters() {
+    this.searchQuery.set('');
+    this.searchSubject.next('');
     this.filters.set({
       categories: [],
       collections: [],
@@ -151,8 +164,7 @@ export class Products implements OnInit {
   }
 
   formatCollection(collection: ProductCollection | string): string {
-    const collectionStr = typeof collection === 'string' ? collection : collection;
-    return collectionStr.split('-').map(word =>
+    return (collection as string).split('-').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');
   }
@@ -166,7 +178,7 @@ export class Products implements OnInit {
       quantity: 1,
       price: product.salePrice || product.price,
       title: product.title,
-      imageUrl: imageUrl,
+      imageUrl,
     });
   }
 }

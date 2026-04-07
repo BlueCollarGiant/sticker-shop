@@ -41,3 +41,7 @@ frontend/.angular/cache/
 
 # TypeScript
 *.tsbuildinfo
+
+# Open Library import — dump files are large, generated output is local only
+backend/src/data/raw/
+backend/src/data/generated/

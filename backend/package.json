@@ -5,7 +5,9 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "import:books": "node src/seeds/import-openlibrary.js",
+    "import:googlebooks": "node src/seeds/import-googlebooks.js"
   },
   "keywords": [
     "express",
@@ -15,7 +17,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.2",
     "bcrypt": "^6.0.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",

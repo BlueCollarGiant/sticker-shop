@@ -13,6 +13,14 @@ class ProductService {
     };
   }
 
+  async getProductsPage(page, limit, query) {
+    const [data, total] = await Promise.all([
+      this.productRepository.getPage(page, limit, query),
+      this.productRepository.getCount(query),
+    ]);
+    return { data, total };
+  }
+
   async getProductById(id) {
     if (!id) {
       throw new Error('Product ID is required');

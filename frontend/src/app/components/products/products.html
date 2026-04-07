@@ -99,10 +99,24 @@
 
   <!-- Main Content -->
   <main class="shop-main">
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search products..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($any($event.target).value)"
+      />
+      @if (searchQuery()) {
+        <button class="search-clear" (click)="clearSearch()">✕</button>
+      }
+    </div>
+
     <!-- Sorting Bar -->
     <div class="sorting-bar">
       <div class="product-count">
-        Showing {{ products().length }} of {{ allProducts().length }} products
+        Showing {{ products().length }} of {{ totalProducts() }} products
       </div>
       <div class="sort-controls">
         <label for="sort-select">Sort by:</label>
@@ -131,7 +145,7 @@
       <div class="error-icon">⚠️</div>
       <h2 class="error-title">Failed to load products</h2>
       <p class="error-message">{{ errorMessage() }}</p>
-      <button class="btn btn-primary" (click)="loadProducts()">Try Again</button>
+      <button class="btn btn-primary" (click)="productStore.loadAllProducts({ page: 1, limit: 12 })">Try Again</button>
     </div>
 
     <!-- Product Grid -->
@@ -183,6 +197,27 @@
         </div>
       </div>
     </div>
+
+    <!-- Pagination -->
+    @if (totalPages() > 1) {
+      <div class="pagination">
+        <button
+          class="page-btn"
+          [disabled]="currentPage() === 1"
+          (click)="goToPage(currentPage() - 1)">
+          ← Prev
+        </button>
+
+        <span class="page-info">{{ currentPage() }} / {{ totalPages() }}</span>
+
+        <button
+          class="page-btn"
+          [disabled]="currentPage() === totalPages()"
+          (click)="goToPage(currentPage() + 1)">
+          Next →
+        </button>
+      </div>
+    }
 
     <!-- Empty State -->
     <ng-template #emptyState>

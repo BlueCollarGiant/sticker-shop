@@ -5,13 +5,21 @@ class ProductController {
 
   getAllProducts = async (req, res) => {
     try {
-      const { data, total, page, limit } = await this.productService.getAllProducts();
+      const page = Math.max(1, parseInt(req.query.page) || 1);
+      const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 12));
+      const query = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+
+      const { data, total } = await this.productService.getProductsPage(page, limit, query);
+
       res.json({
         success: true,
         data,
-        total,
-        page,
-        limit,
+        meta: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
       });
     } catch (error) {
       res.status(500).json({

@@ -51,11 +51,16 @@ export interface Product {
   updatedAt: Date;
 }
 
-export interface ProductListResult {
-  data: Product[];
-  total: number;
+export interface ProductListMeta {
   page: number;
   limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface ProductListResult {
+  data: Product[];
+  meta: ProductListMeta;
 }
 
 export interface ProductCatalog {

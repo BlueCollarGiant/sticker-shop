@@ -3,7 +3,16 @@
     "allow": [
       "WebFetch(domain:docs.stripe.com)",
       "WebFetch(domain:stripe.com)",
-      "Bash(npm list:*)"
+      "Bash(npm list:*)",
+      "WebFetch(domain:openlibrary.org)",
+      "WebFetch(domain:archive.org)",
+      "Bash(ls \"c:\\\\Users\\\\boop boop\\\\Documents\\\\GitHub\\\\sticker-shop\"/*.gz)",
+      "Bash(ls \"c:\\\\Users\\\\boop boop\\\\Documents\\\\GitHub\\\\sticker-shop\"/*.txt.gz)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm ls:*)",
+      "Bash(xargs grep:*)",
+      "Bash(python -c \"import json; data=json.load\\(open\\('c:/Users/boop boop/Documents/GitHub/sticker-shop/backend/src/data/products.json'\\)\\); print\\(len\\(data\\)\\)\")"
     ]
   }
 }

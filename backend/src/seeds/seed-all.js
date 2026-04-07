@@ -319,9 +319,18 @@ async function seedAll() {
   );
 
   writeData(usersFile, usersWithHashedPasswords);
-  writeData(productsFile, productSeeds);
-  writeData(ordersFile, []);
-  writeData(cartsFile, []);
+
+  // Only write products if the file doesn't exist or has the default seed count.
+  // This preserves any imported catalog (e.g. from import:googlebooks).
+  const existingProducts = fs.existsSync(productsFile)
+    ? JSON.parse(fs.readFileSync(productsFile, 'utf-8'))
+    : [];
+  if (existingProducts.length <= productSeeds.length) {
+    writeData(productsFile, productSeeds);
+  }
+
+  if (!fs.existsSync(ordersFile)) writeData(ordersFile, []);
+  if (!fs.existsSync(cartsFile)) writeData(cartsFile, []);
 
   console.log('Users:', JSON.parse(fs.readFileSync(usersFile, 'utf-8')).length);
   console.log('Products:', JSON.parse(fs.readFileSync(productsFile, 'utf-8')).length);
